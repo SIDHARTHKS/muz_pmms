@@ -21,11 +21,9 @@ class TasksScreen extends AppBaseView<TasksController> {
 
   Scaffold _widgetView() => appScaffold(
         canpop: true,
-        appBar: customAppBar(mytask.tr),
         body: appFutureBuilder<void>(
-          () => controller.fetchInitData(),
-          (context, snapshot) => _body(),
-        ),
+            () => controller.fetchInitData(), (context, snapshot) => _body(),
+            loaderWidget: fullScreenloader()),
       );
   GestureDetector _body() {
     return GestureDetector(
@@ -33,14 +31,17 @@ class TasksScreen extends AppBaseView<TasksController> {
       onTap: () {
         FocusScope.of(Get.context!).unfocus();
       },
-      child: appContainer(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: Column(
-            children: [
-              _searchBar(),
-              _listView(),
-            ],
+      child: appScaffold(
+        appBar: customAppBar(mytask.tr),
+        body: appContainer(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Column(
+              children: [
+                _searchBar(),
+                _listView(),
+              ],
+            ),
           ),
         ),
       ),

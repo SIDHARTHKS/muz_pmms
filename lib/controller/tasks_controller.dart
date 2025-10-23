@@ -171,8 +171,12 @@ class TasksController extends AppBaseController
   ];
 
   //
+  Future<void> sampleDelya() async {
+    await Future.delayed(const Duration(seconds: 3)); // or 100 for test
+  }
 
   Future<bool> fetchInitData() async {
+    // await sampleDelya();
     return true;
   }
 }
