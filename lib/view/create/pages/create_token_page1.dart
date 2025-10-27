@@ -110,30 +110,36 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
           onChanged: (val) => controller.rxToggle.value = val,
         ),
         height(10),
-        // Animated container for smooth expansion
-        AnimatedSize(
+
+        /// Smooth iOS-style expand from top → bottom
+        AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOutCubic,
-          alignment: Alignment.topCenter,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOutCubic,
-            opacity: controller.rxToggle.value ? 1.0 : 0.0,
-            child: controller.rxToggle.value
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      height(2),
-                      CommonTextfield(
-                        label: description.tr,
-                        controller: controller.additionaldescriptionController,
-                        maxLines: 3,
-                      ),
-                      height(2),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return SizeTransition(
+              sizeFactor: animation,
+              axis: Axis.vertical,
+              axisAlignment: -1.0, // 👈 makes it expand downward from top
+              child: child,
+            );
+          },
+          child: controller.rxToggle.value
+              ? Column(
+                  key: const ValueKey('expanded'),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonTextfield(
+                      label: description.tr,
+                      controller: controller.additionaldescriptionController,
+                      maxLines: 3,
+                    ),
+                    height(2),
+                  ],
+                )
+              : const SizedBox(
+                  key: ValueKey('collapsed'),
+                ),
         ),
       ],
     );

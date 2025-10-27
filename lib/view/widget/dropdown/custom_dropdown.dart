@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
@@ -68,7 +67,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           height: widget.widgetHeight ?? 48,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
             color: colors.cardColor,
             borderRadius: BorderRadius.circular(4),
@@ -88,6 +87,19 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 color: colors.primaryTextColor.withOpacity(0.4),
                 fontWeight: FontWeight.w400,
               ),
+              selectedItemBuilder: (context) {
+                return widget.items.map((item) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: appText(
+                      widget.itemLabelBuilder(item),
+                      color: colors.primaryTextColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  );
+                }).toList();
+              },
               iconStyleData: IconStyleData(
                 icon: AnimatedRotation(
                   turns: _isOpen ? 0.5 : 0,
@@ -101,9 +113,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               ),
               dropdownStyleData: DropdownStyleData(
                 maxHeight: 250,
-                width: Get.width * 0.92,
-                elevation: 1,
-                offset: const Offset(-12, 0), // dropdown appears just below
+                width: Get.width * 0.925,
+                elevation: 0,
+                offset: const Offset(-16, -1),
                 decoration: BoxDecoration(
                   color: colors.cardColor,
                   borderRadius: BorderRadius.circular(4),
@@ -111,36 +123,47 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     color: colors.borderColor.withOpacity(0.3),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20), // ✅ horizontal padding for dropdown
+                padding: const EdgeInsets.symmetric(horizontal: 0),
               ),
-              menuItemStyleData: const MenuItemStyleData(
+              menuItemStyleData: MenuItemStyleData(
                 height: 42,
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                overlayColor: WidgetStateProperty.all(
+                  colors.primaryColor.withOpacity(0.05),
+                ),
               ),
+
+              /// 👇 Highlight selected item background (Hiver-style)
               items: widget.items.map((item) {
                 final isSelected = item == widget.selectedValue;
                 return DropdownMenuItem<T>(
+                  alignment: Alignment.centerLeft,
                   value: item,
                   child: Container(
+                    width: Get.width,
                     decoration: BoxDecoration(
                       color: isSelected
                           ? (widget.selectionColor ??
-                              colors.primaryColor.withOpacity(0.0))
+                              AppColorHelper()
+                                  .primaryColor
+                                  .withValues(alpha: 0.1)) // ✅ highlighted bg
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(4),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: appText(
-                      widget.itemLabelBuilder(item),
-                      color: colors.primaryTextColor,
-                      fontSize: 14,
-                      fontWeight:
-                          isSelected ? FontWeight.w500 : FontWeight.w400,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: appText(
+                        widget.itemLabelBuilder(item),
+                        color: colors.primaryTextColor,
+                        fontSize: 14,
+                        fontWeight:
+                            isSelected ? FontWeight.w500 : FontWeight.w400,
+                      ),
                     ),
                   ),
                 );
               }).toList(),
+
               onChanged: (val) {
                 widget.onChanged(val);
                 setState(() => _isOpen = false);
