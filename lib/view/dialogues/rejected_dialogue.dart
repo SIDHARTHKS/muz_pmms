@@ -36,21 +36,20 @@ class RejectedDialogue extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              appText(
-                "Token \n Rejected",
-                textAlign: TextAlign.center,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: AppColorHelper().errorBorderColor,
-              ),
+              appText("Token \n Rejected",
+                  textAlign: TextAlign.center,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: AppColorHelper().errorBorderColor,
+                  height: 1.3),
               const SizedBox(height: 30),
               Image.asset(
                 Assets.icons.rejected.path,
-                scale: 2.5,
+                scale: 3.7,
               ),
               const SizedBox(height: 30),
               appText(
-                "This token request has been  \n successfully rejected..",
+                "This token request has been  \n successfully rejected.",
                 textAlign: TextAlign.center,
                 fontSize: 15,
                 fontWeight: FontWeight.w400,

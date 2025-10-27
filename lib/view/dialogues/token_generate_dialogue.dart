@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/view/widget/common_widget.dart';
+import 'package:pmms/view/widget/text/app_text.dart';
 
-class SuccessDialogue extends StatelessWidget {
+class TokenGenerateDialogue extends StatelessWidget {
   final double width;
   final double height;
+  final String id;
 
-  const SuccessDialogue({
-    super.key,
-    this.width = 350,
-    this.height = 470,
-  });
+  const TokenGenerateDialogue(
+      {super.key, this.width = 350, this.height = 470, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class SuccessDialogue extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              appText("Approved \n Successfully",
+              appText("Token  generated \n Successfully",
                   textAlign: TextAlign.center,
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
@@ -48,13 +47,30 @@ class SuccessDialogue extends StatelessWidget {
                 scale: 3.7,
               ),
               const SizedBox(height: 30),
-              appText(
-                "This token request has been  \n approved successfully.",
+              RichText(
                 textAlign: TextAlign.center,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                color: AppColorHelper().primaryTextColor,
-              ),
+                text: TextSpan(
+                  style: textStyle(
+                    16,
+                    AppColorHelper().primaryTextColor,
+                    FontWeight.w500,
+                    // highlight the token
+                  ),
+                  children: [
+                    const TextSpan(text: "Your new token "),
+                    TextSpan(
+                      text: "$id \n",
+                      style: textStyle(
+                        16,
+                        AppColorHelper().primaryColor,
+                        FontWeight.w600,
+                        // highlight the token
+                      ),
+                    ),
+                    const TextSpan(text: " has been generated successfully."),
+                  ],
+                ),
+              )
             ],
           ),
         ),

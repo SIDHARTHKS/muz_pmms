@@ -38,6 +38,7 @@ class TasksScreen extends AppBaseView<TasksController> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Column(
               children: [
+                height(12),
                 _searchBar(),
                 _listView(),
               ],
@@ -83,10 +84,9 @@ class TasksScreen extends AppBaseView<TasksController> {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundColor: AppColorHelper()
-                                  .circleAvatarBgColor
-                                  .withValues(alpha: 0.1),
-                              radius: 24,
+                              backgroundColor:
+                                  AppColorHelper().circleAvatarBgColor,
+                              radius: 20,
                               child: appText(
                                 task.title.substring(0, 1),
                                 color: AppColorHelper().primaryTextColor,
@@ -115,7 +115,7 @@ class TasksScreen extends AppBaseView<TasksController> {
                                             AppColorHelper()
                                                 .primaryTextColor
                                                 .withValues(alpha: 0.5),
-                                            FontWeight.w500,
+                                            FontWeight.w400,
                                           ),
                                         ),
                                         TextSpan(
@@ -142,13 +142,13 @@ class TasksScreen extends AppBaseView<TasksController> {
                                       ),
                                       children: [
                                         TextSpan(
-                                          text: "Client Ref ID: ",
+                                          text: "Client Ref ID : ",
                                           style: textStyle(
                                             12,
                                             AppColorHelper()
                                                 .primaryTextColor
                                                 .withValues(alpha: 0.5),
-                                            FontWeight.w500,
+                                            FontWeight.w400,
                                           ),
                                         ),
                                         TextSpan(
@@ -156,7 +156,7 @@ class TasksScreen extends AppBaseView<TasksController> {
                                           style: textStyle(
                                             13,
                                             AppColorHelper().primaryTextColor,
-                                            FontWeight.w600,
+                                            FontWeight.w500,
                                           ),
                                         ),
                                       ],
@@ -188,12 +188,13 @@ class TasksScreen extends AppBaseView<TasksController> {
                                     const TextSpan(text: "Token ID : "),
                                     TextSpan(
                                       text: task.tokenId,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                          color: AppColorHelper()
-                                              .primaryTextColor
-                                              .withValues(alpha: 0.9)),
+                                      style: textStyle(
+                                        14,
+                                        AppColorHelper()
+                                            .primaryTextColor
+                                            .withValues(alpha: 0.9),
+                                        FontWeight.w700,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -203,14 +204,14 @@ class TasksScreen extends AppBaseView<TasksController> {
                                     horizontal: 12, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: _getPriorityColor(task.priority)
-                                      .withValues(alpha: 0.17),
+                                      .withValues(alpha: 0.30),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: appText(
                                   task.priority,
-                                  color: _getPriorityColor(task.priority),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13,
+                                  color: _getPriorityTextColor(task.priority),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
                                 ),
                               ),
                             ],
@@ -218,8 +219,8 @@ class TasksScreen extends AppBaseView<TasksController> {
                         ),
                         height(16),
                         appText(task.description,
-                            fontSize: 13,
-                            height: 1.7,
+                            fontSize: 14,
+                            height: 1.6,
                             fontWeight: FontWeight.w400,
                             color: AppColorHelper().primaryTextColor),
                         height(16),
@@ -227,13 +228,14 @@ class TasksScreen extends AppBaseView<TasksController> {
                           children: [
                             Expanded(
                               child: buttonContainer(
-                                height: 40,
+                                height: 42,
                                 color: AppColorHelper()
                                     .primaryColorLight
                                     .withValues(alpha: 0.9),
                                 borderColor: AppColorHelper()
                                     .primaryColor
-                                    .withValues(alpha: 0.2),
+                                    .withValues(alpha: 0.8),
+                                width: 0.1,
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -259,13 +261,13 @@ class TasksScreen extends AppBaseView<TasksController> {
                             width(12),
                             Expanded(
                               child: buttonContainer(
-                                height: 40,
+                                height: 42,
                                 color: AppColorHelper()
                                     .backgroundColor
                                     .withValues(alpha: 0.9),
                                 borderColor: AppColorHelper()
                                     .borderColor
-                                    .withValues(alpha: 0.3),
+                                    .withValues(alpha: 0.30),
                                 onPressed: () {
                                   controller.setTask(task);
                                   navigateTo(taskDetailsPageRoute);
@@ -307,6 +309,19 @@ class TasksScreen extends AppBaseView<TasksController> {
         return AppColorHelper().statusMediumColor;
       case "low":
         return AppColorHelper().statusLowColor;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Color _getPriorityTextColor(String priority) {
+    switch (priority.toLowerCase()) {
+      case "high":
+        return AppColorHelper().statusHighTextColor;
+      case "medium":
+        return AppColorHelper().statusMediumTextColor;
+      case "low":
+        return AppColorHelper().statusLowTextColor;
       default:
         return Colors.grey;
     }

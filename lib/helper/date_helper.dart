@@ -24,7 +24,7 @@ class DateHelper {
   static String formatToShortMonthDateYear(DateTime dateTime) {
     try {
       final DateFormat formatter =
-          DateFormat('MMM dd, yyyy'); // e.g. Sep 01, 2025
+          DateFormat('dd MMM yyyy'); // e.g. Sep 01, 2025
       return formatter.format(dateTime);
     } catch (e) {
       throw Exception('Date formatting failed: $e');

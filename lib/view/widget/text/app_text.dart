@@ -7,7 +7,7 @@ textStyle(double size, Color color, FontWeight fontweight) {
   return TextStyle(
       fontSize: size,
       color: color,
-      fontFamily: 'MonaSans',
+      fontFamily: 'Mona Sans',
       fontWeight: fontweight);
 }
 

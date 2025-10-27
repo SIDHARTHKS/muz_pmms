@@ -5,7 +5,6 @@ import '../../../gen/assets.gen.dart';
 import '../../../helper/color_helper.dart';
 import '../../../helper/core/environment/env.dart';
 import '../../../helper/enum.dart';
-import '../text/app_text.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final TextEditingController controller;
@@ -54,8 +53,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   Widget build(BuildContext context) {
     bool isTablet = AppEnvironment.deviceType == UserDeviceType.tablet;
     return Container(
-      color: AppColorHelper().cardColor,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: AppColorHelper().cardColor,
+      ),
       child: TextFormField(
+        textAlignVertical: TextAlignVertical.center,
         controller: widget.controller,
         textInputAction: TextInputAction.search,
         // keyboardType: TextInputType.number,
@@ -63,21 +66,31 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
         onFieldSubmitted: widget.onSubmit,
         onChanged: widget.onChanged,
         validator: widget.validator,
+
         decoration: InputDecoration(
           fillColor: AppColorHelper().cardColor,
           hintText: widget.hintText.tr,
-          hintStyle: textStyle(
-            isTablet ? 18 : 14,
-            AppColorHelper().primaryTextColor.withOpacity(0.5),
-            FontWeight.w500,
+          hintStyle: TextStyle(
+            letterSpacing: 0,
+            fontSize: isTablet ? 18 : 14,
+            color: AppColorHelper().primaryTextColor.withOpacity(0.6),
+            fontWeight: FontWeight.w400,
           ),
           prefixIcon: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 1.0),
+            padding: const EdgeInsets.only(left: 8.0),
             child: Image.asset(
               Assets.icons.search.path,
-              scale: 3,
+              scale: 3.8,
               color: AppColorHelper().primaryTextColor.withValues(alpha: 0.4),
             ),
+          ),
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 30,
+            minHeight: 30,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 0, // reduce left/right padding
           ),
           suffixIcon: GestureDetector(
             onTap: () {

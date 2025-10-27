@@ -153,23 +153,27 @@ AppBar customAppBar(String title, {VoidCallback? onTap}) => AppBar(
       surfaceTintColor: Colors.transparent,
       centerTitle: false,
       leadingWidth: 40, // 👈 give enough space for the back icon
+      toolbarHeight: 45,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 10, top: 15),
         child: GestureDetector(
           onTap: onTap ?? goBack,
           child: Icon(
             Icons.arrow_back_ios_new,
-            size: 24,
+            size: 20,
             color: AppColorHelper().primaryTextColor,
           ),
         ),
       ),
 
-      title: appText(
-        title,
-        fontSize: 22,
-        color: AppColorHelper().primaryTextColor,
-        fontWeight: FontWeight.w600,
+      title: Padding(
+        padding: const EdgeInsets.only(top: 15.0),
+        child: appText(
+          title,
+          fontSize: 22,
+          color: AppColorHelper().primaryTextColor,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
 
@@ -312,11 +316,12 @@ GestureDetector buttonContainer(
   Widget child, {
   double radius = 4,
   double? width,
-  double? height = 60,
+  double? height = 42,
   // Color? color = const Color(0xffBB2828),
   Color? color,
   VoidCallback? onPressed,
   Color? borderColor = Colors.transparent,
+  double paddingVertical = 8.0,
 }) =>
     GestureDetector(
       onTap: onPressed,
@@ -324,7 +329,8 @@ GestureDetector buttonContainer(
         width: width,
         height: height,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding:
+            EdgeInsets.symmetric(horizontal: 12, vertical: paddingVertical),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(
@@ -590,17 +596,18 @@ Widget appText(
   TextOverflow? overflow,
   int? maxLines,
   double? height,
+  FontStyle? style,
 }) {
   return Text(
     text,
     style: TextStyle(
-      fontFamily: "Mona Sans", // Use your custom font family here
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      color: color,
-      decoration: decoration,
-      height: height,
-    ),
+        fontFamily: "Mona Sans", // Use your custom font family here
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        decoration: decoration,
+        height: height,
+        fontStyle: style ?? FontStyle.normal),
     textAlign: textAlign,
     overflow: overflow,
     maxLines: maxLines,

@@ -6,7 +6,6 @@ import '../../../helper/color_helper.dart';
 import '../../../helper/navigation.dart';
 import '../../../helper/sizer.dart';
 import '../../widget/common_widget.dart';
-import '../../widget/text/app_text.dart';
 
 class FilterBottomsheet extends StatefulWidget {
   const FilterBottomsheet({super.key});
@@ -47,18 +46,18 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     return GestureDetector(
       onTap: () => _toggleSelection(group, option),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: const EdgeInsets.symmetric(vertical: 7.5),
         child: Row(
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              height: 22,
-              width: 22,
+              height: 24,
+              width: 24,
               decoration: BoxDecoration(
                 color: isSelected
                     ? appColor.primaryColor
                     : appColor.primaryColor.withValues(alpha: 0.01),
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(
                   color: isSelected
                       ? appColor.primaryColor
@@ -66,7 +65,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                 ),
               ),
               child: isSelected
-                  ? const Icon(Icons.check, color: Colors.white, size: 16)
+                  ? const Icon(Icons.check, color: Colors.white, size: 20)
                   : null,
             ),
             width(12),
@@ -91,7 +90,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
       children: [
         height(10),
         Divider(
-            color: appColor.dividerColor.withValues(alpha: 0.3), thickness: 1),
+            color: appColor.dividerColor.withValues(alpha: 0.2), thickness: 1),
         height(10),
         appText(title,
             fontWeight: FontWeight.w500,
@@ -124,24 +123,34 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
       decoration: BoxDecoration(
         color: appColor.cardColor,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(1),
-          topRight: Radius.circular(1),
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              appText("Filter Tokens",
-                  color: appColor.primaryTextColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17),
-              iconWidget(Icons.close,
-                  color: appColor.primaryTextColor, onPressed: goBack),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0, bottom: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                appText("Filter Tokens",
+                    color: appColor.primaryTextColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17),
+                Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColorHelper().primaryColor),
+                  child: iconWidget(Icons.close,
+                      color: appColor.textColor, onPressed: goBack),
+                ),
+              ],
+            ),
           ),
           height(8),
           Divider(
@@ -154,7 +163,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
               fontWeight: FontWeight.w500,
               fontSize: 14,
               color: AppColorHelper().primaryTextColor.withValues(alpha: 0.65)),
-          height(8),
+          height(15),
           Container(
             decoration: BoxDecoration(
               color: appColor.cardColor,
@@ -166,10 +175,10 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
               children: [
                 Image.asset(
                   Assets.icons.calander.path,
-                  scale: 4.5,
+                  scale: 3.6,
                 ),
-                width(8),
-                appText("01 Aug 2025 - 31 Sep 2025",
+                width(15),
+                appText("01 August 2025  -  31 September 2025",
                     color: appColor.primaryTextColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w500),
@@ -191,7 +200,9 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
           // Apply Button
           height(10),
           buttonContainer(
-            buttonText("Apply Filters"),
+            color: appColor.primaryColor,
+            appText("Apply Filters",
+                fontWeight: FontWeight.w500, color: AppColorHelper().textColor),
             onPressed: () {
               controller.rxSelectedTokenTypes
                   .assignAll(selectedItems["Token Type"]!);
@@ -204,9 +215,10 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
 
               goBack();
             },
-            height: 50,
+            height: 42,
             width: double.infinity,
           ),
+          height(5),
         ],
       ),
     );

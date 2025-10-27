@@ -17,6 +17,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/EDIT.png
   AssetGenImage get edit => const AssetGenImage('assets/icons/EDIT.png');
 
+  /// File path: assets/icons/back.png
+  AssetGenImage get back => const AssetGenImage('assets/icons/back.png');
+
   /// File path: assets/icons/calander.png
   AssetGenImage get calander =>
       const AssetGenImage('assets/icons/calander.png');
@@ -36,11 +39,15 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [edit, calander, filter, rejected, search, success];
+      [edit, back, calander, filter, rejected, search, success];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/generate token.png
+  AssetGenImage get generateToken =>
+      const AssetGenImage('assets/images/generate token.png');
 
   /// File path: assets/images/muziris.png
   AssetGenImage get muziris => const AssetGenImage('assets/images/muziris.png');
@@ -50,7 +57,7 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/muziriswhite.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [muziris, muziriswhite];
+  List<AssetGenImage> get values => [generateToken, muziris, muziriswhite];
 }
 
 class Assets {

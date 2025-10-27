@@ -11,6 +11,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: Roboto
-  static const String roboto = 'Roboto';
+  /// Font family: Mona Sans
+  static const String monaSans = 'Mona Sans';
 }

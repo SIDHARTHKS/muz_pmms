@@ -49,6 +49,10 @@ class AppTheme {
   final Color statusHighColor;
   final Color statusPendingColor;
 
+  final Color statusLowTextColor;
+  final Color statusMediumTextColor;
+  final Color statusHighTextColor;
+
   final String fontFamily;
   final String imagePath; // Path to client-specific images
 
@@ -98,6 +102,9 @@ class AppTheme {
     required this.statusMediumColor,
     required this.statusHighColor,
     required this.statusPendingColor,
+    required this.statusLowTextColor,
+    required this.statusMediumTextColor,
+    required this.statusHighTextColor,
   });
 }
 
@@ -137,12 +144,12 @@ AppTheme _demoDarkTheme() => AppTheme(
       buttonColor: Colors.blueAccent,
       textColor: Colors.white,
       primaryTextColor: Colors.white,
-      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1)!,
+      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
       disabledTextColor: Colors.grey[600]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[500]!,
       errorColor: Colors.redAccent,
-      borderColor: Colors.grey[700]!,
+      borderColor: const Color.fromARGB(255, 218, 212, 251)!,
       focusedBorderColor: Colors.lightBlueAccent,
       enabledBorderColor: Colors.grey[700]!,
       disabledBorderColor: Colors.grey[800]!,
@@ -158,10 +165,15 @@ AppTheme _demoDarkTheme() => AppTheme(
       switchInactiveColor: const Color.fromARGB(255, 142, 131, 192),
 
       //
-      statusLowColor: const Color.fromRGBO(64, 137, 161, 1),
-      statusMediumColor: const Color.fromRGBO(162, 98, 35, 1),
-      statusHighColor: const Color.fromRGBO(203, 70, 70, 1),
+      statusLowColor: const Color.fromARGB(255, 69, 209, 255),
+      statusMediumColor: const Color.fromARGB(255, 255, 128, 0),
+      statusHighColor: const Color.fromARGB(255, 255, 97, 97),
       statusPendingColor: const Color.fromRGBO(100, 77, 221, 1),
+
+      //
+      statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
+      statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
+      statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
       fontFamily: 'Roboto',
       imagePath: 'assets/images/demo.png',
@@ -177,7 +189,7 @@ AppTheme _demoLightTheme() => AppTheme(
       buttonContainerBgColor: const Color(0xffF3F1EE),
       loaderColor: const Color.fromARGB(255, 255, 255, 255),
       loaderSecondaryColor: const Color.fromARGB(255, 255, 255, 255),
-      circleAvatarBgColor: const Color.fromARGB(255, 157, 141, 190),
+      circleAvatarBgColor: const Color.fromRGBO(233, 230, 245, 1),
       toastMsgColor: const Color(0xff323030),
       pwdFormFieldBorderColor: const Color.fromRGBO(67, 23, 159, 1),
       boxShadowColor: Colors.black.withOpacity(.1),
@@ -192,12 +204,12 @@ AppTheme _demoLightTheme() => AppTheme(
       buttonColor: Colors.blueAccent,
       textColor: const Color.fromRGBO(255, 255, 255, 1),
       primaryTextColor: const Color.fromARGB(255, 0, 0, 0),
-      secondaryTextColor: const Color.fromRGBO(67, 23, 159, 1),
+      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
       disabledTextColor: Colors.grey[400]!,
       buttonTextColor: Colors.white,
       hintColor: const Color.fromARGB(255, 77, 76, 76)!,
       errorColor: const Color.fromRGBO(217, 75, 77, 1),
-      borderColor: Colors.grey[400]!,
+      borderColor: const Color.fromARGB(255, 218, 212, 251)!,
       focusedBorderColor: const Color.fromRGBO(67, 23, 159, 1),
       enabledBorderColor: const Color.fromRGBO(67, 23, 159, 1)!,
       disabledBorderColor: const Color.fromARGB(255, 237, 237, 237)!,
@@ -212,10 +224,15 @@ AppTheme _demoLightTheme() => AppTheme(
       switchInactiveColor: const Color.fromARGB(255, 142, 131, 192),
 
       //
-      statusLowColor: const Color.fromRGBO(64, 137, 161, 1),
-      statusMediumColor: const Color.fromRGBO(162, 98, 35, 1),
-      statusHighColor: const Color.fromRGBO(203, 70, 70, 1),
+      statusLowColor: const Color.fromARGB(255, 69, 209, 255),
+      statusMediumColor: const Color.fromARGB(255, 255, 128, 0),
+      statusHighColor: const Color.fromARGB(255, 255, 97, 97),
       statusPendingColor: const Color.fromRGBO(100, 77, 221, 1),
+
+      //
+      statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
+      statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
+      statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
       fontFamily: 'Roboto',
       imagePath: 'assets/images/demo.png',
@@ -245,12 +262,12 @@ AppTheme _seemattiDarkTheme() => AppTheme(
       buttonColor: Colors.blueAccent,
       textColor: Colors.white,
       primaryTextColor: Colors.white,
-      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1)!,
+      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
       disabledTextColor: Colors.grey[600]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[500]!,
       errorColor: Colors.redAccent,
-      borderColor: Colors.grey[700]!,
+      borderColor: const Color.fromARGB(255, 218, 212, 251)!,
       focusedBorderColor: Colors.lightBlueAccent,
       enabledBorderColor: Colors.grey[700]!,
       disabledBorderColor: Colors.grey[800]!,
@@ -265,10 +282,15 @@ AppTheme _seemattiDarkTheme() => AppTheme(
       switchInactiveColor: const Color.fromARGB(255, 142, 131, 192),
 
       //
-      statusLowColor: const Color.fromRGBO(64, 137, 161, 1),
-      statusMediumColor: const Color.fromRGBO(162, 98, 35, 1),
-      statusHighColor: const Color.fromRGBO(203, 70, 70, 1),
+      statusLowColor: const Color.fromARGB(255, 69, 209, 255),
+      statusMediumColor: const Color.fromARGB(255, 255, 128, 0),
+      statusHighColor: const Color.fromARGB(255, 255, 97, 97),
       statusPendingColor: const Color.fromRGBO(100, 77, 221, 1),
+
+      //
+      statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
+      statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
+      statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
       fontFamily: 'lato',
       imagePath: 'assets/images/demo.png',
@@ -299,12 +321,12 @@ AppTheme _seemattiLightTheme() => AppTheme(
       buttonColor: Colors.blueAccent,
       textColor: Colors.black,
       primaryTextColor: const Color.fromARGB(255, 0, 0, 0),
-      secondaryTextColor: Colors.grey,
+      secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
       disabledTextColor: Colors.grey[400]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[600]!,
       errorColor: Colors.red,
-      borderColor: Colors.grey[400]!,
+      borderColor: const Color.fromARGB(255, 218, 212, 251)!,
       focusedBorderColor: const Color(0xffCF3448).withOpacity(.85),
       enabledBorderColor: Colors.grey[400]!,
       disabledBorderColor: Colors.grey[200]!,
@@ -319,10 +341,15 @@ AppTheme _seemattiLightTheme() => AppTheme(
       switchInactiveColor: const Color.fromARGB(255, 142, 131, 192),
 
       //
-      statusLowColor: const Color.fromRGBO(64, 137, 161, 1),
-      statusMediumColor: const Color.fromRGBO(162, 98, 35, 1),
-      statusHighColor: const Color.fromRGBO(203, 70, 70, 1),
+      statusLowColor: const Color.fromARGB(255, 69, 209, 255),
+      statusMediumColor: const Color.fromARGB(255, 255, 128, 0),
+      statusHighColor: const Color.fromARGB(255, 255, 97, 97),
       statusPendingColor: const Color.fromRGBO(100, 77, 221, 1),
+
+      //
+      statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
+      statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
+      statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
       fontFamily: 'lato',
       imagePath: 'assets/images/demo.png',

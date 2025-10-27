@@ -53,4 +53,8 @@ class AppColorHelper {
   Color get statusMediumColor => _currentTheme.statusMediumColor;
   Color get statusHighColor => _currentTheme.statusHighColor;
   Color get statusPendingColor => _currentTheme.statusPendingColor;
+
+  Color get statusLowTextColor => _currentTheme.statusLowTextColor;
+  Color get statusMediumTextColor => _currentTheme.statusMediumTextColor;
+  Color get statusHighTextColor => _currentTheme.statusHighTextColor;
 }

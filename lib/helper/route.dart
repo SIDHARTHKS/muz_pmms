@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:pmms/binding/create_token_binding.dart';
 import 'package:pmms/binding/tasks_binding.dart';
+import 'package:pmms/view/create/create_token_screen.dart';
 import 'package:pmms/view/splash/splash_screen.dart' show SplashScreen;
 import 'package:pmms/view/tasks/task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
@@ -16,6 +18,7 @@ const homePageRoute = '/home';
 
 const tasksPageRoute = '/mytasks';
 const taskDetailsPageRoute = '/tasksDetails';
+const createTokenPageRoute = '/createToken';
 
 final routes = [
   GetPage(
@@ -54,6 +57,12 @@ final routes = [
       name: taskDetailsPageRoute,
       page: () => const TaskDetailsScreen(),
       // binding: const TasksBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: createTokenPageRoute,
+      page: () => const CreateTokenScreen(),
+      binding: const CreateTokenBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
 ];
