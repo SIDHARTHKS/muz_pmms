@@ -83,7 +83,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             appText(
               widget.label,
               fontSize: 13,
-              color: colors.primaryTextColor.withOpacity(0.6),
+              color: colors.lightTextColor,
               fontWeight: FontWeight.w400,
             ),
             if (widget.isRequired)

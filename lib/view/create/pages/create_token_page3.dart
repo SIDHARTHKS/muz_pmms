@@ -135,7 +135,7 @@ class CreateTokenPage3 extends AppBaseView<CreateTokenController> {
                   text: "$heading : ",
                   style: textStyle(
                     13,
-                    AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
+                    AppColorHelper().lightTextColor,
                     FontWeight.w400,
                   ),
                 ),

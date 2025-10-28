@@ -50,13 +50,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
             appText(
               widget.label,
               fontSize: 13,
-              color: colors.primaryTextColor.withOpacity(0.6),
+              color: colors.lightTextColor,
               fontWeight: FontWeight.w400,
             ),
             if (widget.isRequired)
               appText(
                 " *",
-                color: Colors.red,
+                color: AppColorHelper().errorColor,
                 fontSize: 18,
               ),
           ],
@@ -84,7 +84,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               value: widget.selectedValue,
               hint: appText(
                 widget.hintText ?? "Select ${widget.label}",
-                color: colors.primaryTextColor.withOpacity(0.4),
+                color: colors.lightTextColor,
                 fontWeight: FontWeight.w400,
               ),
               selectedItemBuilder: (context) {
@@ -107,7 +107,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                   child: Icon(
                     Icons.keyboard_arrow_down_rounded,
                     size: 22,
-                    color: colors.primaryTextColor.withOpacity(0.8),
+                    color: colors.primaryTextColor,
                   ),
                 ),
               ),
@@ -123,7 +123,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     color: colors.borderColor.withOpacity(0.3),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               ),
               menuItemStyleData: MenuItemStyleData(
                 height: 42,
@@ -149,7 +149,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                                   .withValues(alpha: 0.1)) // ✅ highlighted bg
                           : Colors.transparent,
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.only(top: 10, bottom: 12),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15.0),
                       child: appText(

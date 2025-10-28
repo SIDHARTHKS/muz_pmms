@@ -47,7 +47,7 @@ class CustomRadioButton<T> extends StatelessWidget {
             appText(
               label,
               fontSize: 13,
-              color: appColor.primaryTextColor.withValues(alpha: 0.5),
+              color: appColor.lightTextColor,
               fontWeight: FontWeight.w400,
             ),
             if (isRequired)

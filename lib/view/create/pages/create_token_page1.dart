@@ -154,12 +154,12 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
             appText(
               tokenDescription.tr,
               fontSize: 13,
-              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
+              color: AppColorHelper().lightTextColor,
               fontWeight: FontWeight.w400,
             ),
             appText(
               " *",
-              color: Colors.red,
+              color: AppColorHelper().errorColor,
               fontSize: 18,
             ),
           ],

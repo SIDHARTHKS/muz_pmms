@@ -27,6 +27,7 @@ class AppTheme {
   final Color textColor;
   final Color primaryTextColor;
   final Color secondaryTextColor;
+  final Color lightTextColor;
   final Color buttonTextColor;
   final Color disabledTextColor;
   final Color hintColor;
@@ -81,6 +82,7 @@ class AppTheme {
     required this.textColor,
     required this.primaryTextColor,
     required this.secondaryTextColor,
+    required this.lightTextColor,
     required this.disabledTextColor,
     required this.buttonTextColor,
     required this.hintColor,
@@ -145,6 +147,7 @@ AppTheme _demoDarkTheme() => AppTheme(
       textColor: Colors.white,
       primaryTextColor: Colors.white,
       secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
+      lightTextColor: const Color.fromARGB(255, 224, 224, 224),
       disabledTextColor: Colors.grey[600]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[500]!,
@@ -205,6 +208,7 @@ AppTheme _demoLightTheme() => AppTheme(
       textColor: const Color.fromRGBO(255, 255, 255, 1),
       primaryTextColor: const Color.fromARGB(255, 0, 0, 0),
       secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
+      lightTextColor: const Color.fromRGBO(108, 103, 119, 1),
       disabledTextColor: Colors.grey[400]!,
       buttonTextColor: Colors.white,
       hintColor: const Color.fromARGB(255, 77, 76, 76)!,
@@ -263,6 +267,7 @@ AppTheme _seemattiDarkTheme() => AppTheme(
       textColor: Colors.white,
       primaryTextColor: Colors.white,
       secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
+      lightTextColor: const Color.fromARGB(255, 224, 224, 224),
       disabledTextColor: Colors.grey[600]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[500]!,
@@ -322,6 +327,7 @@ AppTheme _seemattiLightTheme() => AppTheme(
       textColor: Colors.black,
       primaryTextColor: const Color.fromARGB(255, 0, 0, 0),
       secondaryTextColor: const Color.fromRGBO(100, 77, 221, 1),
+      lightTextColor: const Color.fromRGBO(108, 103, 119, 1),
       disabledTextColor: Colors.grey[400]!,
       buttonTextColor: Colors.white,
       hintColor: Colors.grey[600]!,

@@ -19,6 +19,7 @@ class AppColorHelper {
   Color get textColor => _currentTheme.textColor;
   Color get primaryTextColor => _currentTheme.primaryTextColor;
   Color get secondaryTextColor => _currentTheme.secondaryTextColor;
+  Color get lightTextColor => _currentTheme.lightTextColor;
   Color get buttonTextColor => _currentTheme.buttonTextColor;
   Color get disabledTextColor => _currentTheme.disabledTextColor;
   Color get hintColor => _currentTheme.hintColor;
