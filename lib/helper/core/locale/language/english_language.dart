@@ -123,4 +123,5 @@ Map<String, String> enUS = {
   generateTokenNow: 'Would you like to generate the toke nnow?',
   generateTokenNowDialogue:
       'Some optional fields are still empty — you can fill them later if needed.',
+  applyDate: 'Apply Date',
 };

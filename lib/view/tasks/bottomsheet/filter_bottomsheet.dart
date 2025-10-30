@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/date_helper.dart';
+import 'package:pmms/view/widget/datepicker/custom_daterangepicker.dart';
 import '../../../helper/color_helper.dart';
 import '../../../helper/navigation.dart';
 import '../../../helper/sizer.dart';
@@ -164,25 +166,46 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
               fontSize: 14,
               color: AppColorHelper().primaryTextColor.withValues(alpha: 0.65)),
           height(15),
-          Container(
-            decoration: BoxDecoration(
-              color: appColor.cardColor,
-              borderRadius: BorderRadius.circular(10),
-              border:
-                  Border.all(color: appColor.borderColor.withValues(alpha: 0)),
-            ),
-            child: Row(
-              children: [
-                Image.asset(
-                  Assets.icons.calander.path,
-                  scale: 3.6,
+          GestureDetector(
+            onTap: () async {
+              final selectedRange = await showCustomDateRangePicker(
+                context,
+                primaryColor: AppColorHelper().primaryColor,
+                backgroundColor: AppColorHelper().cardColor,
+                textColor: AppColorHelper().primaryTextColor,
+                initialRange: DateTimeRange(
+                  start: controller.selectedDateRange!.start,
+                  end: controller.selectedDateRange!.end,
                 ),
-                width(15),
-                appText("01 August 2025  -  31 September 2025",
-                    color: appColor.primaryTextColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ],
+              );
+
+              if (selectedRange != null) {
+                setState(() {
+                  controller.selectedDateRange = selectedRange;
+                });
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: appColor.cardColor,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: appColor.borderColor.withValues(alpha: 0)),
+              ),
+              child: Row(
+                children: [
+                  Image.asset(
+                    Assets.icons.calander.path,
+                    scale: 3.6,
+                  ),
+                  width(15),
+                  appText(
+                      "${DateHelper().formatDate(controller.selectedDateRange!.start)}  -  ${DateHelper().formatDate(controller.selectedDateRange!.end)}", //"01 August 2025  -  31 September 2025"
+                      color: appColor.primaryTextColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                ],
+              ),
             ),
           ),
 

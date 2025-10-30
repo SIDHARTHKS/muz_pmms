@@ -31,6 +31,10 @@ class DateHelper {
     }
   }
 
+  String formatDate(DateTime date) {
+    return DateFormat('dd MMMM yyyy').format(date);
+  }
+
   static String convertDateString({
     required String dateString,
     String? inputFormat,

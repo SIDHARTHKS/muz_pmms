@@ -176,13 +176,11 @@ const String createtoken = 'createtoken';
 const String generate = 'generate';
 const String generateToken = 'generateToken';
 const String viewToken = 'View this token';
-
 const String project = 'project';
 const String requestType = 'requestType';
 const String letsstartwiththebasics = 'let’sstartwiththebasics';
 const String createTokenDialogue =
     'Please select the suitable category where this token should be placed for proper organization.';
-
 const String tokenDescription = 'tokenDescription';
 const String description = 'description';
 const String addMoreDescription = 'addMoreDescriptions';
@@ -202,7 +200,7 @@ const String successfully = 'Successfully';
 const String yournewtoken = 'Yournewtoken';
 const String hasbeengeneratedsuccessfully = 'hasbeengeneratedsuccessfully';
 const String fillRemainingFields = 'fillRemainingFields';
-
 const String generateTokenNow = 'wouldyouliketogeneratethetokennow?';
 const String generateTokenNowDialogue =
     'Some optional fields are still empty — you can fill them later if needed.';
+const String applyDate = 'ApplyDate';

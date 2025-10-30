@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
@@ -10,6 +10,9 @@ class TasksController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   //
   final isInitCalled = false.obs;
+
+  // date
+  DateTimeRange? selectedDateRange;
 
   // searchbar
   TextEditingController searchController = TextEditingController();
@@ -30,7 +33,15 @@ class TasksController extends AppBaseController
     // await _setArguments();
     isInitCalled(true);
     setDefaultFilters();
+    setDateRange();
     super.onInit();
+  }
+
+  void setDateRange() {
+    selectedDateRange = DateTimeRange(
+      start: DateTime.now(), // today
+      end: DateTime.now().add(const Duration(days: 7)), // 7 days from today
+    );
   }
 
   void setDefaultFilters() {

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
-import 'package:pmms/view/widget/text/app_text.dart';
-import 'package:table_calendar/table_calendar.dart'; // Add this package
+import 'package:pmms/view/widget/datepicker/mini_calander.dart';
+
+import '../../../helper/navigation.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final String label;
@@ -15,7 +18,6 @@ class CustomDatePicker extends StatefulWidget {
   final String? hintText;
   final double? widgetHeight;
 
-  // Additional customization
   final ButtonStyle? okButtonStyle;
   final ButtonStyle? cancelButtonStyle;
   final TextStyle? dateTextStyle;
@@ -43,14 +45,11 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   bool _isOpen = false;
   late TextEditingController _controller;
   DateTime? _pickedDate;
-  DateTime _focusedDay =
-      DateTime.now(); // Add this in your _CustomDatePickerState
 
   @override
   void initState() {
     super.initState();
     _pickedDate = widget.selectedDate;
-    _focusedDay = widget.selectedDate ?? DateTime.now(); // initialize
     _controller = TextEditingController(
       text: _pickedDate != null
           ? DateFormat('dd/MM/yyyy').format(_pickedDate!)
@@ -58,15 +57,73 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     );
   }
 
-  @override
-  void didUpdateWidget(covariant CustomDatePicker oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.selectedDate != oldWidget.selectedDate) {
-      _pickedDate = widget.selectedDate;
-      _controller.text = widget.selectedDate != null
-          ? DateFormat('dd/MM/yyyy').format(widget.selectedDate!)
-          : '';
-    }
+  Future<void> _openCalendarSheet(BuildContext context) async {
+    setState(() => _isOpen = true);
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        final colors = AppColorHelper();
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: colors.cardColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // --- Header
+              height(12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    appText(
+                      "Choose Date",
+                      color: colors.primaryTextColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                    ),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColorHelper().primaryColor),
+                      child: iconWidget(Icons.close,
+                          color: AppColorHelper().textColor, onPressed: goBack),
+                    ),
+                  ],
+                ),
+              ),
+
+              // --- Mini Calendar
+              MiniCalander(
+                initialDate: _pickedDate,
+                primaryColor: colors.primaryColor,
+                backgroundColor: colors.cardColor,
+                textColor: colors.primaryTextColor,
+                onDateSelected: (date) {
+                  setState(() {
+                    _pickedDate = date;
+                    _controller.text =
+                        DateFormat('dd/MM/yyyy').format(_pickedDate!);
+                  });
+                  widget.onDateChanged(date);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    setState(() => _isOpen = false);
   }
 
   @override
@@ -89,14 +146,14 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             if (widget.isRequired)
               appText(
                 " *",
-                color: Colors.red,
+                color: colors.errorColor,
                 fontSize: 18,
               ),
           ],
         ),
         height(2),
 
-        // Date Field Box
+        // Date Box
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
@@ -122,12 +179,11 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                 : [],
           ),
           child: InkWell(
-            onTap: () => _showCustomCalendar(context),
+            onTap: () => _openCalendarSheet(context),
             borderRadius: BorderRadius.circular(4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Date text or hint
                 appText(
                   _controller.text.isNotEmpty
                       ? _controller.text
@@ -138,8 +194,6 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
-
-                // Calendar icon with animation
                 AnimatedRotation(
                   turns: _isOpen ? 0.5 : 0,
                   duration: const Duration(milliseconds: 200),
@@ -154,153 +208,5 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         ),
       ],
     );
-  }
-
-  void _showCustomCalendar(BuildContext context) async {
-    setState(() => _isOpen = true);
-    final colors = AppColorHelper();
-
-    DateTime? tempPickedDate = _pickedDate;
-    DateTime tempFocusedDay = _focusedDay;
-
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colors.cardColor,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TableCalendar(
-                    firstDay: DateTime(2000),
-                    lastDay: DateTime(2100),
-                    focusedDay: tempFocusedDay,
-                    selectedDayPredicate: (day) =>
-                        isSameDay(tempPickedDate, day),
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setModalState(() {
-                        tempPickedDate = selectedDay;
-                        tempFocusedDay = focusedDay;
-                      });
-                    },
-                    headerStyle: HeaderStyle(
-                      headerMargin: const EdgeInsets.only(bottom: 25.0),
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      titleTextStyle: textStyle(
-                        15,
-                        colors.textColor,
-                        FontWeight.w600,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colors.primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      leftChevronIcon:
-                          Icon(Icons.chevron_left, color: colors.cardColor),
-                      rightChevronIcon:
-                          Icon(Icons.chevron_right, color: colors.cardColor),
-                    ),
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: colors.primaryColor.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: colors.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      defaultTextStyle:
-                          TextStyle(color: colors.primaryTextColor),
-                      weekendTextStyle:
-                          TextStyle(color: colors.primaryTextColor),
-                    ),
-                  ),
-                  height(16),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // Cancel Button
-                        TextButton(
-                          style: widget.cancelButtonStyle ??
-                              TextButton.styleFrom(
-                                foregroundColor: colors.primaryColor,
-                                backgroundColor: AppColorHelper()
-                                    .primaryColor
-                                    .withValues(alpha: 0.1),
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: AppColorHelper()
-                                          .primaryColor
-                                          .withValues(alpha: 0.9)),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: appText("Cancel",
-                                fontWeight: FontWeight.w500,
-                                color: AppColorHelper().primaryColor),
-                          ),
-                        ),
-                        width(8),
-                        // OK Button
-                        ElevatedButton(
-                          style: widget.okButtonStyle ??
-                              ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: colors.primaryColor,
-                                foregroundColor: colors.cardColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                          onPressed: () {
-                            if (tempPickedDate != null) {
-                              setState(() {
-                                _pickedDate = tempPickedDate;
-                                _focusedDay = tempFocusedDay;
-                                _controller.text = DateFormat('dd/MM/yyyy')
-                                    .format(_pickedDate!);
-                              });
-                              widget.onDateChanged(_pickedDate);
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: appText("OK",
-                                color: AppColorHelper().textColor,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    setState(() => _isOpen = false);
   }
 }
