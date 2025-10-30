@@ -48,7 +48,6 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     return GestureDetector(
       onTap: () => _toggleSelection(group, option),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 7.5),
         child: Row(
           children: [
             AnimatedContainer(
@@ -222,26 +221,28 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
 
           // Apply Button
           height(10),
-          buttonContainer(
-            color: appColor.primaryColor,
-            appText("Apply Filters",
-                fontWeight: FontWeight.w500, color: AppColorHelper().textColor),
-            onPressed: () {
-              controller.rxSelectedTokenTypes
-                  .assignAll(selectedItems["Token Type"]!);
-              controller.rxSelectedProjects
-                  .assignAll(selectedItems["Project"]!);
-              controller.rxSelectedPriority
-                  .assignAll(selectedItems["Priority"]!);
-              controller.rxSelectedRequestTypes
-                  .assignAll(selectedItems["Request Type"]!);
+          SafeArea(
+            child: buttonContainer(
+              color: appColor.primaryColor,
+              appText("Apply Filters",
+                  fontWeight: FontWeight.w500,
+                  color: AppColorHelper().textColor),
+              onPressed: () {
+                controller.rxSelectedTokenTypes
+                    .assignAll(selectedItems["Token Type"]!);
+                controller.rxSelectedProjects
+                    .assignAll(selectedItems["Project"]!);
+                controller.rxSelectedPriority
+                    .assignAll(selectedItems["Priority"]!);
+                controller.rxSelectedRequestTypes
+                    .assignAll(selectedItems["Request Type"]!);
 
-              goBack();
-            },
-            height: 42,
-            width: double.infinity,
+                goBack();
+              },
+              height: 42,
+              width: double.infinity,
+            ),
           ),
-          height(5),
         ],
       ),
     );

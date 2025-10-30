@@ -33,6 +33,7 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
       child: appScaffold(
         appBar: customAppBar(createtoken.tr),
         body: appContainer(
+          enableSafeArea: true,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Obx(() {
@@ -46,7 +47,7 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                   Expanded(
                       child: controller
                           .pageList[controller.rxCurrentPageIndex.value]),
-                  _navButtons()
+                  _navButtons(),
                 ],
               );
             }),
@@ -56,81 +57,84 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
     );
   }
 
-  SizedBox _navButtons() {
+  Padding _navButtons() {
     bool showBack = controller.rxCurrentPageIndex.value > 0;
     bool isLast =
         controller.rxCurrentPageIndex.value == controller.pageList.length - 1;
 
-    return SizedBox(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          showBack
-              ? buttonContainer(
-                  borderColor:
-                      AppColorHelper().borderColor.withValues(alpha: 0.4),
-                  color: AppColorHelper().cardColor.withValues(alpha: 0.9),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Image.asset(
-                      Assets.icons.back.path,
-                      scale: 3.5,
-                    ),
-                  ), onPressed: () {
-                  controller.nextPage(false);
-                })
-              : width(0),
-          Row(
-            children: [
-              isLast
-                  ? buttonContainer(
-                      width: 195,
-                      color: AppColorHelper().primaryColor,
-                      appText(generateToken.tr,
-                          color: AppColorHelper().textColor,
-                          fontWeight: FontWeight.w500), onPressed: () async {
-                      await showDialog(
-                        context: Get.context!,
-                        barrierDismissible: true,
-                        builder: (_) => const TokenGenerateDialogue(
-                          id: "TKN -782",
-                        ),
-                      );
-                      controller.rxCurrentPageIndex(0);
-                      navigateToAndRemove(homePageRoute);
-                    })
-                  : Row(
-                      children: [
-                        buttonContainer(
-                            borderColor: AppColorHelper().primaryColor,
-                            color: AppColorHelper()
-                                .primaryColor
-                                .withValues(alpha: 0.1),
-                            appText(generate.tr,
-                                color: AppColorHelper().secondaryTextColor,
-                                fontWeight: FontWeight.w500),
-                            onPressed: () async {
-                          await showModalBottomSheet(
-                              context: Get.context!,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) =>
-                                  const GenerateTokenBottomsheet());
-                        }),
-                        width(15),
-                        buttonContainer(
-                            width: 90,
-                            color: AppColorHelper().primaryColor,
-                            appText(next.tr,
-                                color: AppColorHelper().textColor,
-                                fontWeight: FontWeight.w500), onPressed: () {
-                          controller.nextPage(true);
-                        }),
-                      ],
-                    )
-            ],
-          )
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            showBack
+                ? buttonContainer(
+                    borderColor:
+                        AppColorHelper().borderColor.withValues(alpha: 0.4),
+                    color: AppColorHelper().cardColor.withValues(alpha: 0.9),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Image.asset(
+                        Assets.icons.back.path,
+                        scale: 3.5,
+                      ),
+                    ), onPressed: () {
+                    controller.nextPage(false);
+                  })
+                : width(0),
+            Row(
+              children: [
+                isLast
+                    ? buttonContainer(
+                        width: 195,
+                        color: AppColorHelper().primaryColor,
+                        appText(generateToken.tr,
+                            color: AppColorHelper().textColor,
+                            fontWeight: FontWeight.w500), onPressed: () async {
+                        await showDialog(
+                          context: Get.context!,
+                          barrierDismissible: true,
+                          builder: (_) => const TokenGenerateDialogue(
+                            id: "TKN -782",
+                          ),
+                        );
+                        controller.rxCurrentPageIndex(0);
+                        navigateToAndRemove(homePageRoute);
+                      })
+                    : Row(
+                        children: [
+                          buttonContainer(
+                              borderColor: AppColorHelper().primaryColor,
+                              color: AppColorHelper()
+                                  .primaryColor
+                                  .withValues(alpha: 0.1),
+                              appText(generate.tr,
+                                  color: AppColorHelper().secondaryTextColor,
+                                  fontWeight: FontWeight.w500),
+                              onPressed: () async {
+                            await showModalBottomSheet(
+                                context: Get.context!,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) =>
+                                    const GenerateTokenBottomsheet());
+                          }),
+                          width(15),
+                          buttonContainer(
+                              width: 90,
+                              color: AppColorHelper().primaryColor,
+                              appText(next.tr,
+                                  color: AppColorHelper().textColor,
+                                  fontWeight: FontWeight.w500), onPressed: () {
+                            controller.nextPage(true);
+                          }),
+                        ],
+                      )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -238,60 +238,63 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
     );
   }
 
-  Container _bottomButtons() {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 40, left: 15, right: 15),
-      child: Row(
-        children: [
-          Expanded(
-            child: buttonContainer(
-              height: 42,
-              color: AppColorHelper().cardColor,
-              borderColor: AppColorHelper().borderColor.withValues(alpha: 0.3),
-              onPressed: () {
-                showDialog(
-                  context: Get.context!,
-                  barrierDismissible: true,
-                  builder: (_) => const RejectedDialogue(),
-                );
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (Navigator.canPop(Get.context!)) {
-                    Navigator.of(Get.context!).pop();
-                  }
-                });
-              },
-              appText(
-                reject.tr,
-                color: AppColorHelper().primaryTextColor,
-                fontWeight: FontWeight.w500,
+  SafeArea _bottomButtons() {
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
+        child: Row(
+          children: [
+            Expanded(
+              child: buttonContainer(
+                height: 42,
+                color: AppColorHelper().cardColor,
+                borderColor:
+                    AppColorHelper().borderColor.withValues(alpha: 0.3),
+                onPressed: () {
+                  showDialog(
+                    context: Get.context!,
+                    barrierDismissible: true,
+                    builder: (_) => const RejectedDialogue(),
+                  );
+                  Future.delayed(const Duration(seconds: 1), () {
+                    if (Navigator.canPop(Get.context!)) {
+                      Navigator.of(Get.context!).pop();
+                    }
+                  });
+                },
+                appText(
+                  reject.tr,
+                  color: AppColorHelper().primaryTextColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          width(12),
-          Expanded(
-            child: buttonContainer(
-              height: 42,
-              color: AppColorHelper().primaryColor.withValues(alpha: 0.9),
-              onPressed: () {
-                showDialog(
-                  context: Get.context!,
-                  barrierDismissible: true,
-                  builder: (_) => const SuccessDialogue(),
-                );
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (Navigator.canPop(Get.context!)) {
-                    Navigator.of(Get.context!).pop();
-                  }
-                });
-              },
-              appText(
-                approve.tr,
-                color: AppColorHelper().textColor,
-                fontWeight: FontWeight.w500,
+            width(12),
+            Expanded(
+              child: buttonContainer(
+                height: 42,
+                color: AppColorHelper().primaryColor.withValues(alpha: 0.9),
+                onPressed: () {
+                  showDialog(
+                    context: Get.context!,
+                    barrierDismissible: true,
+                    builder: (_) => const SuccessDialogue(),
+                  );
+                  Future.delayed(const Duration(seconds: 1), () {
+                    if (Navigator.canPop(Get.context!)) {
+                      Navigator.of(Get.context!).pop();
+                    }
+                  });
+                },
+                appText(
+                  approve.tr,
+                  color: AppColorHelper().textColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

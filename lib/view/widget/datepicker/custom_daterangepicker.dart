@@ -332,25 +332,27 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
         ),
 
         // Buttons
-        Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 25),
-          child: Row(
-            children: [
-              Expanded(
-                child: buttonContainer(
-                  color: AppColorHelper().primaryColor,
-                  onPressed: (_startDate != null && _endDate != null)
-                      ? () {
-                          final range =
-                              DateTimeRange(start: _startDate!, end: _endDate!);
-                          widget.onRangeSelected(range);
-                          Navigator.pop(context);
-                        }
-                      : null,
-                  appText(applyDate.tr, fontWeight: FontWeight.w500),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: buttonContainer(
+                    color: AppColorHelper().primaryColor,
+                    onPressed: (_startDate != null && _endDate != null)
+                        ? () {
+                            final range = DateTimeRange(
+                                start: _startDate!, end: _endDate!);
+                            widget.onRangeSelected(range);
+                            Navigator.pop(context);
+                          }
+                        : null,
+                    appText(applyDate.tr, fontWeight: FontWeight.w500),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
