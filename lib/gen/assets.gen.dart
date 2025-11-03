@@ -45,6 +45,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/dummyBg1.jpg
+  AssetGenImage get dummyBg1 =>
+      const AssetGenImage('assets/images/dummyBg1.jpg');
+
   /// File path: assets/images/generate token.png
   AssetGenImage get generateToken =>
       const AssetGenImage('assets/images/generate token.png');
@@ -56,8 +60,17 @@ class $AssetsImagesGen {
   AssetGenImage get muziriswhite =>
       const AssetGenImage('assets/images/muziriswhite.png');
 
+  /// File path: assets/images/splashBg1.png
+  AssetGenImage get splashBg1 =>
+      const AssetGenImage('assets/images/splashBg1.png');
+
+  /// File path: assets/images/splashBg2.png
+  AssetGenImage get splashBg2 =>
+      const AssetGenImage('assets/images/splashBg2.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [generateToken, muziris, muziriswhite];
+  List<AssetGenImage> get values =>
+      [dummyBg1, generateToken, muziris, muziriswhite, splashBg1, splashBg2];
 }
 
 class Assets {

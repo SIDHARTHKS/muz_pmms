@@ -204,3 +204,4 @@ const String generateTokenNow = 'wouldyouliketogeneratethetokennow?';
 const String generateTokenNowDialogue =
     'Some optional fields are still empty — you can fill them later if needed.';
 const String applyDate = 'ApplyDate';
+const String applyDates = 'ApplyDates';

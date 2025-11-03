@@ -134,7 +134,7 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               appText(
-                "Choose Date",
+                "Choose Dates",
                 fontSize: 17,
                 color: AppColorHelper().primaryTextColor,
                 fontWeight: FontWeight.w600,
@@ -174,11 +174,14 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     height(4),
-                    appText(
-                      DateFormat.yMMMM().format(month),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: widget.textColor,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: appText(
+                        DateFormat.yMMMM().format(month),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: widget.textColor,
+                      ),
                     ),
                     height(15),
 
@@ -207,11 +210,11 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                               ))
                           .toList(),
                     ),
+                    height(3),
                     divider(
                         color: AppColorHelper()
                             .dividerColor
                             .withValues(alpha: 0.15)),
-                    height(6),
 
                     // Weeks
                     Column(
@@ -227,18 +230,26 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                                 final isEnd = _endDate != null &&
                                     _isSameDay(day, _endDate!);
 
-                                // Decide border radius for first and last in-range days of the week
+                                // Determine if this day is first or last in the week
+                                final isFirstInRow = week.indexOf(day) == 0;
+                                final isLastInRow =
+                                    week.indexOf(day) == week.length - 1;
+
+                                // Decide border radius
                                 BorderRadius radius = BorderRadius.zero;
+
                                 if (isStart && isEnd) {
-                                  radius = BorderRadius.circular(8);
-                                } else if (isStart) {
+                                  radius = BorderRadius.circular(4);
+                                } else if (isStart ||
+                                    (isInRange && isFirstInRow)) {
+                                  // Round on the left if start of range or start of row
                                   radius = const BorderRadius.horizontal(
-                                      left: Radius.circular(100));
-                                } else if (isEnd) {
+                                      left: Radius.circular(4));
+                                } else if (isEnd ||
+                                    (isInRange && isLastInRow)) {
+                                  // Round on the right if end of range or end of row
                                   radius = const BorderRadius.horizontal(
-                                      right: Radius.circular(100));
-                                } else if (isInRange) {
-                                  radius = BorderRadius.zero;
+                                      right: Radius.circular(4));
                                 }
 
                                 //top container
@@ -246,17 +257,17 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                                 return Expanded(
                                   child: Container(
                                     margin: EdgeInsets.only(
-                                        top: 5.0,
+                                        top: 4.0,
                                         bottom: 5.0,
                                         left: isStart ? 8.0 : 0.0,
                                         right: isEnd ? 8.0 : 0.0),
-                                    height: 35,
+                                    height: 37,
                                     decoration: BoxDecoration(
                                       color: ((isStart || isEnd || isInRange) &&
                                               _startDate != null &&
                                               _endDate != null)
                                           ? widget.primaryColor
-                                              .withOpacity(0.25)
+                                              .withOpacity(0.16)
                                           : Colors.transparent,
                                       borderRadius: radius,
                                     ),
@@ -268,8 +279,7 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                             // Day squares with start/end rounded corners
                             Row(
                               children: week.map((day) {
-                                final isSameMonth =
-                                    day.month == _currentMonth.month;
+                                final isSameMonth = day.month == month.month;
                                 final isStart = _startDate != null &&
                                     _isSameDay(day, _startDate!);
                                 final isEnd = _endDate != null &&
@@ -278,9 +288,7 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                                 return Expanded(
                                   child: Center(
                                     child: GestureDetector(
-                                      onTap: isSameMonth
-                                          ? () => _onDayTap(day)
-                                          : null,
+                                      onTap: () => _onDayTap(day),
                                       child: Container(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 4.0),
@@ -334,7 +342,10 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
         // Buttons
         SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+            padding: const EdgeInsets.only(
+              left: 15,
+              right: 15,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -348,7 +359,7 @@ class _CustomDateRangePickerState extends State<CustomDaterangepicker> {
                             Navigator.pop(context);
                           }
                         : null,
-                    appText(applyDate.tr, fontWeight: FontWeight.w500),
+                    appText(applyDates.tr, fontWeight: FontWeight.w500),
                   ),
                 ),
               ],

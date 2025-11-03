@@ -58,6 +58,7 @@ class GenerateTokenBottomsheet extends StatelessWidget {
                 generateTokenNowDialogue.tr,
                 color: AppColorHelper().primaryTextColor,
                 fontSize: 13,
+                height: 1.6,
                 fontWeight: FontWeight.w500),
           ),
           height(30),

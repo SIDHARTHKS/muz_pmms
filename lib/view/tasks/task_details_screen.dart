@@ -7,6 +7,8 @@ import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/sizer.dart';
+import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/view/tasks/bottomsheet/edit_bottomsheet.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import '../dialogues/rejected_dialogue.dart';
 import '../dialogues/success_dialogue.dart';
@@ -190,11 +192,18 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                           .dividerColor
                           .withValues(alpha: 0.14)),
                   height(20),
-                  _editableDetails("Project", task.project),
-                  _editableDetails("Team", task.team),
-                  _editableDetails("Module", task.module),
-                  _editableDetails("Option", task.option),
-                  _editableDetails("Assignee", task.assignee),
+                  _editableDetails(
+                      "Project",
+                      task.project,
+                      controller
+                          .projectList), ///////////////////////use id when response is available
+                  _editableDetails("Team", task.team, controller.teamList),
+                  _editableDetails(
+                      "Module", task.module, controller.moduleList),
+                  _editableDetails(
+                      "Option", task.option, controller.optionList),
+                  _editableDetails(
+                      "Assignee", task.assignee, controller.assigneeList),
                   SizedBox(
                     width: Get.width,
                     child: Column(
@@ -299,7 +308,15 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
     );
   }
 
-  Padding _editableDetails(String title, String subtitle) {
+  Padding _editableDetails(
+      String title, String subtitle, List<CommonDropdownResponse> list) {
+    CommonDropdownResponse selected = CommonDropdownResponse();
+    for (var i in list) {
+      if (i.mccName!.toLowerCase() == subtitle.toLowerCase()) {
+        selected = i;
+        break;
+      }
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: SizedBox(
@@ -320,10 +337,30 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                     fontWeight: FontWeight.w500)
               ],
             ),
-            Image.asset(
-              Assets.icons.edit.path,
-              height: 18,
-              width: 18,
+            GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: Get.context!,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: EditBottomsheet(
+                        label: title,
+                        list: list,
+                        selectedItem: selected,
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Image.asset(
+                Assets.icons.edit.path,
+                height: 18,
+                width: 18,
+              ),
             )
           ],
         ),

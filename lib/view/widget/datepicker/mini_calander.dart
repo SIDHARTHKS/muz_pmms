@@ -82,118 +82,136 @@ class _CustomMiniCalendarState extends State<MiniCalander> {
         children: [
           height(10),
           // --- Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.chevron_left,
-                  color: widget.textColor,
-                  size: 25,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 0), // optional
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(
+                    Icons.chevron_left,
+                    color: widget.textColor,
+                    size: 26,
+                  ),
+                  onPressed: _goToPreviousMonth,
                 ),
-                onPressed: _goToPreviousMonth,
-              ),
-              appText(
-                monthName,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: widget.textColor,
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.chevron_right,
+                appText(
+                  monthName,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
                   color: widget.textColor,
-                  size: 25,
                 ),
-                onPressed: _goToNextMonth,
-              ),
-            ],
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(
+                    Icons.chevron_right,
+                    color: widget.textColor,
+                    size: 26,
+                  ),
+                  onPressed: _goToNextMonth,
+                ),
+              ],
+            ),
           ),
 
           height(8),
 
           // --- Weekdays Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                .map(
-                  (e) => Expanded(
-                    child: Center(
-                      child: appText(
-                        e,
-                        color: widget.textColor.withOpacity(0.4),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                  .map(
+                    (e) => Expanded(
+                      child: Center(
+                        child: appText(
+                          e,
+                          color: widget.textColor.withOpacity(0.4),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
           ),
-          divider(color: colors.borderColor.withValues(alpha: 0.3)),
+          height(3),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: divider(color: colors.borderColor.withValues(alpha: 0.3)),
+          ),
 
           // --- Days Grid
-          GridView.builder(
-            padding: const EdgeInsets.only(bottom: 12),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                crossAxisSpacing: 0,
-                mainAxisSpacing: 0,
-                childAspectRatio: 1.3),
-            itemCount: days.length,
-            itemBuilder: (context, index) {
-              final day = days[index];
-              final isSelected = _selectedDate != null &&
-                  day.year == _selectedDate!.year &&
-                  day.month == _selectedDate!.month &&
-                  day.day == _selectedDate!.day;
-              final isToday = DateUtils.isSameDay(day, DateTime.now());
-              final isCurrentMonth = day.month == _focusedMonth.month;
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0),
+            child: GridView.builder(
+              padding: const EdgeInsets.only(bottom: 12, top: 0),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0,
+                  childAspectRatio: 1.3),
+              itemCount: days.length,
+              itemBuilder: (context, index) {
+                final day = days[index];
+                final isSelected = _selectedDate != null &&
+                    day.year == _selectedDate!.year &&
+                    day.month == _selectedDate!.month &&
+                    day.day == _selectedDate!.day;
+                final isToday = DateUtils.isSameDay(day, DateTime.now());
+                final isCurrentMonth = day.month == _focusedMonth.month;
 
-              Color bgColor = Colors.transparent;
-              Color textColor = widget.textColor;
+                Color bgColor = Colors.transparent;
+                Color textColor = widget.textColor;
 
-              if (isSelected) {
-                bgColor = widget.primaryColor;
-                textColor = Colors.white;
-              } else if (isToday) {
-                bgColor = widget.primaryColor.withOpacity(0.1);
-              }
+                if (isSelected) {
+                  bgColor = widget.primaryColor;
+                  textColor = Colors.white;
+                } else if (isToday) {
+                  bgColor = widget.primaryColor.withOpacity(0.1);
+                }
 
-              return GestureDetector(
-                onTap: () {
-                  if (isCurrentMonth) {
-                    setState(() {
-                      _selectedDate = day;
-                    });
-                  }
-                },
-                child: Center(
-                  child: Container(
-                    // 👇 smaller selection circle/box
-                    width: 37, // adjust to make selection smaller
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: BorderRadius.circular(4), // shape control
-                    ),
-                    child: Center(
-                      child: appText(
-                        '${day.day}',
-                        color: isCurrentMonth
-                            ? textColor
-                            : widget.textColor.withOpacity(0.4),
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w500,
-                        fontSize: 12,
+                return GestureDetector(
+                  onTap: () {
+                    if (isCurrentMonth) {
+                      setState(() {
+                        _selectedDate = day;
+                      });
+                    }
+                  },
+                  child: Center(
+                    child: Container(
+                      // 👇 smaller selection circle/box
+                      width: 37, // adjust to make selection smaller
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        borderRadius: BorderRadius.circular(4), // shape control
+                      ),
+                      child: Center(
+                        child: appText(
+                          '${day.day}',
+                          color: isCurrentMonth
+                              ? textColor
+                              : widget.textColor.withOpacity(0.4),
+                          fontWeight:
+                              isSelected ? FontWeight.w600 : FontWeight.w500,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
 
           // --- OK Button
@@ -203,11 +221,11 @@ class _CustomMiniCalendarState extends State<MiniCalander> {
               width: double.infinity,
               child: buttonContainer(
                 color: AppColorHelper().primaryColor,
-                onPressed: () {
-                  _selectedDate == null
-                      ? null
-                      : () => widget.onDateSelected(_selectedDate!);
-                },
+                onPressed: _selectedDate == null
+                    ? null
+                    : () {
+                        widget.onDateSelected(_selectedDate!);
+                      },
                 appText(
                   applyDate.tr,
                   fontWeight: FontWeight.w500,

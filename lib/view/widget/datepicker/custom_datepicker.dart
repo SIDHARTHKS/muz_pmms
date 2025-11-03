@@ -67,7 +67,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
       builder: (_) {
         final colors = AppColorHelper();
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: colors.cardColor,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
@@ -78,7 +78,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               // --- Header
               height(12),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -2,16 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
+import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/sizer.dart';
 import '../../controller/splash_controller.dart';
-import '../../gen/assets.gen.dart';
 import '../../helper/app_string.dart';
-import '../../helper/color_helper.dart';
 import '../../helper/core/base/app_base_view.dart';
 import '../../helper/core/environment/env.dart';
 import '../../helper/navigation.dart';
 import '../../helper/route.dart';
-import '../../helper/sizer.dart';
 import '../widget/common_widget.dart';
 
 class SplashScreen extends AppBaseView<SplashController> {
@@ -22,7 +20,6 @@ class SplashScreen extends AppBaseView<SplashController> {
 
   Scaffold _widgetView() => appScaffold(
         topSafe: false,
-        bottomNavigationBar: muzBottomLogo(),
         body: appFutureBuilder<int>(
           () => controller.fetchUserProfile(),
           (context, snapshot) {
@@ -56,50 +53,68 @@ class SplashScreen extends AppBaseView<SplashController> {
         ),
       );
 
-  SizedBox _loaderWidget() => appContainer(
-        enableSafeArea: false,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColorHelper().primaryColor,
-            // image: DecorationImage(
-            //   image: AssetImage(Assets.images.backgrnd.path),
-            //   fit: BoxFit.cover,
-            //   opacity: 0.1,
-            // ),
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned(top: 100, left: 0, right: 0, child: logoImage()),
-              Center(child: loader()),
-              height(40),
-              Positioned(
-                bottom: 300,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    appText(
-                      settings.tr,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColorHelper().textColor,
-                    ),
-                    height(5),
-                    appText(
-                      settings.tr,
-                      textAlign: TextAlign.center,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColorHelper().textColor,
-                    ),
-                  ],
+  Widget _loaderWidget() => Obx(() {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            //first image
+            Image.asset(
+              Assets.images.splashBg1.path,
+              fit: BoxFit.cover,
+            ),
+
+            // second image fade
+            AnimatedOpacity(
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOut,
+              opacity: controller.rxShowSecondImage.value ? 1.0 : 0.0,
+              child: Image.asset(
+                Assets.images.splashBg2.path,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            Align(
+              alignment: const Alignment(0, -0.1),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.easeInOut,
+                opacity: controller.rxShowSecondImage.value ? 1.0 : 0.0,
+                child: muzirisLogo(),
+              ),
+            ),
+
+            Align(
+              alignment: const Alignment(0, 1),
+              child: SizedBox(
+                height: Get.height * 0.48,
+                child: SlideTransition(
+                  position: controller.textSlide,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      appText(
+                        "Initializing your workspace",
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        textAlign: TextAlign.center,
+                      ),
+                      height(4),
+                      appText(
+                        "Please wait...",
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ),
-        ),
-      );
+              ),
+            ),
+          ],
+        );
+      });
 
   void _openAppUpdateDialog() {
     showDialog(

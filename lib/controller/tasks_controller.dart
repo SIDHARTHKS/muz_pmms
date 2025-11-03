@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/model/dropdown_model.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
@@ -78,12 +79,62 @@ class TasksController extends AppBaseController
   // filters
 
   List<String> tokenTypes = ['Pending', 'Approved', 'Rejected', 'In Progress'];
-  List<String> projects = [
-    'General',
-    'JuelIS V2',
-    'Payroll',
-    'MRetail - Pulimoottil',
-    'MRetail - Seematti'
+
+  final List<CommonDropdownResponse> projectList = [
+    CommonDropdownResponse(mccId: '1', mccCode: 'GEN', mccName: 'General'),
+    CommonDropdownResponse(
+        mccId: '2', mccCode: 'JUELISV2', mccName: 'JuelIS V2'),
+    CommonDropdownResponse(mccId: '3', mccCode: 'PAYROLL', mccName: 'Payroll'),
+    CommonDropdownResponse(
+        mccId: '4', mccCode: 'MRETAILP', mccName: 'MRetail - Pulimoottil'),
+    CommonDropdownResponse(
+        mccId: '5', mccCode: 'MRETAILS', mccName: 'MRetail - Seematti'),
+  ];
+
+  // 👥 Team List
+  final List<CommonDropdownResponse> teamList = [
+    CommonDropdownResponse(mccId: '1', mccCode: 'DEV', mccName: 'Development'),
+    CommonDropdownResponse(mccId: '2', mccCode: 'QA', mccName: 'Service'),
+    CommonDropdownResponse(mccId: '3', mccCode: 'SUP', mccName: 'Support'),
+    CommonDropdownResponse(mccId: '4', mccCode: 'OPS', mccName: 'Operations'),
+    CommonDropdownResponse(
+        mccId: '5', mccCode: 'HR', mccName: 'Human Resources'),
+  ];
+
+// 🧱 Module List
+  final List<CommonDropdownResponse> moduleList = [
+    CommonDropdownResponse(
+        mccId: '1', mccCode: 'LOGIN', mccName: 'Back Office'),
+    CommonDropdownResponse(
+        mccId: '2', mccCode: 'UI', mccName: 'UI Enhancements'),
+    CommonDropdownResponse(mccId: '3', mccCode: 'REPORT', mccName: 'Reports'),
+    CommonDropdownResponse(
+        mccId: '4', mccCode: 'NOTIFY', mccName: 'Notifications'),
+    CommonDropdownResponse(
+        mccId: '5', mccCode: 'API', mccName: 'API Integration'),
+  ];
+
+// ⚙️ Option List
+  final List<CommonDropdownResponse> optionList = [
+    CommonDropdownResponse(mccId: '1', mccCode: 'BUG', mccName: 'Notification'),
+    CommonDropdownResponse(mccId: '2', mccCode: 'MOD', mccName: 'Modification'),
+    CommonDropdownResponse(
+        mccId: '3', mccCode: 'SUPPORT', mccName: 'Support Request'),
+    CommonDropdownResponse(
+        mccId: '4', mccCode: 'FEATURE', mccName: 'New Feature'),
+    CommonDropdownResponse(mccId: '5', mccCode: 'OTHER', mccName: 'Other'),
+  ];
+
+// 👤 Assignee List
+  final List<CommonDropdownResponse> assigneeList = [
+    CommonDropdownResponse(
+        mccId: '1', mccCode: 'SID', mccName: 'Annette Black'),
+    CommonDropdownResponse(mccId: '2', mccCode: 'ANU', mccName: 'Sidharth KS'),
+    CommonDropdownResponse(
+        mccId: '3', mccCode: 'RAHUL', mccName: 'Rahul Menon'),
+    CommonDropdownResponse(mccId: '4', mccCode: 'NEHA', mccName: 'Neha Joseph'),
+    CommonDropdownResponse(
+        mccId: '5', mccCode: 'ARUN', mccName: 'Arun Krishnan'),
   ];
   List<String> priority = [
     'High',

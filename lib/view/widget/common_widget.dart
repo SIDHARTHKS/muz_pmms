@@ -295,8 +295,8 @@ SizedBox clientLogo({
       ),
     );
 Container muzirisLogo({
-  double? width = 32,
-  double height = 32,
+  double? width = 130,
+  double height = 130,
 }) =>
     Container(
       color: AppColorHelper().transparentColor,

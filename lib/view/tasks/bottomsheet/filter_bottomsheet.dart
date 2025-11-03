@@ -47,7 +47,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
   Widget _buildCheckboxOption(String group, String option, bool isSelected) {
     return GestureDetector(
       onTap: () => _toggleSelection(group, option),
-      child: Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7.5),
         child: Row(
           children: [
             AnimatedContainer(
@@ -112,7 +113,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
   Widget build(BuildContext context) {
     final filters = {
       "Token Type": controller.tokenTypes,
-      "Project": controller.projects,
+      "Project": controller.projectList.map((e) => e.mccName).toList(),
       "Priority": controller.priority,
       "Request Type": controller.requestTypes,
     };
@@ -213,7 +214,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
             child: SingleChildScrollView(
               child: Column(
                 children: filters.entries
-                    .map((entry) => _buildFilterSection(entry.key, entry.value))
+                    .map((entry) => _buildFilterSection(
+                        entry.key, entry.value.whereType<String>().toList()))
                     .toList(),
               ),
             ),
