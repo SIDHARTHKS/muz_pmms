@@ -9,7 +9,6 @@ import '../helper/core/environment/env.dart';
 import '../helper/deviceInfo.dart';
 import '../helper/enum.dart';
 import '../helper/shared_pref.dart';
-
 import '../model/app_model.dart';
 import '../model/login_model.dart';
 import '../service/auth_service.dart';
@@ -19,8 +18,14 @@ class LoginController extends AppBaseController {
 
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  var isUserFieldFocused = false.obs;
+  var isPasswordFieldFocused = false.obs;
 
   RxBool rxRememberMe = false.obs;
+  RxBool rxhidePassword = true.obs;
+
+  RxBool isUsernameValid = true.obs;
+  RxBool isPasswordValid = true.obs;
   Rxn<LoginResponse> rxLoginData = Rxn<LoginResponse>();
 
   late SharedPreferenceHelper? _preference;
@@ -35,12 +40,20 @@ class LoginController extends AppBaseController {
   @override
   Future<void> onInit() async {
     form = GlobalKey<FormState>();
+    userFocusNode.addListener(() {
+      isUserFieldFocused.value =
+          (userFocusNode.hasFocus || userController.text.isNotEmpty);
+    });
+    passwordFocusNode.addListener(() {
+      isPasswordFieldFocused.value =
+          (passwordFocusNode.hasFocus || passwordController.text.isNotEmpty);
+    });
     super.onInit();
   }
 
   void _devEnvSetup() {
     if (AppEnvironment.isDevMode()) {
-      // userController.text = '1316';
+      // userController.text = 'sidharthshibu@muziris.co.in';
       // passwordController.text = '123';
     }
   }
@@ -59,12 +72,8 @@ class LoginController extends AppBaseController {
     }
   }
 
-  void onRememberMeChange(bool value) async {
-    if (_preference != null) {
-      await _preference!.setBool(rememberMeKey, value);
-      rxRememberMe(
-          _preference != null ? _preference!.getBool(rememberMeKey) : false);
-    }
+  void onShowPassChange() async {
+    rxhidePassword.value = !rxhidePassword.value;
   }
 
   Future<bool> signIn() async {
@@ -81,10 +90,26 @@ class LoginController extends AppBaseController {
   bool isValidCredentials() {
     String email = userController.text.trim();
     String password = passwordController.text.trim();
-    if (isStringNullOrEmpty(email) || isStringNullOrEmpty(password)) {
-      return false;
+
+    // username validation
+    if (isStringNullOrEmpty(email)) {
+      isUsernameValid(false);
+    } else {
+      isUsernameValid(true);
     }
-    return true;
+
+    // password validation
+    if (isStringNullOrEmpty(password)) {
+      isPasswordValid(false);
+    } else {
+      isPasswordValid(true);
+    }
+
+    // return true only if both are valid
+    if (isUsernameValid.value && isPasswordValid.value) {
+      return true;
+    }
+    return false;
   }
 
   Future<bool> _callSignInService() async {
@@ -180,13 +205,13 @@ class LoginController extends AppBaseController {
   Future<bool> fetchInitData() async {
     await _loadStartup();
     _devEnvSetup();
-    // await delay(milliseconds: 10000);
+
     return true;
   }
 
   @override
   void onClose() {
-    form = GlobalKey<FormState>(); // 🧹 cleanup just in case
+    form = GlobalKey<FormState>();
     super.onClose();
   }
 }

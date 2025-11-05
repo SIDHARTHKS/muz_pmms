@@ -205,3 +205,6 @@ const String generateTokenNowDialogue =
     'Some optional fields are still empty — you can fill them later if needed.';
 const String applyDate = 'ApplyDate';
 const String applyDates = 'ApplyDates';
+const String hi = 'Hi !';
+const String letgetthings = "let’sgetthingsrunning.";
+const String showPassword = 'Show Password';

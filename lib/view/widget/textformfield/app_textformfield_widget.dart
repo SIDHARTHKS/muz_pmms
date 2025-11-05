@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import '../../../helper/color_helper.dart';
 import '../common_widget.dart';
 import '../text/app_text.dart';
 
-class TextFormWidget extends StatefulWidget {
+class TextFormWidget extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final String? Function(String?)? validator;
@@ -18,30 +19,28 @@ class TextFormWidget extends StatefulWidget {
   final int? maxLength;
   final bool optional;
   final FocusNode? focusNode;
-  final bool enabled;
   final Function(String)? onTextChanged;
   final Function(String)? onChanged;
   final IconData? prefixIcon;
   final String? prefixText;
-  Color? prefixIconColor;
+  final Color? prefixIconColor;
   final IconData? suffixIcon;
   final String? suffixText;
   final VoidCallback? suffixIconPressed;
   final bool readOnly;
   final TextAlign textAlign;
-  Color? textColor;
-  final bool obscureText;
-  final VoidCallback? onSampleClicked;
+  final Color? textColor;
+  final RxBool? rxEnabled;
+  final RxBool? rxObscureText; // <-- Reactive field
   final double? height;
   final bool digitsOnly;
-  final VoidCallback? onClickcallback;
   final VoidCallback? ontap;
   final Color? borderColor;
-  final bool showcursor;
   final Widget? prefixIconWidget;
-  final List<TextInputFormatter>? inputFormatters; // NEW
+  final List<TextInputFormatter>? inputFormatters;
+  final bool showcursor;
 
-  TextFormWidget({
+  const TextFormWidget({
     super.key,
     required this.label,
     required this.controller,
@@ -52,7 +51,6 @@ class TextFormWidget extends StatefulWidget {
     this.minLines,
     this.maxLines = 1,
     this.optional = false,
-    this.enabled = true,
     this.focusNode,
     this.onTextChanged,
     this.onChanged,
@@ -65,144 +63,95 @@ class TextFormWidget extends StatefulWidget {
     this.readOnly = false,
     this.textAlign = TextAlign.start,
     this.textColor,
-    this.onSampleClicked,
     this.height,
     this.digitsOnly = false,
-    this.obscureText = false,
-    this.onClickcallback,
+    this.rxEnabled,
+    this.rxObscureText, // <-- Reactive field
     this.ontap,
     this.borderColor,
     this.prefixIconWidget,
-    this.inputFormatters, // NEW
+    this.inputFormatters,
     this.showcursor = true,
-  }) {
-    textColor = AppColorHelper().textColor;
-    prefixIconColor = AppColorHelper().iconColor;
-  }
+  });
 
   @override
-  State<TextFormWidget> createState() => _TextFormWidgetState();
-}
+  Widget build(BuildContext context) {
+    final Debouncer debouncer =
+        Debouncer(delay: const Duration(milliseconds: 500));
 
-class _TextFormWidgetState extends State<TextFormWidget> {
-  Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 500));
-  late bool _obscureText;
-  List<bool> passwordConditions = [false, false, false, false];
+    return Obx(() {
+      final bool isEnabled = rxEnabled?.value ?? true;
+      final bool obscure = rxObscureText?.value ?? false;
 
-  @override
-  void initState() {
-    _obscureText = widget.obscureText;
-    super.initState();
-  }
-
-  void checkPasswordConditions(String password) {
-    setState(() {
-      passwordConditions[0] = password.length >= 8;
-      passwordConditions[1] = RegExp(r'[A-Z]').hasMatch(password);
-      passwordConditions[2] = RegExp(r'[0-9]').hasMatch(password);
-      passwordConditions[3] =
-          RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => Column(
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [],
+          SizedBox(
+            height: height,
+            child: TextFormField(
+              showCursor: showcursor,
+              obscureText: obscure,
+              enabled: isEnabled,
+              readOnly: readOnly,
+              focusNode: focusNode,
+              controller: controller,
+              maxLines: maxLines,
+              minLines: minLines,
+              maxLength: maxLength,
+              decoration: _normalFieldDecoration(),
+              validator: validator,
+              textAlign: textAlign,
+              style: textStyle(
+                  14, AppColorHelper().primaryTextColor, FontWeight.w500),
+              textInputAction: nextFocusNode != null
+                  ? TextInputAction.next
+                  : TextInputAction.done,
+              inputFormatters: inputFormatters,
+              onChanged: (value) {
+                debouncer.call(() {
+                  onTextChanged?.call(value);
+                  onChanged?.call(value);
+                });
+              },
+              onFieldSubmitted: (_) {
+                if (nextFocusNode != null) {
+                  FocusScope.of(context).requestFocus(nextFocusNode);
+                }
+                onFieldSubmitted?.call();
+              },
             ),
-          ),
-          _textFormField(
-            decoration: _normalFieldDecoration(),
-            context: context,
-            newMaxlength: widget.maxLength,
           ),
         ],
       );
-
-  InputDecoration _normalFieldDecoration() => InputDecoration(
-        labelText: widget.label,
-        labelStyle: textStyle(14, AppColorHelper().textColor, FontWeight.w500),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        border: _border(
-            color:
-                widget.borderColor ?? AppColorHelper().pwdFormFieldBorderColor),
-        counterText: '',
-        enabledBorder: _border(
-            color:
-                widget.borderColor ?? AppColorHelper().pwdFormFieldBorderColor),
-        errorBorder: _border(color: AppColorHelper().errorBorderColor),
-        focusedBorder: _border(color: AppColorHelper().focusedBorderColor),
-        errorStyle: textStyle(14, AppColorHelper().errorColor, FontWeight.w300),
-        contentPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 20),
-        suffixIcon: _getSuffixIcon(),
-        prefixIcon: _getPrefixIcon(),
-      );
-
-  Widget _textFormField({
-    required InputDecoration decoration,
-    required BuildContext context,
-    int? newMaxlength,
-  }) {
-    List<TextInputFormatter>? effectiveInputFormatters = widget.inputFormatters;
-
-    if (widget.digitsOnly && effectiveInputFormatters == null) {
-      effectiveInputFormatters = [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-        LengthLimitingTextInputFormatter(widget.maxLength ?? 200),
-      ];
-    }
-
-    Widget child = TextFormField(
-      showCursor: widget.showcursor,
-      obscureText: _obscureText,
-      enabled: widget.enabled,
-      readOnly: widget.readOnly,
-      focusNode: widget.focusNode,
-      controller: widget.controller,
-      maxLines: widget.maxLines,
-      minLines: widget.minLines,
-      maxLength: newMaxlength,
-      decoration: decoration,
-      validator: widget.validator,
-      textAlign: widget.textAlign,
-      style: TextStyle(color: widget.textColor),
-      maxLengthEnforcement: MaxLengthEnforcement.none,
-      textInputAction: widget.nextFocusNode != null
-          ? TextInputAction.next
-          : TextInputAction.done,
-      inputFormatters: effectiveInputFormatters,
-      onChanged: (value) {
-        debouncer.call(() {
-          if (widget.onTextChanged != null) widget.onTextChanged!(value);
-          if (widget.onChanged != null) widget.onChanged!(value);
-          checkPasswordConditions(value);
-        });
-      },
-      onFieldSubmitted: (_) {
-        if (widget.nextFocusNode != null) {
-          FocusScope.of(context).requestFocus(widget.nextFocusNode);
-        }
-        widget.onFieldSubmitted ?? ();
-      },
-    );
-
-    return widget.height != null
-        ? SizedBox(height: widget.height, child: child)
-        : child;
+    });
   }
 
+  InputDecoration _normalFieldDecoration() => InputDecoration(
+        labelText: label,
+        labelStyle: textStyle(
+            15,
+            AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+            FontWeight.w400),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        border:
+            _border(color: borderColor ?? AppColorHelper().transparentColor),
+        enabledBorder:
+            _border(color: borderColor ?? AppColorHelper().transparentColor),
+        focusedBorder: _border(color: AppColorHelper().transparentColor),
+        contentPadding: EdgeInsets.zero,
+        counterText: '',
+        prefixIcon: _getPrefixIcon(),
+        suffixIcon: _getSuffixIcon(),
+      );
+
   Widget? _getSuffixIcon() {
-    if (widget.suffixText != null) {
+    if (suffixText != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 15.0, right: 20),
         child: GestureDetector(
-          onTap: widget.ontap,
+          onTap: ontap,
           child: appText(
-            widget.suffixText!,
+            suffixText!,
             color: AppColorHelper().textColor,
             fontSize: 14,
             fontWeight: FontWeight.w400,
@@ -210,48 +159,39 @@ class _TextFormWidgetState extends State<TextFormWidget> {
         ),
       );
     }
-    return widget.suffixIcon != null
+    return suffixIcon != null
         ? IconButton(
-            icon: Icon(widget.suffixIcon, color: AppColorHelper().iconColor),
-            onPressed: widget.suffixIconPressed,
+            icon: Icon(suffixIcon, color: AppColorHelper().iconColor),
+            onPressed: suffixIconPressed,
           )
         : null;
   }
 
   Widget? _getPrefixIcon() {
-    if (widget.prefixIconWidget != null) {
+    if (prefixIconWidget != null) {
       return Padding(
         padding: const EdgeInsets.all(15.0),
-        child: SizedBox(
-          height: 10,
-          width: 10,
-          child: widget.prefixIconWidget,
-        ),
+        child: SizedBox(height: 10, width: 10, child: prefixIconWidget),
       );
     }
 
-    if (widget.prefixText != null) {
+    if (prefixText != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 15.0, right: 20),
-        child: GestureDetector(
-          onTap: widget.ontap,
-          child: appText(
-            widget.prefixText!,
-            color: AppColorHelper().textColor,
+        child: appText(prefixText!,
+            color: AppColorHelper().primaryTextColor,
             fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+            fontWeight: FontWeight.w500),
       );
     }
 
-    return widget.prefixIcon != null
-        ? Icon(widget.prefixIcon, color: widget.prefixIconColor)
+    return prefixIcon != null
+        ? Icon(prefixIcon, color: prefixIconColor ?? AppColorHelper().iconColor)
         : null;
   }
 
   OutlineInputBorder _border({required Color color}) => OutlineInputBorder(
         borderSide: BorderSide(color: color, width: 1.2),
-        borderRadius: BorderRadius.circular(8), // optional: rounded corners
+        borderRadius: BorderRadius.circular(8),
       );
 }

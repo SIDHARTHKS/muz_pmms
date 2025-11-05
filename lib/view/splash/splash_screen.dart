@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import '../../controller/splash_controller.dart';
 import '../../helper/app_string.dart';
@@ -20,6 +21,13 @@ class SplashScreen extends AppBaseView<SplashController> {
 
   Scaffold _widgetView() => appScaffold(
         topSafe: false,
+        bottomNavigationBar: SafeArea(
+          child: appText("VERSION ${AppEnvironment.config.version}",
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              textAlign: TextAlign.center,
+              color: AppColorHelper().textColor.withValues(alpha: 0.4)),
+        ),
         body: appFutureBuilder<int>(
           () => controller.fetchUserProfile(),
           (context, snapshot) {
@@ -37,8 +45,8 @@ class SplashScreen extends AppBaseView<SplashController> {
                   Map<String, dynamic> arguments = {};
                   if (snapshot.data == 1) {}
                   navigateToAndRemoveAll(
-                    // snapshot.data == 1 ? homePageRoute : loginPageRoute,
-                    snapshot.data == 1 ? homePageRoute : homePageRoute,
+                    snapshot.data == 1 ? homePageRoute : loginPageRoute,
+                    // snapshot.data == 1 ? homePageRoute : homePageRoute,
                     arguments: arguments,
                   );
                 }
@@ -104,7 +112,7 @@ class SplashScreen extends AppBaseView<SplashController> {
                       appText(
                         "Please wait...",
                         fontWeight: FontWeight.w800,
-                        fontSize: 14,
+                        fontSize: 16,
                         textAlign: TextAlign.center,
                       ),
                     ],

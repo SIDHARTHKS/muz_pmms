@@ -7,8 +7,10 @@ import 'package:pmms/view/tasks/task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
 
 import '../binding/home_binding.dart';
+import '../binding/login_binding.dart';
 import '../binding/splash_binding.dart';
 import '../view/home/home_screen.dart';
+import '../view/login/login_screen.dart';
 
 const loginPageRoute = '/login';
 const updatePasswordPageRoute = '/update';
@@ -25,20 +27,21 @@ final routes = [
       name: splashPageRoute,
       page: () => const SplashScreen(),
       binding: const SplashBinding(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(milliseconds: 200)),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 350)),
   // GetPage(
   //     name: landingPageRoute,
   //     page: () => const LandingScreen(),
   //     binding: const LandingBinding(),
-  //     transition: Transition.fadeIn,
+  //     transition: Transition.fadeIn,5
   //     transitionDuration: const Duration(milliseconds: 250)),
-  // GetPage(
-  //     name: loginPageRoute,
-  //     page: () => const LoginScreen(),
-  //     binding: const LoginBinding(),
-  //     transition: Transition.fadeIn,
-  //     transitionDuration: const Duration(milliseconds: 250)),
+
+  GetPage(
+      name: loginPageRoute,
+      page: () => LoginScreen(),
+      binding: const LoginBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 1050)),
 
   GetPage(
       name: homePageRoute,

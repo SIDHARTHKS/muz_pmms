@@ -1,13 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_avoider/keyboard_avoider.dart';
 import '../../controller/login_controller.dart';
 import '../../gen/assets.gen.dart';
 import '../../helper/app_string.dart';
 import '../../helper/color_helper.dart';
 import '../../helper/core/base/app_base_view.dart';
-import '../../helper/enum.dart';
-import '../../helper/environment/env.dart';
 import '../../helper/navigation.dart';
 import '../../helper/route.dart';
 import '../../helper/sizer.dart';
@@ -23,274 +21,285 @@ class LoginScreen extends AppBaseView<LoginController> {
   Widget buildView() => _buildScaffold();
 
   Scaffold _buildScaffold() => appScaffold(
-      bgcolor: AppColorHelper().primaryColor,
-      body: appFutureBuilder<void>(
-        () => controller.fetchInitData(),
-        (context, snapshot) => _buildBody(),
-      ),
-      bottomNavigationBar: muzBottomLogo());
+        topSafe: false,
+        resizeToAvoidBottomInset: false, // prevent BG reshape
+        body: appFutureBuilder<void>(
+          () => controller.fetchInitData(),
+          (context, snapshot) => _buildBody(),
+        ),
+      );
 
   Widget _buildBody() => Obx(() {
-        bool isTablet = AppEnvironment.deviceType == UserDeviceType.tablet;
-        return controller.rxIsLoading.value
-            ? fullScreenloader()
-            : Container(
-                height: Get.height,
-                decoration: BoxDecoration(
-                  color: AppColorHelper().primaryColor,
-                  // image: DecorationImage(
-                  //     image: AssetImage(Assets.images.backgrnd.path),
-                  //     fit: BoxFit.cover,
-                  //     opacity: 0.05),
-                ),
-                child: SafeArea(
-                  child: KeyboardAvoider(
-                    autoScroll: true, // Moves screen automatically
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: isTablet ? _tabletView() : _mobileView(),
+        if (controller.rxIsLoading.value) return fullScreenloader();
+
+        return Stack(
+          children: [
+            // 1️⃣ Fixed background
+            Positioned.fill(
+              child: Image.asset(
+                Assets.images.loginBg.path,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            // 2️⃣ Scrollable login form
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    reverse: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      left: 12,
+                      right: 12,
+                      top: 20,
+                      bottom: MediaQuery.of(context).viewInsets.bottom *
+                          0.5, // ✅ only half scroll
                     ),
-                  ),
-                ),
-              );
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight -
+                            MediaQuery.of(context).viewInsets.bottom * 0.5,
+                      ),
+                      child: Center(
+                        child: _mobileView(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
       });
 
-  Center _tabletView() {
-    return Center(
-      child: Container(
-        width: Get.width * 0.70,
-        height: Get.height * 0.50,
-        decoration: BoxDecoration(
-            color: AppColorHelper().cardColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 10,
-                spreadRadius: 10,
-                offset: Offset(0, 2),
-              ),
-            ],
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-                color: AppColorHelper().borderColor.withValues(alpha: 0.2))),
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              appText(
-                welcome.tr,
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: AppColorHelper().textColor,
-              ),
-              appText(
-                welcome.tr,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: AppColorHelper().textColor,
-              ),
-              height(10),
-              Form(
-                key: controller.form,
-                child: Column(
-                  children: [
-                    logoImage(),
-                    height(130),
-                    _buildUsernameField(),
-                    height(10),
-                    _buildPasswordField(),
-                    height(25),
-                    _rememberMeContainer(),
-                    height(40),
-                    buttonContainer(
-                        controller.rxIsLoading.value
-                            ? buttonLoader()
-                            : appText(signIn.tr,
-                                color: AppColorHelper().textColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600),
-                        onPressed: () async {
-                      await controller.signIn().then((success) {
-                        if (success) {
-                          Map<String, dynamic> arguments = {};
-
-                          navigateToAndRemoveAll(homePageRoute,
-                              arguments: arguments);
-                        }
-                      });
-                    }),
-                    height(10),
-                    appText(
-                      AppEnvironment.config.version,
-                      color: AppColorHelper().primaryTextColor,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+  Padding _mobileView() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          height(Platform.isIOS ? 140 : 160), // ✅ adjust subtle difference
+          appText(
+            hi.tr,
+            fontSize: 28,
+            fontWeight: FontWeight.w400,
+            color: AppColorHelper().primaryTextColor,
           ),
-        ),
+          height(10),
+          appText(
+            letgetthings.tr,
+            textAlign: TextAlign.center,
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color: AppColorHelper().primaryTextColor,
+          ),
+          height(80),
+          Form(
+            key: controller.form,
+            child: Column(
+              children: [
+                _buildUsernameField(),
+                height(22),
+                _buildPasswordField(),
+                height(15),
+                _showPasswordContainer(),
+                height(Platform.isIOS ? 75 : 70),
+                buttonContainer(
+                  height: 50,
+                  color: AppColorHelper().primaryColor,
+                  controller.rxIsLoading.value
+                      ? buttonLoader()
+                      : appText(login.tr,
+                          fontSize: 16,
+                          color: AppColorHelper().textColor,
+                          fontWeight: FontWeight.w500),
+                  onPressed: () async {
+                    await controller.signIn().then((success) {
+                      if (success) {
+                        navigateToAndRemoveAll(homePageRoute);
+                      }
+                    });
+                  },
+                ),
+                height(20),
+                GestureDetector(
+                  onTap: () {},
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.centerLeft,
+                    children: [
+                      appText(
+                        forgetPassworddialogue.tr,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: AppColorHelper().primaryTextColor,
+                      ),
+                      Positioned(
+                        bottom:
+                            -1, // 👈 increase this value to move the underline lower
+                        child: Container(
+                          height: 1,
+                          width: forgetPassworddialogue.tr.length *
+                              6.5, // adjusts underline width
+                          color: AppColorHelper()
+                              .primaryTextColor
+                              .withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          height(30),
+        ],
       ),
     );
   }
 
-  Column _mobileView() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        logoImage(),
-        height(130),
-        height(10),
-        appText(
-          welcome.tr,
-          fontSize: 30,
-          fontWeight: FontWeight.w500,
-          color: AppColorHelper().textColor,
-        ),
-        height(10),
-        appText(
-          textAlign: TextAlign.center,
-          login.tr,
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color: AppColorHelper().textColor,
-        ),
-        height(10),
-        Form(
-          key: controller.form,
-          child: Column(
-            children: [
-              _buildUsernameField(),
-              height(5),
-              _buildPasswordField(),
-              height(15),
-              _rememberMeContainer(),
-              height(20),
-              buttonContainer(
-                  controller.rxIsLoading.value
-                      ? buttonLoader()
-                      : appText(signIn.tr,
-                          fontSize: 18,
-                          color: AppColorHelper().textColor,
-                          fontWeight: FontWeight.w600), onPressed: () async {
-                await controller.signIn().then((success) {
-                  if (success) {
-                    Map<String, dynamic> arguments = {};
-
-                    navigateToAndRemoveAll(homePageRoute, arguments: arguments);
-                  }
-                });
-                // navigateToAndRemoveAll(homePageRoute);
-              }),
-              height(20),
-              appText(
-                AppEnvironment.config.version,
-                color: AppColorHelper().primaryTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-            ],
-          ),
-        ),
-        height(30),
-      ],
-    );
-  }
-
-  Row _rememberMeContainer() {
+  Row _showPasswordContainer() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        SizedBox(
-          child: Row(
-            children: [
-              _buildRememberMeSwitch(
-                  controller.rxRememberMe.value,
-                  () => controller
-                      .onRememberMeChange(controller.rxRememberMe.value)),
-              width(20),
-              SizedBox(
-                child: appText("Remember Me",
-                    color: AppColorHelper().primaryTextColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
+        GestureDetector(
+          onTap: () {
+            controller.onShowPassChange();
+          },
+          child: SizedBox(
+            child: Row(
+              children: [
+                _buildShowPassSwitch(() => controller.onShowPassChange()),
+                width(7),
+                SizedBox(
+                  child: appText(showPassword.tr,
+                      color: AppColorHelper().primaryTextColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
           ),
         ),
-        // GestureDetector(
-        //   onTap: () {
-        //     navigateTo(forgetPageRoute);
-        //   },
-        //   child: SizedBox(
-        //     child: appText(
-        //       forgetPassworddialogue.tr,
-        //       color: AppColorHelper().primaryTextColor,
-        //       fontSize: 12,
-        //       fontWeight: FontWeight.w400,
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
 
-  Widget _buildUsernameField() => TextFormWidget(
-        height: 50,
-        enabled: !controller.rxIsLoading.value,
-        focusNode: controller.userFocusNode,
-        controller: controller.userController,
-        borderColor: AppColorHelper().focusedBorderColor,
-        label: username.tr,
-        // validator: (value) =>
-        //     value!.trim().isEmpty ? enterMobileEmailMsg.tr : null,
-        validator: (value) => value!.trim().isEmpty ? null : null,
-        nextFocusNode: controller.passwordFocusNode,
-      );
+  Widget _buildUsernameField() {
+    final isFocused = controller.isUserFieldFocused.value;
+    return Container(
+      padding: EdgeInsets.only(
+          top: isFocused ? 20.0 : 12.0,
+          bottom: isFocused ? 2.0 : 10,
+          left: 10,
+          right: 10),
+      decoration: BoxDecoration(
+          color: AppColorHelper().cardColor,
+          border: controller.isUsernameValid.value
+              ? Border.all(color: AppColorHelper().transparentColor)
+              : Border.all(color: AppColorHelper().errorBorderColor),
+          borderRadius: BorderRadius.circular(4)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 4),
+          //   child: appText(
+          //     username.tr,
+          //     fontSize: 12,
+          //     fontWeight: FontWeight.w400,
+          //     color: AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+          //   ),
+          // ),
+          TextFormWidget(
+            height: 40,
+            focusNode: controller.userFocusNode,
+            controller: controller.userController,
+            borderColor: AppColorHelper().transparentColor,
+            textColor: AppColorHelper().primaryTextColor,
+            label: username.tr,
+            validator: (value) => value!.trim().isEmpty ? null : null,
+            nextFocusNode: controller.passwordFocusNode,
+          ),
+        ],
+      ),
+    );
+  }
 
-  Widget _buildPasswordField() => TextFormWidget(
-        enabled: !controller.rxIsLoading.value,
-        controller: controller.passwordController,
-        focusNode: controller.passwordFocusNode,
-        borderColor: AppColorHelper().focusedBorderColor,
-        label: password.tr,
-        // validator: (value) =>
-        //     value!.trim().isEmpty ? enterPasswordMsg.tr : null,
-        validator: (value) => value!.trim().isEmpty ? null : null,
-        obscureText: true,
-      );
-
-  Widget _buildRememberMeSwitch(bool value, VoidCallback ontap) =>
-      GestureDetector(
-        onTap: ontap,
-        child: SizedBox(
-            width: 25,
-            height: 25, // match thumb size for better centering
-            child: GestureDetector(
-              onTap: ontap,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: value
-                      ? AppColorHelper().primaryColor
-                      : AppColorHelper().transparentColor,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: AppColorHelper().borderColor,
-                    width: 1,
-                  ),
-                ),
-                child: value
-                    ? Icon(
-                        Icons.check,
-                        color: AppColorHelper().textColor,
-                        size: 18,
-                      )
-                    : null,
+  Widget _buildPasswordField() {
+    final isFocused = controller.isPasswordFieldFocused.value;
+    return Container(
+        padding: EdgeInsets.only(
+            top: isFocused ? 20.0 : 12.0,
+            bottom: isFocused ? 2.0 : 10,
+            left: 10,
+            right: 10),
+        decoration: BoxDecoration(
+            color: AppColorHelper().cardColor,
+            border: controller.isPasswordValid.value
+                ? Border.all(color: AppColorHelper().transparentColor)
+                : Border.all(color: AppColorHelper().errorBorderColor),
+            borderRadius: BorderRadius.circular(4)),
+        child: Obx(() {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // appText(
+              //   password.tr,
+              //   fontSize: 12,
+              //   fontWeight: FontWeight.w400,
+              //   color: AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+              // ),
+              TextFormWidget(
+                controller: controller.passwordController,
+                focusNode: controller.passwordFocusNode,
+                borderColor: AppColorHelper().transparentColor,
+                label: password.tr,
+                textColor: AppColorHelper().primaryTextColor,
+                height: 40,
+                validator: (value) => value!.trim().isEmpty ? null : null,
+                rxObscureText: controller.rxhidePassword,
               ),
-            )),
+            ],
+          );
+        }));
+  }
+
+  Widget _buildShowPassSwitch(VoidCallback ontap) => GestureDetector(
+        onTap: ontap,
+        child: Obx(() {
+          return Container(
+              decoration: BoxDecoration(
+                  color: AppColorHelper().cardColor,
+                  borderRadius: BorderRadius.circular(4)),
+              width: 20,
+              height: 20, // match thumb size for better centering
+              child: GestureDetector(
+                onTap: ontap,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    color: !controller.rxhidePassword.value
+                        ? AppColorHelper().primaryColor
+                        : AppColorHelper().transparentColor,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color:
+                          AppColorHelper().borderColor.withValues(alpha: 0.6),
+                      width: 1,
+                    ),
+                  ),
+                  child: !controller.rxhidePassword.value
+                      ? Icon(
+                          Icons.check,
+                          color: AppColorHelper().textColor,
+                          size: 18,
+                        )
+                      : null,
+                ),
+              ));
+        }),
       );
 }
