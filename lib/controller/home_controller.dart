@@ -17,8 +17,8 @@ class HomeController extends AppBaseController
 
   @override
   Future<void> onInit() async {
-    await _setArguments();
-    isInitCalled(true);
+    // await _setArguments();
+    // isInitCalled(true);
     super.onInit();
   }
 

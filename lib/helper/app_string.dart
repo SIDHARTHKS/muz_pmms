@@ -158,7 +158,7 @@ const String entercode = 'enetercode';
 const String otpVerification = 'OTPVerification';
 const String enterRecievedOtp =
     'EntertheOTPreceivedonyourregisteredemailaddress';
-const String didntRecieve = 'Don’treceivecode?';
+const String didntRecieve = 'Did not receive ?';
 const String resendOtp = 'Resend OTP';
 
 // label and values
@@ -208,3 +208,24 @@ const String applyDates = 'ApplyDates';
 const String hi = 'Hi !';
 const String letgetthings = "let’sgetthingsrunning.";
 const String showPassword = 'Show Password';
+const String sentVerificationDialogue =
+    'We’vesentaverificationcodetoyouremail!Checkyourinboxandenterittoverifyyouraccount.';
+const String otp = 'OneTimePassword';
+const String didnotrecieve = 'Did not receive ?';
+const String resend = 'Resend';
+const String verifyOtp = 'Verify OTP';
+const String createNewPassword = 'Create New Password';
+const String newPassDialogue =
+    'Your new password must be different from previous used passwords.';
+const String resetPass = 'Reset Password ';
+const String newPass = 'New Password';
+const String confirmNewPass = ' Confirm New Password';
+const String passwordMustContain = 'Your Password must contain :';
+
+const String sixChar = 'Minimum 6 characters';
+const String capitalAndSmall = 'Capital and small letters';
+const String specialChar = 'A special Charcter';
+const String digits = 'A digit 0-9';
+const String passwordresetSuccessfully = 'Password reset Successfully';
+const String passwordresetSuccessfullyDialogue =
+    'Your password has been reset successfully. Please log in with your new credentials.';

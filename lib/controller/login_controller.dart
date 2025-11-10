@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:flutter/widgets.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/view/login/bottomsheet/change_password_bottomsheet.dart';
 import '../helper/app_message.dart';
 import '../helper/app_string.dart';
 import '../helper/core/base/app_base_controller.dart';
@@ -16,24 +18,47 @@ import '../service/auth_service.dart';
 class LoginController extends AppBaseController {
   final AuthService _authService = Get.find<AuthService>();
 
-  TextEditingController userController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  var isUserFieldFocused = false.obs;
-  var isPasswordFieldFocused = false.obs;
-
-  RxBool rxRememberMe = false.obs;
-  RxBool rxhidePassword = true.obs;
-
-  RxBool isUsernameValid = true.obs;
-  RxBool isPasswordValid = true.obs;
-  Rxn<LoginResponse> rxLoginData = Rxn<LoginResponse>();
-
   late SharedPreferenceHelper? _preference;
 
+  // fields
+  TextEditingController userController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  var isUserFieldFocused = false.obs;
+  var isPasswordFieldFocused = false.obs;
+  RxBool isUsernameValid = true.obs;
+  RxBool isPasswordValid = true.obs;
   late GlobalKey<FormState> form;
   final FocusNode userFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
 
+  //new pass fields
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmNewPasswordController = TextEditingController();
+  final FocusNode newpasswordFocusNode = FocusNode();
+  final FocusNode confirmpasswordFocusNode = FocusNode();
+  RxBool isSixChar = false.obs;
+  RxBool isCaps = false.obs;
+  RxBool isSpecial = false.obs;
+  RxBool isdigits = false.obs;
+
+  RxBool newPassVisible = false.obs;
+  RxBool confirmNewPassVisible = false.obs;
+
+  //
+
+  // otp
+  TextEditingController otpcontroller1 = TextEditingController();
+  TextEditingController otpcontroller2 = TextEditingController();
+  TextEditingController otpcontroller3 = TextEditingController();
+  TextEditingController otpcontroller4 = TextEditingController();
+  //
+
+  RxBool rxRememberMe = false.obs;
+  RxBool rxhidePassword = true.obs;
+
+  //response
+  Rxn<LoginResponse> rxLoginData = Rxn<LoginResponse>();
   Rxn<LoginResponse> rxLoginResponse = Rxn<LoginResponse>();
   Rxn<UserLoginResponse> rxUserLoginResponse = Rxn<UserLoginResponse>();
 
@@ -154,14 +179,14 @@ class LoginController extends AppBaseController {
       if (response != null) {
         rxUserLoginResponse.value = response;
 
-        // if (rxProfileResponse.value != null) {
-        //   rxRememberMe.value = true;
-        //   await _saveLoginDataToPref();
-        //   userController.clear();
-        //   passwordController.clear();
+        // Save login data here
+        await _saveLoginDataToPref();
 
-        //   return true;
-        // }
+        // Clear controllers if needed
+        userController.clear();
+        passwordController.clear();
+
+        return true;
       }
     } catch (e) {
       appLog('$exceptionMsg $e', logging: Logging.error);
@@ -202,6 +227,66 @@ class LoginController extends AppBaseController {
     }
   }
 
+  void isValidPass(String value) {
+    final pass = value.trim();
+
+    // ✅ Must have at least 6 characters
+    isSixChar(pass.length >= 6);
+
+    // ✅ Must have both uppercase and lowercase letters
+    final hasUpper = pass.contains(RegExp(r'[A-Z]'));
+    final hasLower = pass.contains(RegExp(r'[a-z]'));
+    isCaps(hasUpper && hasLower);
+
+    // ✅ Must have at least one digit
+    isdigits(pass.contains(RegExp(r'[0-9]')));
+
+    // ✅ Must have at least one special character
+    isSpecial(pass.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]')));
+  }
+
+  void resetValidation() {
+    isSixChar(false);
+    isCaps(false);
+    isdigits(false);
+    isSpecial(false);
+  }
+
+  void toggleVisibility() {
+    newPassVisible.value = !newPassVisible.value;
+  }
+
+  Future<bool> callChangePassword() async {
+    await showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      isDismissible: false,
+      backgroundColor: Colors.transparent, // Prevents the default white shade
+      barrierColor: Colors.black.withOpacity(0.2),
+      builder: (context) {
+        return Padding(
+          // This padding pushes the sheet up when the keyboard appears
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: SizedBox(
+              height: Platform.isAndroid
+                  ? (Get.height * 0.82)
+                  : (Get.height * 0.82), // e.g., 75% of screen height
+              child: const ChangePasswordBottomsheet(),
+            ),
+          ),
+        );
+      },
+    );
+    return true;
+  }
+
   Future<bool> fetchInitData() async {
     await _loadStartup();
     _devEnvSetup();
@@ -211,7 +296,20 @@ class LoginController extends AppBaseController {
 
   @override
   void onClose() {
-    form = GlobalKey<FormState>();
+    userController.dispose();
+    passwordController.dispose();
+    newPasswordController.dispose();
+    confirmNewPasswordController.dispose();
+    otpcontroller1.dispose();
+    otpcontroller2.dispose();
+    otpcontroller3.dispose();
+    otpcontroller4.dispose();
+
+    userFocusNode.dispose();
+    passwordFocusNode.dispose();
+    newpasswordFocusNode.dispose();
+    confirmpasswordFocusNode.dispose();
+
     super.onClose();
   }
 }

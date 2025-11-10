@@ -84,7 +84,7 @@ AppBar appBar({
         Icon(
           Icons.arrow_back_ios_new,
           size: 28,
-          color: AppColorHelper().primaryTextColor,
+          color: AppColorHelper().textColor,
         ),
   );
 
@@ -117,7 +117,7 @@ AppBar appBar({
   }
 
   return AppBar(
-    backgroundColor: AppColorHelper().backgroundColor,
+    backgroundColor: AppColorHelper().transparentColor,
     leading: showbackArrow
         ? GestureDetector(
             onTap: () {
@@ -136,9 +136,9 @@ AppBar appBar({
           ),
     title: appText(titleText ?? '',
         fontSize: 22,
-        color: AppColorHelper().primaryTextColor,
+        color: AppColorHelper().textColor,
         fontWeight: FontWeight.w700),
-    leadingWidth: 0,
+    leadingWidth: 45,
     automaticallyImplyLeading: false,
     centerTitle: false,
     actions: actions,
@@ -150,16 +150,18 @@ AppBar customAppBar(String title, {VoidCallback? onTap}) => AppBar(
       automaticallyImplyLeading: false,
       surfaceTintColor: Colors.transparent,
       centerTitle: false,
-      leadingWidth: 40, // 👈 give enough space for the back icon
+      leadingWidth: 45, // 👈 give enough space for the back icon
       toolbarHeight: 45,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 10, top: 15),
-        child: GestureDetector(
-          onTap: onTap ?? goBack,
-          child: Icon(
-            Icons.arrow_back_ios_new,
-            size: 20,
-            color: AppColorHelper().primaryTextColor,
+      leading: GestureDetector(
+        onTap: goBack,
+        child: SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12, top: 15),
+            child: Icon(
+              Icons.arrow_back_ios_new,
+              size: 20,
+              color: AppColorHelper().primaryTextColor,
+            ),
           ),
         ),
       ),

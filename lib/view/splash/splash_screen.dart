@@ -26,7 +26,7 @@ class SplashScreen extends AppBaseView<SplashController> {
               fontWeight: FontWeight.w500,
               fontSize: 12,
               textAlign: TextAlign.center,
-              color: AppColorHelper().textColor.withValues(alpha: 0.4)),
+              color: AppColorHelper().textColor.withValues(alpha: 0.5)),
         ),
         body: appFutureBuilder<int>(
           () => controller.fetchUserProfile(),

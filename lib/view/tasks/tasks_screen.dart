@@ -240,7 +240,11 @@ class TasksScreen extends AppBaseView<TasksController> {
                                   showDialog(
                                     context: context,
                                     barrierDismissible: true,
-                                    builder: (_) => const SuccessDialogue(),
+                                    builder: (_) => const SuccessDialogue(
+                                      title: "Approved \n Successfully",
+                                      subtitle:
+                                          "This token request has been  \n approved successfully.",
+                                    ),
                                   );
                                   Future.delayed(const Duration(seconds: 1),
                                       () {

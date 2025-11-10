@@ -56,6 +56,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/loginBg.png
   AssetGenImage get loginBg => const AssetGenImage('assets/images/loginBg.png');
 
+  /// File path: assets/images/loginBg2.png
+  AssetGenImage get loginBg2 =>
+      const AssetGenImage('assets/images/loginBg2.png');
+
   /// File path: assets/images/muziris.png
   AssetGenImage get muziris => const AssetGenImage('assets/images/muziris.png');
 
@@ -76,6 +80,7 @@ class $AssetsImagesGen {
         dummyBg1,
         generateToken,
         loginBg,
+        loginBg2,
         muziris,
         muziriswhite,
         splashBg1,

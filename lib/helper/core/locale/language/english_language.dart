@@ -58,7 +58,7 @@ Map<String, String> enUS = {
   rememberMe: 'Remember Me',
   errorCode: 'Error code',
   errorMessage: 'Error message',
-  forgetPassword: 'Forgot?',
+  forgetPassword: 'Forgot password',
   forgetPassworddialogue: 'Forgot Password?',
   passwordsuccess: 'Password Changed Successfully!',
   passwordsuccessdialogue: 'Your password has been changed successfully',
@@ -77,7 +77,7 @@ Map<String, String> enUS = {
       'Enter the 4 digits code that you received on your email.',
   otpVerification: 'OTP Verification',
   enterRecievedOtp: 'Enter the OTP received on your registered email address',
-  didntRecieve: 'Don’t receive code?',
+  didntRecieve: 'Did not receive ?',
   resendOtp: 'Resend OTP',
   footer: '© 2025 Muziris Softech (P) Ltd. All Rights Reserveds',
   notificationAjustDialogue:
@@ -129,4 +129,24 @@ Map<String, String> enUS = {
   hi: 'Hi !',
   letgetthings: "let’s get things running.",
   showPassword: 'Show Password',
+  sentVerificationDialogue:
+      'We’ve sent a verification code to your email! \nCheck your inbox and enter it to verify your account.',
+  otp: 'One Time Password',
+  didnotrecieve: 'Did not receive ?',
+  resend: 'Resend',
+  verifyOtp: 'Verify OTP',
+  createNewPassword: 'Create New Password',
+  newPassDialogue:
+      'Your new password must be different from previous used passwords.',
+  resetPass: 'Reset Password ',
+  newPass: 'New Password',
+  confirmNewPass: ' Confirm New Password',
+  passwordMustContain: 'Your Password must contain :',
+  sixChar: 'Minimum 6 characters',
+  capitalAndSmall: 'Capital and small letters',
+  specialChar: 'A special Charcter',
+  digits: 'A digit 0-9',
+  passwordresetSuccessfully: 'Password reset Successfully',
+  passwordresetSuccessfullyDialogue:
+      'Your password has been reset successfully. Please log in with your new credentials.',
 };

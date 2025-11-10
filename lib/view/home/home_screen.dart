@@ -35,31 +35,26 @@ class HomeScreen extends AppBaseView<HomeController> {
     return appContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            return;
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                appText("Welcome to pmms",
-                    fontSize: 18, color: AppColorHelper().primaryTextColor),
-                height(20),
-                buttonContainer(
-                    appText(mytask.tr,
-                        color: AppColorHelper().primaryColor,
-                        fontWeight: FontWeight.w500), onPressed: () {
-                  navigateTo(tasksPageRoute);
-                }),
-                height(20),
-                buttonContainer(
-                    color: AppColorHelper().primaryColor,
-                    appText(createtoken.tr, fontWeight: FontWeight.w500),
-                    onPressed: () {
-                  navigateTo(createTokenPageRoute);
-                })
-              ],
-            ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              appText("Welcome to pmms",
+                  fontSize: 18, color: AppColorHelper().primaryTextColor),
+              height(20),
+              buttonContainer(
+                  appText(mytask.tr,
+                      color: AppColorHelper().primaryColor,
+                      fontWeight: FontWeight.w500), onPressed: () {
+                navigateTo(tasksPageRoute);
+              }),
+              height(20),
+              buttonContainer(
+                  color: AppColorHelper().primaryColor,
+                  appText(createtoken.tr, fontWeight: FontWeight.w500),
+                  onPressed: () {
+                navigateTo(createTokenPageRoute);
+              })
+            ],
           ),
         ),
       ),

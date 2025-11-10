@@ -285,10 +285,13 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                 color: AppColorHelper().primaryColor.withValues(alpha: 0.9),
                 onPressed: () {
                   showDialog(
-                    context: Get.context!,
-                    barrierDismissible: true,
-                    builder: (_) => const SuccessDialogue(),
-                  );
+                      context: Get.context!,
+                      barrierDismissible: true,
+                      builder: (_) => const SuccessDialogue(
+                            title: "Approved \n Successfully",
+                            subtitle:
+                                "This token request has been  \n approved successfully.",
+                          ));
                   Future.delayed(const Duration(seconds: 1), () {
                     if (Navigator.canPop(Get.context!)) {
                       Navigator.of(Get.context!).pop();

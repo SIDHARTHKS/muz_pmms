@@ -54,6 +54,8 @@ class AppTheme {
   final Color statusMediumTextColor;
   final Color statusHighTextColor;
 
+  final Color checkColor;
+
   final String fontFamily;
   final String imagePath; // Path to client-specific images
 
@@ -107,6 +109,7 @@ class AppTheme {
     required this.statusLowTextColor,
     required this.statusMediumTextColor,
     required this.statusHighTextColor,
+    required this.checkColor,
   });
 }
 
@@ -178,6 +181,8 @@ AppTheme _demoDarkTheme() => AppTheme(
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
+      checkColor: const Color.fromRGBO(102, 206, 16, 1),
+
       fontFamily: 'Roboto',
       imagePath: 'assets/images/demo.png',
     );
@@ -238,6 +243,8 @@ AppTheme _demoLightTheme() => AppTheme(
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
+      checkColor: const Color.fromRGBO(102, 206, 16, 1),
+
       fontFamily: 'Roboto',
       imagePath: 'assets/images/demo.png',
     );
@@ -296,6 +303,8 @@ AppTheme _seemattiDarkTheme() => AppTheme(
       statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
+
+      checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
       fontFamily: 'lato',
       imagePath: 'assets/images/demo.png',
@@ -356,6 +365,8 @@ AppTheme _seemattiLightTheme() => AppTheme(
       statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
+
+      checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
       fontFamily: 'lato',
       imagePath: 'assets/images/demo.png',

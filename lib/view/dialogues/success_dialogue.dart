@@ -3,15 +3,34 @@ import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 
-class SuccessDialogue extends StatelessWidget {
+class SuccessDialogue extends StatefulWidget {
   final double width;
   final double height;
+  final String title;
+  final String subtitle;
 
   const SuccessDialogue({
     super.key,
     this.width = 350,
     this.height = 470,
+    required this.title,
+    required this.subtitle,
   });
+
+  @override
+  State<SuccessDialogue> createState() => _SuccessDialogueState();
+}
+
+class _SuccessDialogueState extends State<SuccessDialogue> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Auto-dismiss after 300ms (safe and non-layout-mutating)
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) Navigator.pop(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +38,8 @@ class SuccessDialogue extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Container(
-          width: width,
-          height: height,
+          width: widget.width,
+          height: widget.height,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColorHelper().cardColor,
@@ -36,12 +55,14 @@ class SuccessDialogue extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              appText("Approved \n Successfully",
-                  textAlign: TextAlign.center,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: AppColorHelper().primaryColor,
-                  height: 1.3),
+              appText(
+                widget.title,
+                textAlign: TextAlign.center,
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: AppColorHelper().primaryColor,
+                height: 1.3,
+              ),
               const SizedBox(height: 30),
               Image.asset(
                 Assets.icons.success.path,
@@ -49,7 +70,7 @@ class SuccessDialogue extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               appText(
-                "This token request has been  \n approved successfully.",
+                widget.subtitle,
                 textAlign: TextAlign.center,
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
