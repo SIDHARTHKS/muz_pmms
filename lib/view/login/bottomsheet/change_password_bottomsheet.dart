@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/login_controller.dart';
+import 'package:pmms/controller/change_password_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -12,7 +12,7 @@ import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/textformfield/app_textformfield_widget.dart';
 
-class ChangePasswordBottomsheet extends AppBaseView<LoginController> {
+class ChangePasswordBottomsheet extends AppBaseView<ChangePasswordController> {
   const ChangePasswordBottomsheet({super.key});
 
   @override
@@ -34,7 +34,7 @@ class ChangePasswordBottomsheet extends AppBaseView<LoginController> {
         },
         child: Padding(
           padding: const EdgeInsets.only(
-              top: 20.0, bottom: 20.0, left: 15.0, right: 15.0),
+              top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
           child: Form(
             key: _formKey,
             child: Obx(() {
@@ -179,17 +179,17 @@ class ChangePasswordBottomsheet extends AppBaseView<LoginController> {
     );
   }
 
-  Container _checkbox(RxBool condition) {
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: BoxDecoration(
+  Widget _checkbox(RxBool condition) {
+    return Obx(() {
+      return Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
           color: condition.value
               ? AppColorHelper().checkColor
               : AppColorHelper().primaryColor.withValues(alpha: 0.1),
-          shape: BoxShape.circle),
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
+          shape: BoxShape.circle,
+        ),
         child: condition.value
             ? Center(
                 child: Icon(
@@ -199,8 +199,8 @@ class ChangePasswordBottomsheet extends AppBaseView<LoginController> {
                 ),
               )
             : null,
-      ),
-    );
+      );
+    });
   }
 
   /// New Password Field with validation

@@ -24,8 +24,31 @@ class $AssetsIconsGen {
   AssetGenImage get calander =>
       const AssetGenImage('assets/icons/calander.png');
 
+  /// File path: assets/icons/changePass.png
+  AssetGenImage get changePass =>
+      const AssetGenImage('assets/icons/changePass.png');
+
+  /// File path: assets/icons/completed.png
+  AssetGenImage get completed =>
+      const AssetGenImage('assets/icons/completed.png');
+
+  /// File path: assets/icons/darkmode.png
+  AssetGenImage get darkmode =>
+      const AssetGenImage('assets/icons/darkmode.png');
+
   /// File path: assets/icons/filter.png
   AssetGenImage get filter => const AssetGenImage('assets/icons/filter.png');
+
+  /// File path: assets/icons/info.png
+  AssetGenImage get info => const AssetGenImage('assets/icons/info.png');
+
+  /// File path: assets/icons/noNotification.png
+  AssetGenImage get noNotification =>
+      const AssetGenImage('assets/icons/noNotification.png');
+
+  /// File path: assets/icons/notificationSettings.png
+  AssetGenImage get notificationSettings =>
+      const AssetGenImage('assets/icons/notificationSettings.png');
 
   /// File path: assets/icons/rejected.png
   AssetGenImage get rejected =>
@@ -38,8 +61,21 @@ class $AssetsIconsGen {
   AssetGenImage get success => const AssetGenImage('assets/icons/success.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [edit, back, calander, filter, rejected, search, success];
+  List<AssetGenImage> get values => [
+        edit,
+        back,
+        calander,
+        changePass,
+        completed,
+        darkmode,
+        filter,
+        info,
+        noNotification,
+        notificationSettings,
+        rejected,
+        search,
+        success
+      ];
 }
 
 class $AssetsImagesGen {

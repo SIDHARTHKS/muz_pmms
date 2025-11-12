@@ -1,8 +1,13 @@
 import 'package:get/get.dart';
+import 'package:pmms/binding/change_password_binding.dart';
 import 'package:pmms/binding/create_token_binding.dart';
+import 'package:pmms/binding/notification_binding.dart';
+import 'package:pmms/binding/settings_binding.dart';
 import 'package:pmms/binding/tasks_binding.dart';
 import 'package:pmms/view/create/create_token_screen.dart';
 import 'package:pmms/view/login/creat_password_screen.dart';
+import 'package:pmms/view/notifications/notification_screen.dart';
+import 'package:pmms/view/settings/settings_screen.dart';
 import 'package:pmms/view/splash/splash_screen.dart' show SplashScreen;
 import 'package:pmms/view/tasks/task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
@@ -23,6 +28,8 @@ const homePageRoute = '/home';
 const tasksPageRoute = '/mytasks';
 const taskDetailsPageRoute = '/tasksDetails';
 const createTokenPageRoute = '/createToken';
+const settingsPageRoute = '/settings';
+const notificationsPageRoute = '/notifications';
 
 final routes = [
   GetPage(
@@ -47,7 +54,7 @@ final routes = [
   GetPage(
       name: createPasswordPageRoute,
       page: () => CreatePasswordScreen(),
-      binding: const LoginBinding(),
+      binding: const ChangePasswordBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 350)),
 
@@ -74,6 +81,18 @@ final routes = [
       name: createTokenPageRoute,
       page: () => const CreateTokenScreen(),
       binding: const CreateTokenBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: settingsPageRoute,
+      page: () => const SettingsScreen(),
+      binding: const SettingsBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: notificationsPageRoute,
+      page: () => const NotificationScreen(),
+      binding: const NotificationBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
 ];

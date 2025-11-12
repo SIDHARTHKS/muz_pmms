@@ -35,7 +35,7 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
         body: appContainer(
           enableSafeArea: true,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
             child: Obx(() {
               final progress = (controller.rxCurrentPageIndex.value + 1) / 3;
 

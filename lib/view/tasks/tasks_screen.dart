@@ -35,7 +35,7 @@ class TasksScreen extends AppBaseView<TasksController> {
         appBar: customAppBar(mytask.tr),
         body: appContainer(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 0.0),
             child: Column(
               children: [
                 height(12),

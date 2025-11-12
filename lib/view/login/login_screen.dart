@@ -23,8 +23,7 @@ class LoginScreen extends AppBaseView<LoginController> {
 
   Scaffold _buildScaffold() => appScaffold(
         topSafe: false,
-        resizeToAvoidBottomInset:
-            true, // ✅ allow auto scroll when keyboard opens
+        resizeToAvoidBottomInset: false, // prevent BG reshape
         body: appFutureBuilder<void>(
           () => controller.fetchInitData(),
           (context, snapshot) => _buildBody(),
@@ -33,7 +32,7 @@ class LoginScreen extends AppBaseView<LoginController> {
 
   Widget _buildBody() => Stack(
         children: [
-          // Background image
+          // 1️⃣ Fixed background
           Positioned.fill(
             child: Image.asset(
               Assets.images.loginBg.path,
@@ -41,18 +40,35 @@ class LoginScreen extends AppBaseView<LoginController> {
             ),
           ),
 
-          // ✅ Scrollable content without LayoutBuilder
+          // 2️⃣ Scrollable login form
           SafeArea(
             child: GestureDetector(
-              onTap: () => FocusScope.of(Get.context!).unfocus(),
-              child: SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  left: 12,
-                  right: 12,
-                  top: 20,
-                  bottom: MediaQuery.of(Get.context!).viewInsets.bottom + 30,
-                ),
-                child: Center(child: _mobileView()),
+              onTap: () {
+                FocusScope.of(Get.context!).unfocus();
+              },
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    reverse: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      left: 12,
+                      right: 12,
+                      top: 20,
+                      bottom: MediaQuery.of(context).viewInsets.bottom *
+                          0.5, // ✅ only half scroll
+                    ),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight -
+                            MediaQuery.of(context).viewInsets.bottom * 0.5,
+                      ),
+                      child: Center(
+                        child: _mobileView(),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -67,7 +83,7 @@ class LoginScreen extends AppBaseView<LoginController> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            height(Platform.isIOS ? 150 : 160),
+            height(Platform.isIOS ? 150 : 160), // ✅ adjust subtle difference
             appText(
               hi.tr,
               fontSize: 28,
@@ -104,17 +120,21 @@ class LoginScreen extends AppBaseView<LoginController> {
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500,
                           ),
-                    onPressed: () {
-                      navigateToAndRemoveAll(homePageRoute);
+                    onPressed: () async {
+                      // Disable button spam
+                      if (controller.rxIsLoading.value) return;
 
-                      // await controller.signIn().then((success) {
-                      //   // if (success) {
-                      //   //   // ✅ Only navigate once after current frame completes
-                      //   //   WidgetsBinding.instance.addPostFrameCallback((_) {
-                      //   //     navigateToAndRemoveAll(homePageRoute);
-                      //   //   });
-                      //   // }
-                      // });
+                      // Delay navigation until next frame safely
+                      await controller.signIn().then((success) {
+                        if (success) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            navigateToAndRemoveAll(homePageRoute);
+                          });
+                        }
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          navigateToAndRemoveAll(homePageRoute);
+                        });
+                      });
                     },
                   ),
                   height(30),
@@ -126,6 +146,7 @@ class LoginScreen extends AppBaseView<LoginController> {
                         backgroundColor: Colors.transparent,
                         builder: (context) {
                           return Padding(
+                            // This padding pushes the sheet up when the keyboard appears
                             padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom,
                             ),
@@ -156,10 +177,12 @@ class LoginScreen extends AppBaseView<LoginController> {
                           color: AppColorHelper().primaryTextColor,
                         ),
                         Positioned(
-                          bottom: -1,
+                          bottom:
+                              -1, // 👈 increase this value to move the underline lower
                           child: Container(
                             height: 1,
-                            width: forgetPassworddialogue.tr.length * 6.5,
+                            width: forgetPassworddialogue.tr.length *
+                                6.5, // adjusts underline width
                             color: AppColorHelper()
                                 .primaryTextColor
                                 .withValues(alpha: 0.5),
@@ -167,7 +190,7 @@ class LoginScreen extends AppBaseView<LoginController> {
                         ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -183,18 +206,22 @@ class LoginScreen extends AppBaseView<LoginController> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
-          onTap: () => controller.onShowPassChange(),
-          child: Row(
-            children: [
-              _buildShowPassSwitch(() => controller.onShowPassChange()),
-              width(7),
-              appText(
-                showPassword.tr,
-                color: AppColorHelper().primaryTextColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-            ],
+          onTap: () {
+            controller.onShowPassChange();
+          },
+          child: SizedBox(
+            child: Row(
+              children: [
+                _buildShowPassSwitch(() => controller.onShowPassChange()),
+                width(7),
+                SizedBox(
+                  child: appText(showPassword.tr,
+                      color: AppColorHelper().primaryTextColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -210,21 +237,34 @@ class LoginScreen extends AppBaseView<LoginController> {
           left: 10,
           right: 10),
       decoration: BoxDecoration(
-        color: AppColorHelper().cardColor,
-        border: controller.isUsernameValid.value
-            ? Border.all(color: AppColorHelper().transparentColor)
-            : Border.all(color: AppColorHelper().errorBorderColor),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextFormWidget(
-        height: 40,
-        focusNode: controller.userFocusNode,
-        controller: controller.userController,
-        borderColor: AppColorHelper().transparentColor,
-        textColor: AppColorHelper().primaryTextColor,
-        label: username.tr,
-        validator: (value) => value!.trim().isEmpty ? null : null,
-        nextFocusNode: controller.passwordFocusNode,
+          color: AppColorHelper().cardColor,
+          border: controller.isUsernameValid.value
+              ? Border.all(color: AppColorHelper().transparentColor)
+              : Border.all(color: AppColorHelper().errorBorderColor),
+          borderRadius: BorderRadius.circular(4)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 4),
+          //   child: appText(
+          //     username.tr,
+          //     fontSize: 12,
+          //     fontWeight: FontWeight.w400,
+          //     color: AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+          //   ),
+          // ),
+          TextFormWidget(
+            height: 40,
+            focusNode: controller.userFocusNode,
+            controller: controller.userController,
+            borderColor: AppColorHelper().transparentColor,
+            textColor: AppColorHelper().primaryTextColor,
+            label: username.tr,
+            validator: (value) => value!.trim().isEmpty ? null : null,
+            nextFocusNode: controller.passwordFocusNode,
+          ),
+        ],
       ),
     );
   }
@@ -232,56 +272,69 @@ class LoginScreen extends AppBaseView<LoginController> {
   Widget _buildPasswordField() {
     final isFocused = controller.isPasswordFieldFocused.value;
     return Container(
-      padding: EdgeInsets.only(
-          top: isFocused ? 20.0 : 12.0,
-          bottom: isFocused ? 2.0 : 10,
-          left: 10,
-          right: 10),
-      decoration: BoxDecoration(
-        color: AppColorHelper().cardColor,
-        border: controller.isPasswordValid.value
-            ? Border.all(color: AppColorHelper().transparentColor)
-            : Border.all(color: AppColorHelper().errorBorderColor),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextFormWidget(
-        controller: controller.passwordController,
-        focusNode: controller.passwordFocusNode,
-        borderColor: AppColorHelper().transparentColor,
-        label: password.tr,
-        textColor: AppColorHelper().primaryTextColor,
-        height: 40,
-        validator: (value) => value!.trim().isEmpty ? null : null,
-        rxObscureText: controller.rxhidePassword,
-      ),
-    );
+        padding: EdgeInsets.only(
+            top: isFocused ? 20.0 : 12.0,
+            bottom: isFocused ? 2.0 : 10,
+            left: 10,
+            right: 10),
+        decoration: BoxDecoration(
+            color: AppColorHelper().cardColor,
+            border: controller.isPasswordValid.value
+                ? Border.all(color: AppColorHelper().transparentColor)
+                : Border.all(color: AppColorHelper().errorBorderColor),
+            borderRadius: BorderRadius.circular(4)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // appText(
+            //   password.tr,
+            //   fontSize: 12,
+            //   fontWeight: FontWeight.w400,
+            //   color: AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+            // ),
+            TextFormWidget(
+              controller: controller.passwordController,
+              focusNode: controller.passwordFocusNode,
+              borderColor: AppColorHelper().transparentColor,
+              label: password.tr,
+              textColor: AppColorHelper().primaryTextColor,
+              height: 40,
+              validator: (value) => value!.trim().isEmpty ? null : null,
+              rxObscureText: controller.rxhidePassword,
+            ),
+          ],
+        ));
   }
 
   Widget _buildShowPassSwitch(VoidCallback ontap) => GestureDetector(
-        onTap: ontap,
-        child: Container(
-          width: 20,
-          height: 20,
+      onTap: ontap,
+      child: Container(
           decoration: BoxDecoration(
-            color: AppColorHelper().cardColor,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: !controller.rxhidePassword.value
-                  ? AppColorHelper().primaryColor
-                  : AppColorHelper().transparentColor,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: AppColorHelper().borderColor.withValues(alpha: 0.6),
-                width: 1,
+              color: AppColorHelper().cardColor,
+              borderRadius: BorderRadius.circular(4)),
+          width: 20,
+          height: 20, // match thumb size for better centering
+          child: GestureDetector(
+            onTap: ontap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: !controller.rxhidePassword.value
+                    ? AppColorHelper().primaryColor
+                    : AppColorHelper().transparentColor,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: AppColorHelper().borderColor.withValues(alpha: 0.6),
+                  width: 1,
+                ),
               ),
+              child: !controller.rxhidePassword.value
+                  ? Icon(
+                      Icons.check,
+                      color: AppColorHelper().textColor,
+                      size: 18,
+                    )
+                  : null,
             ),
-            child: !controller.rxhidePassword.value
-                ? Icon(Icons.check, color: AppColorHelper().textColor, size: 18)
-                : null,
-          ),
-        ),
-      );
+          )));
 }

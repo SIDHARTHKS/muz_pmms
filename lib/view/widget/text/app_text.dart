@@ -3,12 +3,19 @@ import 'package:get/get.dart';
 import '../../../helper/core/theme/app_theme.dart';
 import '../../../helper/core/theme/theme_service.dart';
 
-textStyle(double size, Color color, FontWeight fontweight) {
+TextStyle textStyle(
+  double size,
+  Color color,
+  FontWeight fontweight, {
+  double? height, // 👈 optional named parameter
+}) {
   return TextStyle(
-      fontSize: size,
-      color: color,
-      fontFamily: 'Mona Sans',
-      fontWeight: fontweight);
+    fontSize: size,
+    color: color,
+    fontFamily: 'Mona Sans',
+    fontWeight: fontweight,
+    height: height, // 👈 applied only if provided
+  );
 }
 
 Text appBarText(

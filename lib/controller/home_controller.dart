@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:pmms/model/notification_model.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
@@ -22,16 +23,61 @@ class HomeController extends AppBaseController
     super.onInit();
   }
 
-  Future<void> _setArguments() async {
-    var arguments = Get.arguments;
-    if (arguments != null) {
-    } else {
-      showErrorSnackbar(
-          message: "Unable To Fetch Locations. Please Login Again");
-      navigateToAndRemoveAll(loginPageRoute);
-    }
-    appLog("userid =${rxUserId.value}");
-  }
+  // Future<void> _setArguments() async {
+  //   var arguments = Get.arguments;
+  //   if (arguments != null) {
+  //   } else {
+  //     showErrorSnackbar(
+  //         message: "Unable To Fetch Locations. Please Login Again");
+  //     navigateToAndRemoveAll(loginPageRoute);
+  //   }
+  //   appLog("userid =${rxUserId.value}");
+  // }
+
+  // mock data
+  List<NotificationModel> notifications = [
+    NotificationModel(
+      title: 'Mz.Ft',
+      token: 'TKN-714',
+      message: 'Your token has been approved successfully.',
+      status: '',
+      date: '4th Nov 2025',
+      category: '',
+      priority: '',
+      isApproved: true,
+    ),
+    NotificationModel(
+      title: 'Payroll Muziris',
+      token: 'TKN-124',
+      message: 'Get real-time updates through push and in-app alerts.',
+      status: 'Pending for approval.',
+      date: '3rd Nov 2025',
+      category: 'Support',
+      priority: 'Medium',
+      isApproved: false,
+    ),
+    NotificationModel(
+      title: 'Mz.Ft',
+      token: 'TKN-321',
+      message: 'Your token has been approved successfully.',
+      status: '',
+      date: '2nd Nov 2025',
+      category: '',
+      priority: '',
+      isApproved: true,
+    ),
+    NotificationModel(
+      title: 'Mz.Ft',
+      token: 'TKN-114',
+      message:
+          'Create a comprehensive analytics dashboard module that ensures secure...',
+      status: 'Pending for approval.',
+      date: '31st Oct 2025',
+      category: 'Error',
+      priority: 'High',
+      isApproved: false,
+    ),
+  ];
 
   Future<bool> fetchInitData() async {
     return true;

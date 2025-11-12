@@ -294,22 +294,22 @@ class LoginController extends AppBaseController {
     return true;
   }
 
-  @override
-  void onClose() {
-    userController.dispose();
-    passwordController.dispose();
-    newPasswordController.dispose();
-    confirmNewPasswordController.dispose();
-    otpcontroller1.dispose();
-    otpcontroller2.dispose();
-    otpcontroller3.dispose();
-    otpcontroller4.dispose();
+  // @override
+  // void onClose() {
+  //   userController.dispose();
+  //   passwordController.dispose();
+  //   // newPasswordController.dispose();
+  //   // confirmNewPasswordController.dispose();
+  //   otpcontroller1.dispose();
+  //   otpcontroller2.dispose();
+  //   otpcontroller3.dispose();
+  //   otpcontroller4.dispose();
 
-    userFocusNode.dispose();
-    passwordFocusNode.dispose();
-    newpasswordFocusNode.dispose();
-    confirmpasswordFocusNode.dispose();
+  //   userFocusNode.dispose();
+  //   passwordFocusNode.dispose();
+  //   // newpasswordFocusNode.dispose();
+  //   // confirmpasswordFocusNode.dispose();
 
-    super.onClose();
-  }
+  //   super.onClose();
+  // }
 }

@@ -25,7 +25,7 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
         // controller: scrollController,
 
         padding: const EdgeInsets.only(
-            top: 20.0, left: 15.0, right: 15.0, bottom: 15.0),
+            top: 20.0, left: 20.0, right: 20.0, bottom: 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,11 +54,13 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
                   color: AppColorHelper().borderColor.withValues(alpha: 0.4)),
             ),
             height(12),
-            appText(sentVerificationDialogue.tr,
-                textAlign: TextAlign.center,
-                color: AppColorHelper().primaryTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 14),
+            Center(
+              child: appText(sentVerificationDialogue.tr,
+                  textAlign: TextAlign.center,
+                  color: AppColorHelper().primaryTextColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
+            ),
             height(25),
             Center(
               child: appText("an************90@gmail.com",

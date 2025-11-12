@@ -53,7 +53,21 @@ class HomeScreen extends AppBaseView<HomeController> {
                   appText(createtoken.tr, fontWeight: FontWeight.w500),
                   onPressed: () {
                 navigateTo(createTokenPageRoute);
-              })
+              }),
+              height(20),
+              buttonContainer(
+                  appText(settings.tr,
+                      color: AppColorHelper().primaryColor,
+                      fontWeight: FontWeight.w500), onPressed: () {
+                navigateTo(settingsPageRoute);
+              }),
+              height(20),
+              buttonContainer(
+                  color: AppColorHelper().primaryColor,
+                  appText(notification.tr, fontWeight: FontWeight.w500),
+                  onPressed: () {
+                navigateTo(notificationsPageRoute);
+              }),
             ],
           ),
         ),

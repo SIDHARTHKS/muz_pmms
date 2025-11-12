@@ -25,6 +25,7 @@ const String fbEidKey = 'fbEidKey';
 const String darkModeKey = 'darkModeKey';
 const String appRefreshTimeKey = 'appRefreshTimeKey';
 const String locationKey = 'locationKey';
+const String notificationKey = 'notificationKey';
 
 //Arguments key
 const String companiesKey = 'companiesKey';
@@ -220,12 +221,25 @@ const String newPassDialogue =
 const String resetPass = 'Reset Password ';
 const String newPass = 'New Password';
 const String confirmNewPass = ' Confirm New Password';
-const String passwordMustContain = 'Your Password must contain :';
+const String passwordMustContain = 'Your password must contain :';
 
 const String sixChar = 'Minimum 6 characters';
 const String capitalAndSmall = 'Capital and small letters';
-const String specialChar = 'A special Charcter';
+const String specialChar = 'A special charcter';
 const String digits = 'A digit 0-9';
 const String passwordresetSuccessfully = 'Password reset Successfully';
 const String passwordresetSuccessfullyDialogue =
     'Your password has been reset successfully. Please log in with your new credentials.';
+const String changePass = 'ChangePassword';
+const String darkTheme = 'DarkTheme';
+const String notification = 'Notifications';
+const String yourNotification = 'Your notification is ';
+const String enabled = 'enabled';
+const String disabled = 'disabled';
+const String now = 'now';
+const String latestVersion = 'Latest Version : ';
+
+const String noNotification = 'No Notification Yet';
+const String noNotificationDialogue =
+    'We’ll get back to you when there’s something new.';
+const String clearAll = 'Clearall';

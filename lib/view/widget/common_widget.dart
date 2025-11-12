@@ -145,37 +145,41 @@ AppBar appBar({
   );
 }
 
-AppBar customAppBar(String title, {VoidCallback? onTap}) => AppBar(
-      backgroundColor: AppColorHelper().backgroundColor,
-      automaticallyImplyLeading: false,
-      surfaceTintColor: Colors.transparent,
-      centerTitle: false,
-      leadingWidth: 45, // 👈 give enough space for the back icon
-      toolbarHeight: 45,
-      leading: GestureDetector(
-        onTap: goBack,
-        child: SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12, top: 15),
-            child: Icon(
-              Icons.arrow_back_ios_new,
-              size: 20,
-              color: AppColorHelper().primaryTextColor,
-            ),
-          ),
-        ),
-      ),
-
-      title: Padding(
-        padding: const EdgeInsets.only(top: 15.0),
-        child: appText(
-          title,
-          fontSize: 22,
+AppBar customAppBar(
+  String title, {
+  VoidCallback? onTap,
+  List<Widget>? actions,
+}) {
+  return AppBar(
+    backgroundColor: AppColorHelper().backgroundColor,
+    automaticallyImplyLeading: false,
+    surfaceTintColor: Colors.transparent,
+    centerTitle: false,
+    leadingWidth: 45,
+    toolbarHeight: 45,
+    leading: GestureDetector(
+      onTap: onTap ?? goBack,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12, top: 15),
+        child: Icon(
+          Icons.arrow_back_ios_new,
+          size: 20,
           color: AppColorHelper().primaryTextColor,
-          fontWeight: FontWeight.bold,
         ),
       ),
-    );
+    ),
+    title: Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: appText(
+        title,
+        fontSize: 20,
+        color: AppColorHelper().primaryTextColor,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    actions: actions, // 👈 optional, can be null
+  );
+}
 
 SizedBox appContainer({
   required Widget child,
@@ -190,27 +194,38 @@ SizedBox appContainer({
   return SizedBox(
     height: Get.height,
     width: Get.width,
-    child: Stack(
-      children: [
-        Positioned(
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            decoration: boxDecoration,
-            // child: Image.asset(
-            //   img ?? '',
-            //   fit: BoxFit.cover,
-            //   color: img != null
-            //       ? Colors.black.withValues(alpha: 0)
-            //       : Colors.black.withValues(alpha: 0.05),
-            //   colorBlendMode: BlendMode.colorBurn,
-            // ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0.0),
+              child: Container(
+                decoration: boxDecoration,
+                // child: Image.asset(
+                //   img ?? '',
+                //   fit: BoxFit.cover,
+                //   color: img != null
+                //       ? Colors.black.withValues(alpha: 0)
+                //       : Colors.black.withValues(alpha: 0.05),
+                //   colorBlendMode: BlendMode.colorBurn,
+                // ),
+              ),
+            ),
           ),
-        ),
-        enableSafeArea ? SafeArea(child: child) : child,
-      ],
+          enableSafeArea
+              ? SafeArea(child: child)
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  child: child,
+                ),
+        ],
+      ),
     ),
   );
 }
