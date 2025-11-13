@@ -10,8 +10,10 @@ class ChangePasswordController extends AppBaseController {
   final AuthService _authService = Get.find<AuthService>();
 
   //new pass fields
+  TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmNewPasswordController = TextEditingController();
+  final FocusNode currentpasswordFocusNode = FocusNode();
   final FocusNode newpasswordFocusNode = FocusNode();
   final FocusNode confirmpasswordFocusNode = FocusNode();
   RxBool isSixChar = false.obs;

@@ -60,6 +60,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/success.png
   AssetGenImage get success => const AssetGenImage('assets/icons/success.png');
 
+  /// File path: assets/icons/warning.png
+  AssetGenImage get warning => const AssetGenImage('assets/icons/warning.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         edit,
@@ -74,7 +77,8 @@ class $AssetsIconsGen {
         notificationSettings,
         rejected,
         search,
-        success
+        success,
+        warning
       ];
 }
 

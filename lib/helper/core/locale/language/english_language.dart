@@ -25,6 +25,7 @@ Map<String, String> enUS = {
   submit: 'Submit',
   save: 'Save',
   close: 'Close',
+  tryAgain: 'Try again',
   continueButton: 'Continue',
   confirm: 'Confirm',
   delete: 'Delete',
@@ -139,6 +140,8 @@ Map<String, String> enUS = {
   newPassDialogue:
       'Your new password must be different from previous used passwords.',
   resetPass: 'Reset Password ',
+  updatePass: 'Update Password ',
+  currentPass: 'Current Password',
   newPass: 'New Password',
   confirmNewPass: ' Confirm New Password',
   passwordMustContain: 'Your password must contain :',
@@ -160,4 +163,6 @@ Map<String, String> enUS = {
   noNotification: 'No Notification Yet',
   noNotificationDialogue: 'We’ll get back to you when there’s something new.',
   clearAll: 'Clear all',
+  passwordDialogue:
+      'Your new password must be different from previous used passwords.',
 };

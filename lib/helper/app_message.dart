@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/sizer.dart';
 import '../view/widget/common_widget.dart';
 import 'app_string.dart';
 import 'color_helper.dart';
@@ -10,7 +12,7 @@ import 'single_app.dart';
 void showSuccessSnackbar({
   String? title,
   required String message,
-  Duration? duration = const Duration(seconds: 10),
+  Duration? duration = const Duration(seconds: 3),
 }) {
   title ??= success.tr;
   showCustomSnackbar(
@@ -24,7 +26,7 @@ void showSuccessSnackbar({
 void showErrorSnackbar({
   String? title,
   required String message,
-  Duration? duration = const Duration(seconds: 10),
+  Duration? duration = const Duration(seconds: 3),
 }) {
   title ??= failureTitle.tr;
   showCustomSnackbar(
@@ -39,60 +41,94 @@ void showCustomSnackbar({
   required String title,
   required String message,
   bool isSuccess = true,
-  Duration? duration = const Duration(seconds: 2),
+  Duration? duration = const Duration(seconds: 3),
+  String? imageAsset, // ✅ optional custom image
   VoidCallback? closePressed,
 }) {
+  Get.closeAllSnackbars(); // optional — ensures no overlap
   Get.snackbar(
-    title,
-    titleText: appText(
-      title,
-      fontWeight: FontWeight.w700,
-      color: AppColorHelper().primaryTextColor,
-    ),
-    message,
+    '',
+    '',
     backgroundColor: isSuccess
-        ? AppColorHelper().backgroundColor
-        : AppColorHelper().backgroundColor,
-    messageText: appText(
-      message,
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-      color: AppColorHelper().primaryTextColor,
-    ),
-    duration: duration,
+        ? AppColorHelper().backgroundColor.withValues(alpha: 0.7)
+        : AppColorHelper().backgroundColor.withValues(alpha: 0.7),
     snackPosition: SnackPosition.TOP,
-    icon: isSuccess
-        ? const Icon(Icons.warning_amber_rounded, color: Colors.amberAccent)
-        : const Icon(
-            Icons.warning_amber_rounded,
-            color: Colors.amberAccent,
-          ),
-    shouldIconPulse: false,
-    borderRadius: 20.0,
-    margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+    duration: duration,
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
+    borderRadius: 6,
+    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+    barBlur: 10,
+    isDismissible: true,
+    forwardAnimationCurve: Curves.easeOutBack,
+    reverseAnimationCurve: Curves.easeInBack,
+    dismissDirection: DismissDirection.vertical,
     overlayColor: Colors.transparent,
-    barBlur: 5,
-    forwardAnimationCurve: Curves.linearToEaseOut,
-    reverseAnimationCurve: Curves.linearToEaseOut,
     boxShadows: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 20,
-        spreadRadius: 20,
+        color: Colors.black.withOpacity(0.05),
+        blurRadius: 10,
         offset: const Offset(0, 4),
       ),
     ],
-    dismissDirection: DismissDirection.horizontal,
-    mainButton: TextButton(
-      onPressed: () {
-        Get.back();
-        closePressed ?? ();
-      },
-      child: appText(close.tr,
-          fontSize: 16,
-          color: AppColorHelper().primaryTextColor,
-          fontWeight: FontWeight.w800),
+
+    // ✅ Custom title and layout
+    titleText: Stack(
+      children: [
+        // Main title + image row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            isSuccess
+                ? Icon(
+                    Icons.warning_amber_rounded,
+                    color: AppColorHelper().unreadNotification,
+                  )
+                : Image.asset(
+                    Assets.icons.warning.path,
+                    height: 20,
+                    width: 20,
+                    fit: BoxFit.contain,
+                  ),
+            width(10),
+            Expanded(
+              child: appText(
+                title,
+                fontWeight: FontWeight.w700,
+                color: AppColorHelper().secondaryTextColor,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+
+        // ✅ Close button on top-right
+        Positioned(
+          right: 5,
+          top: 4,
+          child: InkWell(
+            onTap: () {
+              Get.closeCurrentSnackbar(); // ✅ closes only the current snackbar
+              if (closePressed != null) closePressed();
+            },
+            child: Icon(
+              Icons.close,
+              size: 20,
+              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.9),
+            ),
+          ),
+        ),
+      ],
+    ),
+
+    // ✅ Custom message below
+    messageText: Padding(
+      padding: const EdgeInsets.only(top: 2.0, bottom: 8.0, right: 25),
+      child: appText(
+        message,
+        fontSize: 13,
+        fontWeight: FontWeight.w300,
+        color: AppColorHelper().secondaryTextColor,
+      ),
     ),
   );
 }

@@ -165,16 +165,21 @@ class HttpService extends GetxService {
           );
         } else if (baseResponse.errors!.first.code == '500') {
           appLog('Internal Error', logging: Logging.error);
-          Future.delayed(const Duration(milliseconds: 500),
-              () => showErroListDialog(baseResponse.errors!));
+          Future.delayed(
+              const Duration(milliseconds: 500),
+              () => showErrorSnackbar(
+                  message: baseResponse.errors![0].message ?? "Error"));
           // navigateToAndRemoveAll(loginPageRoute);
         } else if (baseResponse.success == false) {
           Future.delayed(const Duration(milliseconds: 500), () {
-            showErroListDialog(baseResponse.errors!);
+            showErrorSnackbar(
+                message: baseResponse.errors![0].message ?? "Error");
           });
         } else {
-          Future.delayed(const Duration(milliseconds: 500),
-              () => showErroListDialog(baseResponse.errors!));
+          Future.delayed(
+              const Duration(milliseconds: 500),
+              () => showErrorSnackbar(
+                  message: baseResponse.errors![0].message ?? "Error"));
         }
       }
 

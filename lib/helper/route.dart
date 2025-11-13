@@ -4,6 +4,7 @@ import 'package:pmms/binding/create_token_binding.dart';
 import 'package:pmms/binding/notification_binding.dart';
 import 'package:pmms/binding/settings_binding.dart';
 import 'package:pmms/binding/tasks_binding.dart';
+import 'package:pmms/view/changePassword/change_password_screen.dart';
 import 'package:pmms/view/create/create_token_screen.dart';
 import 'package:pmms/view/login/creat_password_screen.dart';
 import 'package:pmms/view/notifications/notification_screen.dart';
@@ -29,6 +30,8 @@ const tasksPageRoute = '/mytasks';
 const taskDetailsPageRoute = '/tasksDetails';
 const createTokenPageRoute = '/createToken';
 const settingsPageRoute = '/settings';
+const changePasswordPageRoute = '/changePassword';
+
 const notificationsPageRoute = '/notifications';
 
 final routes = [
@@ -87,6 +90,12 @@ final routes = [
       name: settingsPageRoute,
       page: () => const SettingsScreen(),
       binding: const SettingsBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: changePasswordPageRoute,
+      page: () => const ChangePasswordScreen(),
+      binding: const ChangePasswordBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
   GetPage(

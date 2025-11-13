@@ -77,6 +77,7 @@ const String submit = 'submit';
 const String send = 'send';
 const String save = 'save';
 const String close = 'close';
+const String tryAgain = 'Try again';
 const String continueButton = 'continueButton';
 const String confirm = 'confirm';
 const String delete = 'delete';
@@ -219,6 +220,8 @@ const String createNewPassword = 'Create New Password';
 const String newPassDialogue =
     'Your new password must be different from previous used passwords.';
 const String resetPass = 'Reset Password ';
+const String updatePass = 'Update Password ';
+const String currentPass = 'Current Password';
 const String newPass = 'New Password';
 const String confirmNewPass = ' Confirm New Password';
 const String passwordMustContain = 'Your password must contain :';
@@ -243,3 +246,5 @@ const String noNotification = 'No Notification Yet';
 const String noNotificationDialogue =
     'We’ll get back to you when there’s something new.';
 const String clearAll = 'Clearall';
+const String passwordDialogue =
+    'yournewpasswordmustbedifferentfromprevioususedpasswords.';

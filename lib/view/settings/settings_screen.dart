@@ -190,36 +190,41 @@ class SettingsScreen extends AppBaseView<SettingsController> {
     );
   }
 
-  Container _changePass() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      height: 60,
-      decoration: BoxDecoration(
-          color: AppColorHelper().cardColor,
-          borderRadius: BorderRadius.circular(4)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Image.asset(
-                Assets.icons.changePass.path,
-                scale: 4,
-              ),
-              width(10),
-              appText(changePass.tr,
-                  color: AppColorHelper().primaryTextColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500)
-            ],
-          ),
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: AppColorHelper().primaryTextColor,
-            size: 20,
-          )
-        ],
+  GestureDetector _changePass() {
+    return GestureDetector(
+      onTap: () {
+        navigateTo(changePasswordPageRoute);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        height: 60,
+        decoration: BoxDecoration(
+            color: AppColorHelper().cardColor,
+            borderRadius: BorderRadius.circular(4)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Image.asset(
+                  Assets.icons.changePass.path,
+                  scale: 4,
+                ),
+                width(10),
+                appText(changePass.tr,
+                    color: AppColorHelper().primaryTextColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500)
+              ],
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppColorHelper().primaryTextColor,
+              size: 20,
+            )
+          ],
+        ),
       ),
     );
   }

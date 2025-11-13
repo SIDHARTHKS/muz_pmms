@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/core/base/app_base_response.dart';
 import 'package:pmms/view/login/bottomsheet/forget_password_bottomsheet.dart';
+import 'package:pmms/view/widget/dialog/http_error_list_dialog.dart';
 import '../../controller/login_controller.dart';
 import '../../gen/assets.gen.dart';
 import '../../helper/app_string.dart';
@@ -120,6 +122,19 @@ class LoginScreen extends AppBaseView<LoginController> {
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500,
                           ),
+                    //           onPressed: () {
+                    //   List<ResponseError> errors = [
+                    //     ResponseError(message: "Invalid credentials"),
+                    //     ResponseError(
+                    //         message:
+                    //             "Your login attempt was unsuccessful due to invalid credentials. Kindly review your username and password.")
+                    //   ];
+
+                    //   showDialog(
+                    //     context: Get.context!,
+                    //     builder: (_) => HttpErrorListDialog(errors: errors),
+                    //   );
+                    // }
                     onPressed: () async {
                       // Disable button spam
                       if (controller.rxIsLoading.value) return;
@@ -131,6 +146,7 @@ class LoginScreen extends AppBaseView<LoginController> {
                             navigateToAndRemoveAll(homePageRoute);
                           });
                         }
+
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           navigateToAndRemoveAll(homePageRoute);
                         });
