@@ -29,6 +29,10 @@ class TasksController extends AppBaseController
   var rxSelectedPriority = <String>[].obs;
   var rxSelectedRequestTypes = <String>[].obs;
 
+  // description edit
+  TextEditingController descriptionController = TextEditingController();
+  //
+
   @override
   Future<void> onInit() async {
     // await _setArguments();

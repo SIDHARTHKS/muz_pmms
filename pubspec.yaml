@@ -72,15 +72,16 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/fonts/
 
 
-# flutter_launcher_icons:
-#   android: true
-#   ios: true
-#   adaptive_icon_background: "assets/logo.png"  # Background image
-#   adaptive_icon_foreground: "assets/logo.png"  # Foreground logo
-#   image_path: "assets/logo.png" # Fallback image
-#   remove_alpha_ios: true
+flutter_launcher_icons:
+  android: true
+  ios: true
+  adaptive_icon_background: "assets/logo.png"  # Background image
+  adaptive_icon_foreground: "assets/logo.png"  # Foreground logo
+  image_path: "assets/logo.png" # Fallback image
+  remove_alpha_ios: true
 
 
   fonts:

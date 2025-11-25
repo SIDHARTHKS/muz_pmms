@@ -1,0 +1,175 @@
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:pmms/helper/navigation.dart';
+import 'package:pmms/helper/route.dart';
+import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/view/createStory/pages/create_story_page1.dart';
+import 'package:pmms/view/createStory/pages/create_story_page2.dart';
+import '../helper/core/base/app_base_controller.dart';
+
+class CreateStoryController extends AppBaseController
+    with GetSingleTickerProviderStateMixin {
+  //
+  final isInitCalled = false.obs;
+
+  // textfield
+  final TextEditingController storyTiteController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController hoursController = TextEditingController();
+  final TextEditingController minutesController = TextEditingController();
+
+  // pages
+  RxInt rxCurrentPageIndex = 0.obs;
+
+  // toggle
+  final RxBool rxToggle = false.obs;
+
+  //filter
+  Rxn<CommonDropdownResponse> rxSelectedStoryType =
+      Rxn<CommonDropdownResponse>();
+  Rxn<CommonDropdownResponse> rxSelectedAsignee = Rxn<CommonDropdownResponse>();
+  Rxn<CommonDropdownResponse> rxSelectedModule = Rxn<CommonDropdownResponse>();
+  Rxn<CommonDropdownResponse> rxSelectedOption = Rxn<CommonDropdownResponse>();
+
+  //dates
+  DateTime rxRequestedOn = DateTime.now();
+  DateTime rxDueDate = DateTime.now();
+
+  DateTime rxRequestDate = DateTime.now();
+  DateTime rxPlannedStartDate = DateTime.now();
+  DateTime rxPlannedEndDate = DateTime.now();
+
+  @override
+  Future<void> onInit() async {
+    isInitCalled(true);
+    super.onInit();
+  }
+
+  ////////////////////////////////////////////////////////////////////////////// pages
+
+  List<Widget> pageList = [
+    const CreateStoryPage1(),
+    const CreateStoryPage2(),
+  ];
+
+  void nextPage(bool isForward) {
+    if (isForward) {
+      if (rxCurrentPageIndex.value != pageList.length) {
+        rxCurrentPageIndex.value++;
+      } else {
+        navigateTo(homePageRoute);
+      }
+    } else {
+      if (rxCurrentPageIndex.value != 0) {
+        rxCurrentPageIndex.value--;
+      }
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////// filter
+
+  void setDefaultFilters() {
+    rxSelectedStoryType.value = storyTypeList[0];
+    rxSelectedAsignee.value = assigneeList[0];
+    rxSelectedModule.value = moduleTypeList[0];
+    rxSelectedOption.value = optionTypeList[0];
+
+    // time
+    hoursController.text = "00";
+    minutesController.text = "00";
+  }
+
+  final List<CommonDropdownResponse> storyTypeList = [
+    CommonDropdownResponse(
+      mccId: '1',
+      mccCode: 'DEVELOPMENT',
+      mccName: 'Development',
+    ),
+    CommonDropdownResponse(
+      mccId: '2',
+      mccCode: 'BUG',
+      mccName: 'Bug',
+    ),
+    CommonDropdownResponse(
+      mccId: '3',
+      mccCode: 'FEATURE',
+      mccName: 'Feature',
+    ),
+    CommonDropdownResponse(
+      mccId: '4',
+      mccCode: 'IMPROVEMENT',
+      mccName: 'Improvement',
+    ),
+    CommonDropdownResponse(
+      mccId: '5',
+      mccCode: 'TASK',
+      mccName: 'Task',
+    ),
+    CommonDropdownResponse(
+      mccId: '6',
+      mccCode: 'SPIKE',
+      mccName: 'Spike / Research',
+    ),
+  ];
+
+  final List<CommonDropdownResponse> assigneeList = [
+    CommonDropdownResponse(
+        mccId: '1', mccCode: 'USR1', mccName: 'Annette Black'),
+    CommonDropdownResponse(mccId: '2', mccCode: 'USR2', mccName: 'Jane Smith'),
+    CommonDropdownResponse(
+        mccId: '3', mccCode: 'USR3', mccName: 'Alex Johnson'),
+    CommonDropdownResponse(mccId: '4', mccCode: 'USR4', mccName: 'Priya Menon'),
+  ];
+
+  final List<CommonDropdownResponse> moduleTypeList = [
+    CommonDropdownResponse(
+      mccId: '1',
+      mccCode: 'NA',
+      mccName: 'NA',
+    ),
+    CommonDropdownResponse(
+      mccId: '2',
+      mccCode: 'MODULE1',
+      mccName: 'Module1',
+    ),
+    CommonDropdownResponse(
+      mccId: '3',
+      mccCode: 'MODULE2',
+      mccName: 'Module2',
+    ),
+    CommonDropdownResponse(
+      mccId: '4',
+      mccCode: 'MODULE3',
+      mccName: 'Module3',
+    ),
+  ];
+  final List<CommonDropdownResponse> optionTypeList = [
+    CommonDropdownResponse(
+      mccId: '1',
+      mccCode: 'NA',
+      mccName: 'NA',
+    ),
+    CommonDropdownResponse(
+      mccId: '2',
+      mccCode: 'OPTION1',
+      mccName: 'Option1',
+    ),
+    CommonDropdownResponse(
+      mccId: '3',
+      mccCode: 'OPTION2',
+      mccName: 'Option2',
+    ),
+    CommonDropdownResponse(
+      mccId: '4',
+      mccCode: 'OPTION3',
+      mccName: 'Option3',
+    ),
+  ];
+
+  //////////////////////////////////////////////////////////////////////////////
+
+  Future<bool> fetchInitData() async {
+    setDefaultFilters();
+
+    return true;
+  }
+}

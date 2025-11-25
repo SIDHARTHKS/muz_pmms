@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/core/base/app_base_response.dart';
 import 'package:pmms/view/login/bottomsheet/forget_password_bottomsheet.dart';
 import 'package:pmms/view/widget/dialog/http_error_list_dialog.dart';
@@ -123,17 +124,10 @@ class LoginScreen extends AppBaseView<LoginController> {
                             fontWeight: FontWeight.w500,
                           ),
                     //           onPressed: () {
-                    //   List<ResponseError> errors = [
-                    //     ResponseError(message: "Invalid credentials"),
-                    //     ResponseError(
-                    //         message:
-                    //             "Your login attempt was unsuccessful due to invalid credentials. Kindly review your username and password.")
-                    //   ];
-
-                    //   showDialog(
-                    //     context: Get.context!,
-                    //     builder: (_) => HttpErrorListDialog(errors: errors),
-                    //   );
+                    //   showErrorSnackbar(
+                    //       title: "Invalid Credentials",
+                    //       message:
+                    //           "Login failed. Please check your username and password.");
                     // }
                     onPressed: () async {
                       // Disable button spam

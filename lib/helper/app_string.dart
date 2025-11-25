@@ -175,6 +175,8 @@ const String allRightReserved = '2023  |  All rights reserved';
 //custom
 const String mytask = 'my tasks';
 const String createtoken = 'createtoken';
+const String addNewStory = 'AddNewstory';
+const String createstory = 'createstory';
 const String generate = 'generate';
 const String generateToken = 'generateToken';
 const String viewToken = 'View this token';
@@ -183,6 +185,8 @@ const String requestType = 'requestType';
 const String letsstartwiththebasics = 'let’sstartwiththebasics';
 const String createTokenDialogue =
     'Please select the suitable category where this token should be placed for proper organization.';
+const String createStoryDialogue =
+    'Please enter your story to ensure better work tracking and management.';
 const String tokenDescription = 'tokenDescription';
 const String description = 'description';
 const String addMoreDescription = 'addMoreDescriptions';
@@ -230,7 +234,7 @@ const String sixChar = 'Minimum 6 characters';
 const String capitalAndSmall = 'Capital and small letters';
 const String specialChar = 'A special charcter';
 const String digits = 'A digit 0-9';
-const String passwordresetSuccessfully = 'Password reset Successfully';
+const String passwordresetSuccessfully = 'Password updated Successfully';
 const String passwordresetSuccessfullyDialogue =
     'Your password has been reset successfully. Please log in with your new credentials.';
 const String changePass = 'ChangePassword';
@@ -248,3 +252,12 @@ const String noNotificationDialogue =
 const String clearAll = 'Clearall';
 const String passwordDialogue =
     'yournewpasswordmustbedifferentfromprevioususedpasswords.';
+const String storyTitle = 'StoryTitle';
+const String shortDescription = 'ShortDescription';
+const String storyType = 'StoryType';
+const String estimateTime = 'EstimateTime';
+const String requestDate = 'Request Date';
+const String plannedStartDate = 'Planned Start Date';
+const String plannedEndDate = 'Planned End Date';
+
+const String generateStoryNow = 'wouldyouliketogeneratethestorynnow?';

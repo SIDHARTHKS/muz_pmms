@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:pmms/binding/change_password_binding.dart';
+import 'package:pmms/binding/create_story_binding.dart';
 import 'package:pmms/binding/create_token_binding.dart';
 import 'package:pmms/binding/notification_binding.dart';
 import 'package:pmms/binding/settings_binding.dart';
 import 'package:pmms/binding/tasks_binding.dart';
 import 'package:pmms/view/changePassword/change_password_screen.dart';
-import 'package:pmms/view/create/create_token_screen.dart';
+import 'package:pmms/view/createStory/create_story_screen.dart';
+import 'package:pmms/view/createToken/create_token_screen.dart';
 import 'package:pmms/view/login/creat_password_screen.dart';
 import 'package:pmms/view/notifications/notification_screen.dart';
 import 'package:pmms/view/settings/settings_screen.dart';
@@ -29,6 +31,7 @@ const homePageRoute = '/home';
 const tasksPageRoute = '/mytasks';
 const taskDetailsPageRoute = '/tasksDetails';
 const createTokenPageRoute = '/createToken';
+const createStoryPageRoute = '/createStory';
 const settingsPageRoute = '/settings';
 const changePasswordPageRoute = '/changePassword';
 
@@ -53,7 +56,7 @@ final routes = [
       page: () => LoginScreen(),
       binding: const LoginBinding(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 1050)),
+      transitionDuration: const Duration(milliseconds: 450)),
   GetPage(
       name: createPasswordPageRoute,
       page: () => CreatePasswordScreen(),
@@ -86,6 +89,12 @@ final routes = [
       binding: const CreateTokenBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: createStoryPageRoute,
+      page: () => const CreateStoryScreen(),
+      binding: const CreateStoryBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 350)),
   GetPage(
       name: settingsPageRoute,
       page: () => const SettingsScreen(),

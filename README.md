@@ -13,11 +13,7 @@ https://www.launchclub.io/blog/flutter-flavors-environment-and-app-icons
   Run the below command for create flavor app icons for android and ios
 -- flutter pub run flutter_launcher_icons:main -f flutter_launcher_icons*
 
-## Run falvor app
-flutter run --flavor demoUat -t lib/main_demo_uat.dart 
-flutter run --flavor demoProd -t lib/main_demo_prod.dart 
-flutter run --flavor seemattiUat -t lib/main_seematti_uat.dart 
-flutter run --flavor seemattiProd -t lib/main_seematti_prod.dart 
+
 
 ## Build falvor app
 

@@ -95,6 +95,8 @@ Map<String, String> enUS = {
 
   mytask: 'My Tasks',
   createtoken: 'Create Token',
+  addNewStory: 'Add New story',
+  createstory: 'Create Story',
   generate: 'Generate',
   generateToken: 'Generate Token',
   viewToken: 'View this token',
@@ -103,6 +105,8 @@ Map<String, String> enUS = {
   letsstartwiththebasics: 'Let’s start with the basics',
   createTokenDialogue:
       'Please select the suitable category where this token should be placed for proper organization.',
+  createStoryDialogue:
+      'Please enter your story to ensure better work tracking and management.',
   tokenDescription: 'Token Description',
   description: 'Description',
   addMoreDescription: 'Add More Descriptions',
@@ -122,7 +126,7 @@ Map<String, String> enUS = {
   yournewtoken: 'Your new token',
   hasbeengeneratedsuccessfully: 'has been generated successfully',
   fillRemainingFields: 'Fill Remaining Fields',
-  generateTokenNow: 'Would you like to generate the toke nnow?',
+  generateTokenNow: 'Would you like to generate the token now?',
   generateTokenNowDialogue:
       'Some optional fields are still empty — you can fill them later if needed.',
   applyDate: 'Apply Date',
@@ -149,9 +153,9 @@ Map<String, String> enUS = {
   capitalAndSmall: 'Capital and small letters',
   specialChar: 'A special charcter',
   digits: 'A digit 0-9',
-  passwordresetSuccessfully: 'Password reset Successfully',
+  passwordresetSuccessfully: 'Password updated Successfully',
   passwordresetSuccessfullyDialogue:
-      'Your password has been reset successfully. Please log in with your new credentials.',
+      'Your password has been updated successfully. Please log in with your new credentials.',
   changePass: 'Change Password',
   darkTheme: 'Dark Theme',
   notification: 'Notification',
@@ -165,4 +169,13 @@ Map<String, String> enUS = {
   clearAll: 'Clear all',
   passwordDialogue:
       'Your new password must be different from previous used passwords.',
+  storyTitle: 'StoryTitle',
+  shortDescription: 'Short Description',
+  storyType: 'Story Type',
+  estimateTime: 'Estimate Time',
+  requestDate: 'Request Date',
+  plannedStartDate: 'Planned Start Date',
+  plannedEndDate: 'Planned End Date',
+
+  generateStoryNow: 'Would you like to create the story now?',
 };

@@ -56,16 +56,25 @@ class HomeScreen extends AppBaseView<HomeController> {
               }),
               height(20),
               buttonContainer(
-                  appText(settings.tr,
-                      color: AppColorHelper().primaryColor,
-                      fontWeight: FontWeight.w500), onPressed: () {
-                navigateTo(settingsPageRoute);
+                  appText(
+                    createstory.tr,
+                    color: AppColorHelper().primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ), onPressed: () {
+                navigateTo(createStoryPageRoute);
               }),
               height(20),
               buttonContainer(
                   color: AppColorHelper().primaryColor,
-                  appText(notification.tr, fontWeight: FontWeight.w500),
+                  appText(settings.tr, fontWeight: FontWeight.w500),
                   onPressed: () {
+                navigateTo(settingsPageRoute);
+              }),
+              height(20),
+              buttonContainer(
+                  appText(notification.tr,
+                      color: AppColorHelper().primaryColor,
+                      fontWeight: FontWeight.w500), onPressed: () {
                 navigateTo(notificationsPageRoute);
               }),
             ],

@@ -6,8 +6,10 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/date_helper.dart';
+import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/view/tasks/bottomsheet/description_bottomsheet.dart';
 import 'package:pmms/view/tasks/bottomsheet/edit_bottomsheet.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import '../dialogues/rejected_dialogue.dart';
@@ -176,15 +178,46 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: double
-                        .infinity, // takes full width, but height adapts to content
-                    child: appText(
-                      task.description,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: AppColorHelper().primaryTextColor,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: double
+                              .infinity, // takes full width, but height adapts to content
+                          child: appText(
+                            task.description,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: AppColorHelper().primaryTextColor,
+                          ),
+                        ),
+                      ),
+                      width(10),
+                      GestureDetector(
+                        onTap: () {
+                          controller.descriptionController.text =
+                              task.description;
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: Get.context!,
+                            builder: (context) {
+                              return DescriptionBottomSheet(
+                                  title: description.tr,
+                                  hintText: "",
+                                  controller: controller.descriptionController,
+                                  onClose: () {
+                                    goBack();
+                                  });
+                            },
+                          );
+                        },
+                        child: Image.asset(
+                          Assets.icons.edit.path,
+                          height: 18,
+                          width: 18,
+                        ),
+                      ),
+                    ],
                   ),
                   height(15),
                   divider(

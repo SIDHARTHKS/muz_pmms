@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/model/dropdown_model.dart';
-import 'package:pmms/view/create/pages/create_token_page1.dart';
-import 'package:pmms/view/create/pages/create_token_page2.dart';
-import 'package:pmms/view/create/pages/create_token_page3.dart';
+import 'package:pmms/view/createToken/pages/create_token_page1.dart';
+import 'package:pmms/view/createToken/pages/create_token_page2.dart';
+import 'package:pmms/view/createToken/pages/create_token_page3.dart';
 import '../helper/core/base/app_base_controller.dart';
 
 class CreateTokenController extends AppBaseController

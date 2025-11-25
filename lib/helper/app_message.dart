@@ -49,14 +49,13 @@ void showCustomSnackbar({
   Get.snackbar(
     '',
     '',
-    backgroundColor: isSuccess
-        ? AppColorHelper().backgroundColor.withValues(alpha: 0.7)
-        : AppColorHelper().backgroundColor.withValues(alpha: 0.7),
+    backgroundColor:
+        isSuccess ? AppColorHelper().cardColor : AppColorHelper().cardColor,
     snackPosition: SnackPosition.TOP,
     duration: duration,
-    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
+    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
     borderRadius: 6,
-    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
     barBlur: 10,
     isDismissible: true,
     forwardAnimationCurve: Curves.easeOutBack,
@@ -85,17 +84,17 @@ void showCustomSnackbar({
                   )
                 : Image.asset(
                     Assets.icons.warning.path,
-                    height: 20,
-                    width: 20,
+                    height: 18,
+                    width: 18,
                     fit: BoxFit.contain,
                   ),
             width(10),
             Expanded(
               child: appText(
                 title,
-                fontWeight: FontWeight.w700,
-                color: AppColorHelper().secondaryTextColor,
-                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColorHelper().primaryTextColor,
+                fontSize: 17,
               ),
             ),
           ],
@@ -104,7 +103,7 @@ void showCustomSnackbar({
         // ✅ Close button on top-right
         Positioned(
           right: 5,
-          top: 4,
+          top: 2,
           child: InkWell(
             onTap: () {
               Get.closeCurrentSnackbar(); // ✅ closes only the current snackbar
@@ -122,12 +121,12 @@ void showCustomSnackbar({
 
     // ✅ Custom message below
     messageText: Padding(
-      padding: const EdgeInsets.only(top: 2.0, bottom: 8.0, right: 25),
+      padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
       child: appText(
         message,
-        fontSize: 13,
-        fontWeight: FontWeight.w300,
-        color: AppColorHelper().secondaryTextColor,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        color: AppColorHelper().primaryTextColor,
       ),
     ),
   );

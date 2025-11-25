@@ -113,9 +113,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               ),
               dropdownStyleData: DropdownStyleData(
                 maxHeight: 250,
-                width: Get.width * 0.925,
+                width: Get.width * 0.9,
                 elevation: 0,
-                offset: const Offset(-16, -1),
+                offset: const Offset(-16, -8),
                 decoration: BoxDecoration(
                   color: colors.cardColor,
                   borderRadius: BorderRadius.circular(4),
