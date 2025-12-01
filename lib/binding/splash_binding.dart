@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:getx_base_classes/getx_base_classes.dart';
+import 'package:pmms/service/task_services.dart';
 
 import '../controller/splash_controller.dart';
 import '../service/auth_service.dart';
@@ -11,5 +12,6 @@ class SplashBinding extends BaseBinding {
   void injectDependencies() {
     Get.lazyPut<SplashController>(() => SplashController(), fenix: true);
     Get.lazyPut<AuthService>(() => AuthService(), fenix: true);
+    Get.lazyPut<TaskServices>(() => TaskServices(), fenix: true);
   }
 }

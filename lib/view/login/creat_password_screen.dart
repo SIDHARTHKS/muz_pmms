@@ -52,7 +52,7 @@ class CreatePasswordScreen extends AppBaseView<LoginController> {
 
   Future<void> _initialize() async {
     await Future.delayed(const Duration(milliseconds: 180));
-    await controller.callChangePassword();
+    // await controller.callChangePassword();
   }
 
   Widget _buildBody() {

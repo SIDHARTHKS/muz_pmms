@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/app_string.dart';
+import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/view/tasks/tabviews/story_view.dart';
+import 'package:pmms/view/tasks/tabviews/tokens_view.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
@@ -12,16 +16,14 @@ class TasksController extends AppBaseController
   //
   final isInitCalled = false.obs;
 
+  // tab
+  RxInt rxTabIndex = 0.obs;
+
   // date
   DateTimeRange? selectedDateRange;
 
   // searchbar
   TextEditingController searchController = TextEditingController();
-  //
-
-  // taskdetail
-  Rxn<TaskModel> rxTaskDetail = Rxn<TaskModel>();
-  //
 
   // filter
   var rxSelectedTokenTypes = <String>[].obs;
@@ -29,8 +31,24 @@ class TasksController extends AppBaseController
   var rxSelectedPriority = <String>[].obs;
   var rxSelectedRequestTypes = <String>[].obs;
 
+  RxInt tokenTypeFilterCount = 0.obs;
+  RxInt projectTypeFilterCount = 0.obs;
+  RxInt priorityTypeFilterCount = 0.obs;
+  RxInt requestTypeFilterCount = 0.obs;
+
+  RxInt totalFilterCount = 0.obs;
+
   // description edit
   TextEditingController descriptionController = TextEditingController();
+
+  // tasks
+  RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
+
+  RxList<TaskResponse> rxTokens = <TaskResponse>[].obs;
+  RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
+
+  Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
+
   //
 
   @override
@@ -38,7 +56,8 @@ class TasksController extends AppBaseController
     // await _setArguments();
     isInitCalled(true);
     setDefaultFilters();
-    setDateRange();
+    // setDateRange();
+    _setArguments();
     super.onInit();
   }
 
@@ -51,33 +70,98 @@ class TasksController extends AppBaseController
 
   void setDefaultFilters() {
     if (rxSelectedTokenTypes.isEmpty) {
-      rxSelectedTokenTypes.add("Pending");
+      // rxSelectedTokenTypes.add("Pending");
     }
     if (rxSelectedProjects.isEmpty) {
-      rxSelectedProjects.add("General");
+      // rxSelectedProjects.add("General");
     }
     if (rxSelectedPriority.isEmpty) {
-      rxSelectedPriority.add("");
+      // rxSelectedPriority.add("");
     }
     if (rxSelectedRequestTypes.isEmpty) {
-      rxSelectedRequestTypes.add("");
+      // rxSelectedRequestTypes.add("");
     }
+    checkFilters();
   }
 
   Future<void> _setArguments() async {
     var arguments = Get.arguments;
+    var task = arguments[tasksDataKey];
     if (arguments != null) {
+      rxTasksResponse(task);
+      await filterTasks();
     } else {
       showErrorSnackbar(
-          message: "Unable To Fetch Locations. Please Login Again");
+          message: "Unable To Fetch Task Details. Please Login Again");
       navigateToAndRemoveAll(loginPageRoute);
     }
   }
 
-  //
+  // Future<void> setFilters() async {
+  //   try {
+  //     showLoader();
+  //     String id = myApp.preferenceHelper!.getString(employeeIdKey);
+  //     var tasksRequestsList = [
+  //       CommonRequest(attribute: "transType", value: "LIST"),
+  //       CommonRequest(attribute: "transSubType", value: "DropDown"),
+  //       CommonRequest(attribute: "EmployeeID", value: id),
+  //       CommonRequest(attribute: "dateFrom", value: ""),
+  //     ];
+  //     List<TaskResponse>? response =
+  //         await _taskServices.getTasks(tasksRequestsList);
+  //     if (response != null) {
+  //       rxTasksResponse.value = response;
+  //       return true;
+  //     }
+  //   } catch (e) {
+  //     appLog('$exceptionMsg $e', logging: Logging.error);
+  //   } finally {
+  //     hideLoader();
+  //   }
+  //   return false;
+  // }
 
-  void setTask(TaskModel task) {
+  Future<void> filterTasks() async {
+    rxTokens.clear();
+    rxStory.clear();
+    for (int i = 0; i < rxTasksResponse.length; i++) {
+      if (rxTasksResponse[i].issueType == "TOKEN") {
+        rxTokens.add(rxTasksResponse[i]);
+      } else {
+        rxStory.add(rxTasksResponse[i]);
+      }
+    }
+  }
+
+  void resetsetFilters() {
+    rxSelectedTokenTypes.clear();
+    rxSelectedProjects.clear();
+    rxSelectedPriority.clear();
+    rxSelectedRequestTypes.clear();
+    checkFilters();
+  }
+
+  void setTask(TaskResponse task) {
     rxTaskDetail(task);
+  }
+
+  void checkFilters() {
+    tokenTypeFilterCount.value = rxSelectedTokenTypes.length;
+    projectTypeFilterCount.value = rxSelectedProjects.length;
+    priorityTypeFilterCount.value = rxSelectedPriority.length;
+    requestTypeFilterCount.value = rxSelectedRequestTypes.length;
+
+    totalFilterCount.value = tokenTypeFilterCount.value +
+        projectTypeFilterCount.value +
+        priorityTypeFilterCount.value +
+        requestTypeFilterCount.value;
+  }
+
+  List rxTabLabel = [token.tr, story.tr];
+  List rxTabScreens = [const TokensView(), const StoryView()];
+
+  void switchTab(int index) {
+    rxTabIndex(index);
   }
 
   // filters
@@ -152,97 +236,7 @@ class TasksController extends AppBaseController
     'Modification',
   ];
 
-  // mock data
-  final List<TaskModel> mockTasks = [
-    TaskModel(
-      title: "Real-time Notification System",
-      requestedBy: "Muziris",
-      requestedDate: DateTime(2025, 9, 8),
-      type: "Modification",
-      clientRefId: "00085",
-      tokenId: "TKN-782",
-      priority: "High",
-      description:
-          "We will build a robust real-time notification system that ensures users receive timely updates through both push notifications.",
-      project: "Payroll",
-      team: "Service",
-      module: "Back Office",
-      option: "Notification",
-      assignee: "Annette Black",
-    ),
-    TaskModel(
-      title: "Employee Attendance Tracker",
-      requestedBy: "GlobalTech",
-      requestedDate: DateTime(2025, 8, 12),
-      type: "New Feature",
-      clientRefId: "00072",
-      tokenId: "TKN-681",
-      priority: "Medium",
-      description:
-          "Develop an attendance tracker module that integrates with existing payroll and leave systems for automated daily updates.",
-      project: "HR Suite",
-      team: "Development",
-      module: "Attendance",
-      option: "Integration",
-      assignee: "Cameron Diaz",
-    ),
-    TaskModel(
-      title: "Monthly Report Automation",
-      requestedBy: "InfyCorp",
-      requestedDate: DateTime(2025, 7, 5),
-      type: "Enhancement",
-      clientRefId: "00063",
-      tokenId: "TKN-543",
-      priority: "Low",
-      description:
-          "Automate the generation of monthly performance reports to reduce manual processing and errors.",
-      project: "Analytics",
-      team: "Data",
-      module: "Reports",
-      option: "Automation",
-      assignee: "Jacob Jones",
-    ),
-    TaskModel(
-      title: "User Access Control Update",
-      requestedBy: "HexaSoft",
-      requestedDate: DateTime(2025, 6, 19),
-      type: "Modification",
-      clientRefId: "00049",
-      tokenId: "TKN-491",
-      priority: "High",
-      description:
-          "Revamp user role and permission management to support dynamic access levels and new audit logging.",
-      project: "Admin Portal",
-      team: "Security",
-      module: "Access Control",
-      option: "Permissions",
-      assignee: "Theresa Webb",
-    ),
-    TaskModel(
-      title: "Expense Management Revamp",
-      requestedBy: "FinCore",
-      requestedDate: DateTime(2025, 5, 23),
-      type: "Enhancement",
-      clientRefId: "00038",
-      tokenId: "TKN-412",
-      priority: "Medium",
-      description:
-          "Redesign the expense module UI and integrate OCR-based receipt uploads for faster claim processing.",
-      project: "Finance Suite",
-      team: "UX/UI",
-      module: "Expenses",
-      option: "UI Revamp",
-      assignee: "Leslie Alexander",
-    ),
-  ];
-
-  //
-  Future<void> sampleDelya() async {
-    await Future.delayed(const Duration(seconds: 3)); // or 100 for test
-  }
-
   Future<bool> fetchInitData() async {
-    // await sampleDelya();
     return true;
   }
 }

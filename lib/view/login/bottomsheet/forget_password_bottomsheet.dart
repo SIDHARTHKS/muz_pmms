@@ -21,11 +21,8 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
     return appScaffold(body: _buildBody());
   }
 
-  Widget _buildBody() => SingleChildScrollView(
-        // controller: scrollController,
-
-        padding: const EdgeInsets.only(
-            top: 20.0, left: 20.0, right: 20.0, bottom: 15.0),
+  Widget _buildBody() => Padding(
+        padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -106,16 +103,17 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
               ],
             ),
             height(40),
-            buttonContainer(
-              onPressed: () {
-                navigateToAndRemoveAll(createPasswordPageRoute);
-              },
-              color: AppColorHelper().primaryColor,
-              appText(verifyOtp.tr,
-                  color: AppColorHelper().textColor,
-                  fontWeight: FontWeight.w500),
+            SafeArea(
+              child: buttonContainer(
+                onPressed: () {
+                  navigateToAndRemoveAll(createPasswordPageRoute);
+                },
+                color: AppColorHelper().primaryColor,
+                appText(verifyOtp.tr,
+                    color: AppColorHelper().textColor,
+                    fontWeight: FontWeight.w500),
+              ),
             ),
-            height(10),
           ],
         ),
       );

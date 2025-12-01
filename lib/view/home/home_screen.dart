@@ -4,6 +4,7 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
+import 'package:pmms/helper/single_app.dart';
 import 'package:pmms/helper/sizer.dart';
 import '../../controller/home_controller.dart';
 import '../../helper/core/base/app_base_view.dart';
@@ -32,6 +33,7 @@ class HomeScreen extends AppBaseView<HomeController> {
   }
 
   Widget _buildBody() {
+    Map<String, dynamic> arguments = {tasksDataKey: controller.rxTasksResponse};
     return appContainer(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -45,7 +47,7 @@ class HomeScreen extends AppBaseView<HomeController> {
                   appText(mytask.tr,
                       color: AppColorHelper().primaryColor,
                       fontWeight: FontWeight.w500), onPressed: () {
-                navigateTo(tasksPageRoute);
+                navigateTo(tasksPageRoute, arguments: arguments);
               }),
               height(20),
               buttonContainer(
@@ -77,6 +79,8 @@ class HomeScreen extends AppBaseView<HomeController> {
                       fontWeight: FontWeight.w500), onPressed: () {
                 navigateTo(notificationsPageRoute);
               }),
+              appText(MyApplication().preferenceHelper!.getString(userNameKey),
+                  color: AppColorHelper().primaryTextColor)
             ],
           ),
         ),

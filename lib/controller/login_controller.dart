@@ -1,24 +1,22 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/view/login/bottomsheet/change_password_bottomsheet.dart';
+import 'package:pmms/model/task_model.dart';
+import 'package:pmms/service/task_services.dart';
 import '../helper/app_message.dart';
 import '../helper/app_string.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/core/environment/env.dart';
 import '../helper/deviceInfo.dart';
 import '../helper/enum.dart';
-import '../helper/shared_pref.dart';
 import '../model/app_model.dart';
 import '../model/login_model.dart';
 import '../service/auth_service.dart';
 
 class LoginController extends AppBaseController {
   final AuthService _authService = Get.find<AuthService>();
-
-  late SharedPreferenceHelper? _preference;
+  final TaskServices _taskServices = Get.find<TaskServices>();
 
   // fields
   TextEditingController userController = TextEditingController();
@@ -54,13 +52,14 @@ class LoginController extends AppBaseController {
   TextEditingController otpcontroller4 = TextEditingController();
   //
 
-  RxBool rxRememberMe = false.obs;
+  RxBool rxRememberMe = true.obs;
   RxBool rxhidePassword = true.obs;
 
   //response
   Rxn<LoginResponse> rxLoginData = Rxn<LoginResponse>();
   Rxn<LoginResponse> rxLoginResponse = Rxn<LoginResponse>();
   Rxn<UserLoginResponse> rxUserLoginResponse = Rxn<UserLoginResponse>();
+  RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -84,15 +83,14 @@ class LoginController extends AppBaseController {
   }
 
   Future<void> _loadStartup() async {
-    _preference = myApp.preferenceHelper;
-    rxRememberMe(
-        _preference != null ? _preference!.getBool(rememberMeKey) : false);
+    var preference = myApp.preferenceHelper;
+
     String? deviceId = await DeviceUtil.getDeviceId();
-    if (_preference != null) {
-      await _preference!.setString(deviceIdKey, deviceId ?? '');
+    if (preference != null) {
+      await preference.setString(deviceIdKey, deviceId ?? '');
       if (rxRememberMe.value) {
-        userController.text = _preference!.getString(emailKey);
-        passwordController.text = _preference!.getString(passwordKey);
+        userController.text = preference.getString(emailKey);
+        passwordController.text = preference.getString(loginPasswordKey);
       }
     }
   }
@@ -178,10 +176,12 @@ class LoginController extends AppBaseController {
           await _authService.userLogin(userLoginRequestList);
       if (response != null) {
         rxUserLoginResponse.value = response;
-
-        // Save login data here
-        await _saveLoginDataToPref();
-
+        await fetchTasks().then((done) async {
+          if (done) {
+            // Save login data here
+            await _saveLoginDataToPref();
+          }
+        });
         // Clear controllers if needed
         userController.clear();
         passwordController.clear();
@@ -196,32 +196,63 @@ class LoginController extends AppBaseController {
     return false;
   }
 
+  Future<bool> fetchTasks() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tasksRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "MYTASK"),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "dateFrom", value: ""),
+        CommonRequest(attribute: "dateTo", value: ""),
+        CommonRequest(attribute: "StatusMccID", value: ""),
+        CommonRequest(attribute: "ProjectID", value: ""),
+        CommonRequest(attribute: "PriorityMccID", value: ""),
+        CommonRequest(attribute: "RequestTypeMccID", value: ""),
+      ];
+      List<TaskResponse>? response =
+          await _taskServices.getTasks(tasksRequestsList);
+      if (response != null) {
+        rxTasksResponse.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
   Future<void> _saveLoginDataToPref() async {
     if (myApp.preferenceHelper != null) {
       inspect(rxLoginResponse.value);
+
       //username & pass
       myApp.preferenceHelper!
           .setString(loginNameKey, userController.text.trim());
       myApp.preferenceHelper!
-          .setString(passwordKey, passwordController.text.trim());
-      //
+          .setString(loginPasswordKey, passwordController.text.trim());
+
+      //user image
       myApp.preferenceHelper!
           .setString(userImgKey, rxUserLoginResponse.value!.userImgUrl ?? '');
 
-      //
+      //user details
       myApp.preferenceHelper!
           .setString(userNameKey, rxUserLoginResponse.value!.userName ?? '');
       myApp.preferenceHelper!.setString(employeeIdKey,
           (rxUserLoginResponse.value!.employeeId ?? "").toString());
       myApp.preferenceHelper!.setString(
           employeeTypeKey, rxUserLoginResponse.value!.employeeType ?? '');
-      myApp.preferenceHelper!.setString(
-          userTypeKey, rxUserLoginResponse.value!.employeeType ?? '');
+
       // token
       myApp.preferenceHelper!
           .setString(accessTokenKey, rxLoginResponse.value!.authToken ?? '');
       myApp.preferenceHelper!.setString(
           refreshTokenKey, rxLoginResponse.value!.refreshToken ?? '');
+
       //remember me
       myApp.preferenceHelper!.setBool(rememberMeKey, rxRememberMe.value);
     }
@@ -256,36 +287,36 @@ class LoginController extends AppBaseController {
     newPassVisible.value = !newPassVisible.value;
   }
 
-  Future<bool> callChangePassword() async {
-    await showModalBottomSheet(
-      context: Get.context!,
-      isScrollControlled: true,
-      isDismissible: false,
-      backgroundColor: Colors.transparent, // Prevents the default white shade
-      barrierColor: Colors.black.withOpacity(0.2),
-      builder: (context) {
-        return Padding(
-          // This padding pushes the sheet up when the keyboard appears
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            child: SizedBox(
-              height: Platform.isAndroid
-                  ? (Get.height * 0.82)
-                  : (Get.height * 0.82), // e.g., 75% of screen height
-              child: const ChangePasswordBottomsheet(),
-            ),
-          ),
-        );
-      },
-    );
-    return true;
-  }
+  // Future<bool> callChangePassword() async {
+  //   await showModalBottomSheet(
+  //     context: Get.context!,
+  //     isScrollControlled: true,
+  //     isDismissible: false,
+  //     backgroundColor: Colors.transparent, // Prevents the default white shade
+  //     barrierColor: Colors.black.withOpacity(0.2),
+  //     builder: (context) {
+  //       return Padding(
+  //         // This padding pushes the sheet up when the keyboard appears
+  //         padding: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //         ),
+  //         child: ClipRRect(
+  //           borderRadius: const BorderRadius.only(
+  //             topLeft: Radius.circular(20),
+  //             topRight: Radius.circular(20),
+  //           ),
+  //           child: SizedBox(
+  //             height: Platform.isAndroid
+  //                 ? (Get.height * 0.82)
+  //                 : (Get.height * 0.82), // e.g., 75% of screen height
+  //             child: const ChangePasswordBottomsheet(),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  //   return true;
+  // }
 
   Future<bool> fetchInitData() async {
     await _loadStartup();
@@ -293,23 +324,4 @@ class LoginController extends AppBaseController {
 
     return true;
   }
-
-  // @override
-  // void onClose() {
-  //   userController.dispose();
-  //   passwordController.dispose();
-  //   // newPasswordController.dispose();
-  //   // confirmNewPasswordController.dispose();
-  //   otpcontroller1.dispose();
-  //   otpcontroller2.dispose();
-  //   otpcontroller3.dispose();
-  //   otpcontroller4.dispose();
-
-  //   userFocusNode.dispose();
-  //   passwordFocusNode.dispose();
-  //   // newpasswordFocusNode.dispose();
-  //   // confirmpasswordFocusNode.dispose();
-
-  //   super.onClose();
-  // }
 }

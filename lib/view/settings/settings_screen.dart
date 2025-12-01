@@ -39,7 +39,8 @@ class SettingsScreen extends AppBaseView<SettingsController> {
               _info(),
               const Spacer(),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  await controller.resetPreference();
                   navigateToAndRemoveAll(loginPageRoute);
                 },
                 child: Container(

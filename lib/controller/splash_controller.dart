@@ -1,46 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../helper/app_message.dart';
 import '../helper/app_string.dart';
 import '../helper/core/base/app_base_controller.dart';
+import '../helper/enum.dart';
 import '../helper/shared_pref.dart';
 import '../helper/single_app.dart';
+import '../model/app_model.dart';
+import '../model/task_model.dart';
+import '../service/task_services.dart';
 
 class SplashController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
-  final MyApplication myApplication = Get.find<MyApplication>();
+  final TaskServices _taskServices = Get.find<TaskServices>();
+
   SharedPreferenceHelper? _preference;
   var rxUpdateRequired = false.obs;
 
+  // animation
   late AnimationController _textController;
   late Animation<Offset> textSlide;
-
   RxBool rxShowSecondImage = false.obs;
+
+  // tasks
+  RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-
     initTextAnimation();
     await startBackgroundAnimation();
-
     _textController.forward();
   }
 
   Future<int> fetchUserProfile() async {
-    _preference = myApplication.preferenceHelper;
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(
+        seconds: 3)); // required for completing the anmtn----------
+    var preference = myApp.preferenceHelper;
+    if (preference != null) {
+      final rememberMe = preference.getBool(rememberMeKey);
+      final userId = preference.getString(employeeIdKey);
+      final token = preference.getString(accessTokenKey);
 
-    bool isLoggedIn = myApp.preferenceHelper != null
-        ? (myApp.preferenceHelper!.getBool(rememberMeKey) &&
-            myApp.preferenceHelper!.getString(emailKey).isNotEmpty)
-        : false;
+      if (rememberMe && userId != "-1" && token.isNotEmpty) {
+        //for version and early fetch and keep
+        // bool mismatch =
+        //     await getVersion(); ///////////////////////////////////////////////////////////////////version
+        // RxBool(mismatch);
+        final success = await fetchTasks();
+        if (success) {
+          return 1;
+        }
+      }
+    }
 
-    return isLoggedIn ? 1 : 2;
+    return 2; // fallback for all other cases
+  }
+
+  Future<bool> fetchTasks() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tasksRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "MYTASK"),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "dateFrom", value: ""),
+        CommonRequest(attribute: "dateTo", value: ""),
+        CommonRequest(attribute: "StatusMccID", value: ""),
+        CommonRequest(attribute: "ProjectID", value: ""),
+        CommonRequest(attribute: "PriorityMccID", value: ""),
+        CommonRequest(attribute: "RequestTypeMccID", value: ""),
+      ];
+      List<TaskResponse>? response =
+          await _taskServices.getTasks(tasksRequestsList);
+      if (response != null) {
+        rxTasksResponse.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
   }
 
   Future<void> resetPref() async {
     _preference?.remove(accessTokenKey);
-    _preference?.remove(passwordKey);
+    _preference?.remove(loginPasswordKey);
   }
 
   void initTextAnimation() {

@@ -183,7 +183,7 @@ AppTheme _demoDarkTheme() => AppTheme(
 
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
-      fontFamily: 'Roboto',
+      fontFamily: 'Mona Sans',
       imagePath: 'assets/images/demo.png',
     );
 AppTheme _demoLightTheme() => AppTheme(
@@ -245,6 +245,6 @@ AppTheme _demoLightTheme() => AppTheme(
 
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
-      fontFamily: 'Roboto',
+      fontFamily: 'Mona Sans',
       imagePath: 'assets/images/demo.png',
     );

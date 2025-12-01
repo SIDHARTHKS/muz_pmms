@@ -200,7 +200,9 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                   ),
                   width(15),
                   appText(
-                      "${DateHelper().formatDate(controller.selectedDateRange!.start)}  -  ${DateHelper().formatDate(controller.selectedDateRange!.end)}", //"01 August 2025  -  31 September 2025"
+                      (controller.selectedDateRange != null)
+                          ? "${DateHelper().formatDate(controller.selectedDateRange!.start)}  -  ${DateHelper().formatDate(controller.selectedDateRange!.end)}"
+                          : "Select Dates", //"01 August 2025  -  31 September 2025"
                       color: appColor.primaryTextColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w500),
@@ -238,7 +240,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                     .assignAll(selectedItems["Priority"]!);
                 controller.rxSelectedRequestTypes
                     .assignAll(selectedItems["Request Type"]!);
-
+                controller.checkFilters();
                 goBack();
               },
               height: 42,

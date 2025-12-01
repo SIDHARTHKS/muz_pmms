@@ -100,6 +100,8 @@ Map<String, String> enUS = {
   generate: 'Generate',
   generateToken: 'Generate Token',
   viewToken: 'View this token',
+  token: 'Token',
+  story: 'Story',
   project: 'Project',
   requestType: 'Request Type',
   letsstartwiththebasics: 'Let’s start with the basics',
@@ -176,6 +178,9 @@ Map<String, String> enUS = {
   requestDate: 'Request Date',
   plannedStartDate: 'Planned Start Date',
   plannedEndDate: 'Planned End Date',
-
   generateStoryNow: 'Would you like to create the story now?',
+  createdBy: 'Created By : ',
+  requestedBy: 'Requested By : ',
+  clientRefId: 'Client Ref ID : ',
+  tokenId: 'Token ID : ',
 };

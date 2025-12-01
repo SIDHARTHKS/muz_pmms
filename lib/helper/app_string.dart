@@ -5,17 +5,16 @@ const String accessTokenKey = 'accessTokenKey';
 const String refreshTokenKey = 'refreshTokenKey';
 const String userNameKey = 'userNameKey';
 const String loginNameKey = 'loginNameKey';
-const String passwordKey = 'passwordKey';
+const String loginPasswordKey = 'loginPasswordKey';
 const String userImgKey = 'userImgKey';
 const String employeeIdKey = 'employeeIdKey';
 const String employeeTypeKey = 'employeeTypeKey';
 const String rememberMeKey = 'rememberMeKey';
 const String profileKey = 'profileKey';
-const String userTypeKey = 'userTypeKey';
 const String successKey = 'successKey';
 const String latestDateKey = 'latestDateKey';
 const String emailIdKey = 'emailIdKey';
-const String profileDataKey = 'profileDataKey';
+const String tasksDataKey = 'tasksDataKey';
 const String fcmTokenKey = 'fcmTokenKey';
 const String sendFcmTokenKey = 'sendFcmTokenKey';
 const String sidKey = 'sidKey';
@@ -24,7 +23,6 @@ const String emailKey = 'emailKey';
 const String fbEidKey = 'fbEidKey';
 const String darkModeKey = 'darkModeKey';
 const String appRefreshTimeKey = 'appRefreshTimeKey';
-const String locationKey = 'locationKey';
 const String notificationKey = 'notificationKey';
 
 //Arguments key
@@ -180,6 +178,8 @@ const String createstory = 'createstory';
 const String generate = 'generate';
 const String generateToken = 'generateToken';
 const String viewToken = 'View this token';
+const String token = 'token';
+const String story = 'story';
 const String project = 'project';
 const String requestType = 'requestType';
 const String letsstartwiththebasics = 'let’sstartwiththebasics';
@@ -259,5 +259,9 @@ const String estimateTime = 'EstimateTime';
 const String requestDate = 'Request Date';
 const String plannedStartDate = 'Planned Start Date';
 const String plannedEndDate = 'Planned End Date';
-
 const String generateStoryNow = 'wouldyouliketogeneratethestorynnow?';
+const String createdBy = 'createdBy';
+
+const String requestedBy = 'requestedBy';
+const String clientRefId = 'clientRefId';
+const String tokenId = 'tokenId';

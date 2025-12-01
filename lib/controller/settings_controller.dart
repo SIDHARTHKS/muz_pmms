@@ -32,6 +32,16 @@ class SettingsController extends AppBaseController
         .setBool(darkModeKey, rxDarkmodeEnabled.value);
   }
 
+  Future<void> resetPreference() async {
+    if (myApp.preferenceHelper != null) {
+      myApp.preferenceHelper!.remove(loginNameKey);
+      myApp.preferenceHelper!.remove(loginPasswordKey);
+      if (myApp.preferenceHelper!.getBool(rememberMeKey)) {
+        myApp.preferenceHelper!.setBool(rememberMeKey, false);
+      }
+    }
+  }
+
   Future<bool> fetchInitData() async {
     // await sampleDelya();
     return true;

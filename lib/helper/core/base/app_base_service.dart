@@ -16,58 +16,14 @@ class AppBaseService {
   getRefreshApiEndpoint() => '/refreshtoken'; //
   getProfileApiEndpoint() => '/getProfileDetails'; //
 
-  // forget
-  getMailApiEndpoint() => '/account/getmailid';
-  getOtpApiEndpoint() => '/account/sendverificationcode';
-  getverifyOtpApiEndpoint() => '/account/verifyVerificationCode';
-  getUpdatePassApiEndpoint() => '/account/updatePassword';
-
   // dashboard
-  getDashboardApiEndpoint() => '/getDashBoardDetails'; //
-
-  // leave
-  getDatepickerApiEndpoi() => '/datePicker'; //
-  getPendingLeavesApiEndpoi() => '/pendingLeave'; //
-  getLeaveApplicationApiEndpoi() => '/applyLeave';
-  getLeaveHistoryApiEndpoi() => '/leaveHistory'; //
-  getLeaveBalanceApiEndpoi() => '/getLeaveBalance'; //
-  getWithdrawLeavesApiEndpoi() => '/withdrawLeave'; //
-
-  // holiday
-  getHolidayApiEndpoint() => '/getHolidayList'; //
-
-  // salary
-  getSalaryApiEndpoi() => '/getSalaryDetails'; //
-
-  // notification
-  getAlertApiEndpoi() => '/alerts'; //
-  getUpdateAlertApiEndpoi() => '/readNotification'; //
-  getApprovalsApiEndpoi() => '/approvals'; //
-  getApprovalRejectionApiEndpoi() => '/approvalRejectionUpdate'; //
-  getCancelLeaveApiEndpoi() => '/leaveCancel'; //
-
-  // password
-  getChangePassApiEndpoint() => '/changePassword'; //
-
-  //logout
-  getLogoutApiEndpoint() => '/logoutsession'; //todo
-
-  //approvals
-  getApprovalsApiEndpoint() => '/getApprovalPendingList'; //
-  getLeaveApprovalDetailsApiEndpoint() => '/getLeaveApprovalDetail'; //
-  getApproveLeaveApiEndpoint() => '/leaveApproval'; //
-  getOffdaysApiEndpoint() => '/getOffdaySwapDetail'; //
-  getSwapApprovalApiEndpoint() => '/offdaySwapApproval'; //
-  getLeaveApprovalApiEndpoint() => '/leaveApproval'; //
-
-  //attendance
-  getAttendanceApiEndpoint() => '/getAttendanceList'; //
+  getTasksApiEndpoint() => '/mytask'; //
 
   // settings
-  getVersionApiEndpoint() => '/getLastVersionDetail'; //
-  getVersionInfoApiEndpoint() => '/getVersionDetail'; //
+  // getVersionApiEndpoint() => '/getLastVersionDetail'; //
+  // getVersionInfoApiEndpoint() => '/getVersionDetail'; //
 
-  getSupportedVersionApiEndpoint() => '/v1/common/getsupportedversion';
+  // getSupportedVersionApiEndpoint() => '/v1/common/getsupportedversion';
 
   Future<Map<String, String>> getHeaders({
     bool contentType = true,

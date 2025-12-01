@@ -616,7 +616,7 @@ Widget appText(
   return Text(
     text,
     style: TextStyle(
-        fontFamily: "Mona Sans", // Use your custom font family here
+        fontFamily: "MonaSans", // Use your custom font family here
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,
@@ -793,6 +793,11 @@ String monthYear(DateTime date) {
   final String month = date.month.toString().padLeft(2, '0');
   final String year = date.year.toString();
   return "$month/$year";
+}
+
+String capitalizeFirstOnly(String input) {
+  if (input.isEmpty) return input;
+  return input[0].toUpperCase() + input.substring(1).toLowerCase();
 }
 
 class LoopingProgressBar extends StatefulWidget {

@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/helper/app_message.dart';
-import 'package:pmms/helper/core/base/app_base_response.dart';
 import 'package:pmms/view/login/bottomsheet/forget_password_bottomsheet.dart';
-import 'package:pmms/view/widget/dialog/http_error_list_dialog.dart';
 import '../../controller/login_controller.dart';
 import '../../gen/assets.gen.dart';
 import '../../helper/app_string.dart';
@@ -130,20 +127,22 @@ class LoginScreen extends AppBaseView<LoginController> {
                     //           "Login failed. Please check your username and password.");
                     // }
                     onPressed: () async {
-                      // Disable button spam
                       if (controller.rxIsLoading.value) return;
 
-                      // Delay navigation until next frame safely
                       await controller.signIn().then((success) {
                         if (success) {
+                          Map<String, dynamic> arguments = {
+                            tasksDataKey: controller.rxTasksResponse
+                          };
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            navigateToAndRemoveAll(homePageRoute);
+                            navigateToAndRemoveAll(homePageRoute,
+                                arguments: arguments);
                           });
                         }
 
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          navigateToAndRemoveAll(homePageRoute);
-                        });
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //   navigateToAndRemoveAll(homePageRoute);
+                        // });
                       });
                     },
                   ),
@@ -167,8 +166,8 @@ class LoginScreen extends AppBaseView<LoginController> {
                               ),
                               child: SizedBox(
                                 height: Platform.isAndroid
-                                    ? (Get.height * 0.49)
-                                    : (Get.height * 0.535),
+                                    ? (Get.height * 0.52)
+                                    : (Get.height * 0.58),
                                 child: const ForgetPasswordBottomsheet(),
                               ),
                             ),

@@ -37,7 +37,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
-        appBar: customAppBar(task.type),
+        appBar: customAppBar(task.requestType ?? ""),
         bottomNavigationBar: _bottomButtons(),
         body: appContainer(
           child: Padding(
@@ -52,7 +52,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                         backgroundColor: AppColorHelper().circleAvatarBgColor,
                         radius: 20,
                         child: appText(
-                          task.title.substring(0, 1),
+                          (task.projectName ?? "x").substring(0, 1),
                           color: AppColorHelper().primaryTextColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -91,7 +91,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                                   ),
                                   TextSpan(
                                     text:
-                                        ", ${DateHelper.formatToShortMonthDateYear(task.requestedDate)}",
+                                        ", ${DateHelper.formatToShortMonthDateYear(task.requestDateTime ?? DateTime.now())}",
                                     style: textStyle(
                                       13,
                                       AppColorHelper().primaryTextColor,
@@ -154,7 +154,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                                   color: AppColorHelper()
                                       .primaryTextColor
                                       .withValues(alpha: 0.5)),
-                              appText(task.tokenId,
+                              appText(task.tokenId ?? "--",
                                   color: AppColorHelper().primaryTextColor,
                                   fontWeight: FontWeight.w800)
                             ],
@@ -163,13 +163,15 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color: _getPriorityColor(task.priority)
-                                  .withValues(alpha: 0.30),
+                              color:
+                                  _getPriorityColor(task.priority ?? "Medium")
+                                      .withValues(alpha: 0.30),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: appText(
-                              task.priority,
-                              color: _getPriorityTextColor(task.priority),
+                              task.priority ?? "Medium",
+                              color: _getPriorityTextColor(
+                                  task.priority ?? "Medium"),
                               fontWeight: FontWeight.w500,
                               fontSize: 12,
                             ),
@@ -185,7 +187,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                           width: double
                               .infinity, // takes full width, but height adapts to content
                           child: appText(
-                            task.description,
+                            task.description ?? "",
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                             color: AppColorHelper().primaryTextColor,
@@ -196,7 +198,7 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                       GestureDetector(
                         onTap: () {
                           controller.descriptionController.text =
-                              task.description;
+                              task.description ?? "--";
                           showModalBottomSheet(
                             isScrollControlled: true,
                             context: Get.context!,
@@ -227,16 +229,17 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                   height(20),
                   _editableDetails(
                       "Project",
-                      task.project,
+                      task.projectName ?? "x",
                       controller
                           .projectList), ///////////////////////use id when response is available
-                  _editableDetails("Team", task.team, controller.teamList),
                   _editableDetails(
-                      "Module", task.module, controller.moduleList),
+                      "Team", task.team ?? "--", controller.teamList),
                   _editableDetails(
-                      "Option", task.option, controller.optionList),
+                      "Module", task.module ?? "--", controller.moduleList),
                   _editableDetails(
-                      "Assignee", task.assignee, controller.assigneeList),
+                      "Option", task.optionName ?? "--", controller.optionList),
+                  _editableDetails("Assignee", task.assignee ?? "--",
+                      controller.assigneeList),
                   SizedBox(
                     width: Get.width,
                     child: Column(

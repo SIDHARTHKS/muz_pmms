@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import '../../controller/splash_controller.dart';
@@ -31,6 +32,7 @@ class SplashScreen extends AppBaseView<SplashController> {
         body: appFutureBuilder<int>(
           () => controller.fetchUserProfile(),
           (context, snapshot) {
+            appLog('return ${snapshot.data}');
             if (snapshot.connectionState == ConnectionState.waiting) {
               // While loading, show loader
               return _loaderWidget();
@@ -42,20 +44,21 @@ class SplashScreen extends AppBaseView<SplashController> {
                 if (controller.rxUpdateRequired.value) {
                   _openAppUpdateDialog();
                 } else {
-                  Map<String, dynamic> arguments = {};
+                  Map<String, dynamic> arguments = {
+                    tasksDataKey: controller.rxTasksResponse
+                  };
                   if (snapshot.data == 1) {}
                   navigateToAndRemoveAll(
                     snapshot.data == 1 ? homePageRoute : loginPageRoute,
-                    // snapshot.data == 1 ? homePageRoute : homePageRoute,
                     arguments: arguments,
                   );
                 }
               });
               // Show loader while navigating
               return _loaderWidget();
-            } else {
-              return _loaderWidget();
             }
+
+            return _loaderWidget();
           },
           loaderWidget: _loaderWidget(),
         ),

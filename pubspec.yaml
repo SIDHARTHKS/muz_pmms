@@ -85,7 +85,7 @@ flutter_launcher_icons:
 
 
   fonts:
-    - family: Mona Sans
+    - family: 'MonaSans'
       fonts:
         - asset: assets/fonts/MonaSans-Light.ttf
           weight: 300

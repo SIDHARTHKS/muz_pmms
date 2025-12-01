@@ -24,14 +24,14 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
           _selectedDetailsSection(),
           _horizontalDisplay(),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 6.0),
+            padding: const EdgeInsets.only(top: 8.0, bottom: 10.0),
             child: divider(
                 color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
           ),
           CustomDropdown<CommonDropdownResponse>(
             label: module.tr,
-            widgetHeight: 52,
-            isRequired: true,
+            widgetHeight: 55,
+            isRequired: false,
             items: controller.moduleTypeList,
             selectedValue: controller.rxSelectedModule.value,
             onChanged: (value) {
@@ -39,11 +39,11 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
             },
             itemLabelBuilder: (item) => item.mccName ?? '',
           ),
-          height(12),
+          height(15),
           CustomDropdown<CommonDropdownResponse>(
             label: option.tr,
-            widgetHeight: 52,
-            isRequired: true,
+            widgetHeight: 55,
+            isRequired: false,
             items: controller.optionTypeList,
             selectedValue: controller.rxSelectedOption.value,
             onChanged: (value) {
@@ -51,17 +51,19 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
             },
             itemLabelBuilder: (item) => item.mccName ?? '',
           ),
-          height(12),
+          height(18),
           CustomDatePicker(
-            label: requestOn.tr,
+            widgetHeight: 55,
+            label: requestDate.tr,
             isRequired: false,
             selectedDate: controller.rxRequestDate,
             onDateChanged: (date) {
               controller.rxRequestDate = date!;
             },
           ),
-          height(12),
+          height(18),
           CustomDatePicker(
+            widgetHeight: 55,
             label: plannedStartDate.tr,
             isRequired: false,
             selectedDate: controller.rxPlannedStartDate,
@@ -69,8 +71,9 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
               controller.rxPlannedStartDate = date!;
             },
           ),
-          height(12),
+          height(18),
           CustomDatePicker(
+            widgetHeight: 55,
             label: plannedEndDate.tr,
             isRequired: false,
             selectedDate: controller.rxPlannedEndDate,
@@ -104,9 +107,9 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
   Container _horizontalContainer(String title, String subtitle) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      height: 35,
+      height: 40,
       decoration: BoxDecoration(
-          color: AppColorHelper().secondaryTextColor.withValues(alpha: 0.08),
+          color: AppColorHelper().secondaryTextColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(6)),
       child: Center(
         child: Row(
