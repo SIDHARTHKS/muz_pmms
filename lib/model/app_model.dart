@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:pmms/helper/enum.dart';
+
 DeviceSupportModel deviceSupportModelFromJson(String str) =>
     DeviceSupportModel.fromJson(json.decode(str));
 
@@ -145,4 +147,12 @@ class SuccessModel {
       'route': route,
     };
   }
+}
+// filter
+
+class FilterModel {
+  final String name;
+  final FilterType filterType;
+
+  FilterModel({required this.name, required this.filterType});
 }

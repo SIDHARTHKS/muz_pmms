@@ -12,8 +12,8 @@ import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 
-class TokensView extends AppBaseView<TasksController> {
-  const TokensView({super.key});
+class PlTokensView extends AppBaseView<TasksController> {
+  const PlTokensView({super.key});
 
   @override
   Widget buildView() => _widgetView();
@@ -174,7 +174,7 @@ class TokensView extends AppBaseView<TasksController> {
                                   children: [
                                     TextSpan(text: tokenId.tr),
                                     TextSpan(
-                                      text: task.tokenId,
+                                      text: "TKN-${task.tokenId}",
                                       style: textStyle(
                                         14,
                                         AppColorHelper()
@@ -190,14 +190,14 @@ class TokensView extends AppBaseView<TasksController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: _getPriorityColor(
+                                  color: getPriorityColor(
                                           task.priority ?? "Medium")
                                       .withValues(alpha: 0.30),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: appText(
                                   task.priority ?? "Medium",
-                                  color: _getPriorityTextColor(
+                                  color: getPriorityTextColor(
                                       task.priority ?? "Medium"),
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
@@ -284,7 +284,7 @@ class TokensView extends AppBaseView<TasksController> {
                                     .withValues(alpha: 0.30),
                                 onPressed: () {
                                   controller.setTask(task);
-                                  navigateTo(taskDetailsPageRoute);
+                                  navigateTo(plTaskDetailsPageRoute);
                                 },
                                 appText(
                                   viewToken.tr,
@@ -327,31 +327,5 @@ class TokensView extends AppBaseView<TasksController> {
       child:
           divider(color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
     );
-  }
-
-  Color _getPriorityColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighColor;
-      case "medium":
-        return AppColorHelper().statusMediumColor;
-      case "low":
-        return AppColorHelper().statusLowColor;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getPriorityTextColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighTextColor;
-      case "medium":
-        return AppColorHelper().statusMediumTextColor;
-      case "low":
-        return AppColorHelper().statusLowTextColor;
-      default:
-        return Colors.grey;
-    }
   }
 }

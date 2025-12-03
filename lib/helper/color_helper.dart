@@ -53,11 +53,25 @@ class AppColorHelper {
   Color get statusLowColor => _currentTheme.statusLowColor;
   Color get statusMediumColor => _currentTheme.statusMediumColor;
   Color get statusHighColor => _currentTheme.statusHighColor;
-  Color get statusPendingColor => _currentTheme.statusPendingColor;
 
   Color get statusLowTextColor => _currentTheme.statusLowTextColor;
   Color get statusMediumTextColor => _currentTheme.statusMediumTextColor;
   Color get statusHighTextColor => _currentTheme.statusHighTextColor;
+
+  Color get statusToDoColor => _currentTheme.statusToDoColor;
+  Color get statusInProgressColor => _currentTheme.statusInProgressColor;
+  Color get statusApprovedColor => _currentTheme.statusApprovedColor;
+
+  Color get statusToDoTextColor => _currentTheme.statusToDoTextColor;
+  Color get statusInProgressTextColor =>
+      _currentTheme.statusInProgressTextColor;
+  Color get statusApprovedTextColor => _currentTheme.statusApprovedTextColor;
+
+  Color get statusPendingFilledColor => _currentTheme.statusPendingFilledColor;
+  Color get statusInProgressFilledColor =>
+      _currentTheme.statusInProgressFilledColor;
+  Color get statusApprovedFilledColor =>
+      _currentTheme.statusApprovedFilledColor;
 
   Color get checkColor => _currentTheme.checkColor;
 }

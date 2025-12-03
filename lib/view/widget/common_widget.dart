@@ -181,6 +181,49 @@ AppBar customAppBar(
   );
 }
 
+AppBar customStatusAppBar(
+  String title, {
+  VoidCallback? onTap,
+  List<Widget>? actions,
+  Widget? statusWidget,
+}) {
+  return AppBar(
+    backgroundColor: AppColorHelper().backgroundColor,
+    automaticallyImplyLeading: false,
+    surfaceTintColor: Colors.transparent,
+    centerTitle: false,
+    leadingWidth: 45,
+    toolbarHeight: 45,
+    leading: GestureDetector(
+      onTap: onTap ?? goBack,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12, top: 15),
+        child: Icon(
+          Icons.arrow_back_ios_new,
+          size: 20,
+          color: AppColorHelper().primaryTextColor,
+        ),
+      ),
+    ),
+    title: Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        children: [
+          appText(
+            title,
+            fontSize: 20,
+            color: AppColorHelper().primaryTextColor,
+            fontWeight: FontWeight.w600,
+          ),
+          width(10),
+          statusWidget ?? const SizedBox.shrink(),
+        ],
+      ),
+    ),
+    actions: actions, // 👈 optional, can be null
+  );
+}
+
 SizedBox appContainer({
   required Widget child,
   bool enableSafeArea = true,
@@ -325,6 +368,11 @@ Container muzirisLogo({
 LoadingIndicator buttonLoader() => const LoadingIndicator(
       indicatorType: Indicator.ballClipRotatePulse,
       colors: [Colors.white],
+    );
+
+LoadingIndicator textLoader() => LoadingIndicator(
+      indicatorType: Indicator.ballPulseSync,
+      colors: [AppColorHelper().primaryTextColor],
     );
 
 GestureDetector buttonContainer(
@@ -798,6 +846,58 @@ String monthYear(DateTime date) {
 String capitalizeFirstOnly(String input) {
   if (input.isEmpty) return input;
   return input[0].toUpperCase() + input.substring(1).toLowerCase();
+}
+
+Color getPriorityColor(String priority) {
+  switch (priority.toLowerCase()) {
+    case "high":
+      return AppColorHelper().statusHighColor;
+    case "medium":
+      return AppColorHelper().statusMediumColor;
+    case "low":
+      return AppColorHelper().statusLowColor;
+    default:
+      return Colors.grey;
+  }
+}
+
+Color getPriorityTextColor(String priority) {
+  switch (priority.toLowerCase()) {
+    case "high":
+      return AppColorHelper().statusHighTextColor;
+    case "medium":
+      return AppColorHelper().statusMediumTextColor;
+    case "low":
+      return AppColorHelper().statusLowTextColor;
+    default:
+      return Colors.grey;
+  }
+}
+
+Color getStatusColor(String status) {
+  switch (status.toLowerCase()) {
+    case "to do":
+      return AppColorHelper().statusToDoColor;
+    case "in progress":
+      return AppColorHelper().statusInProgressFilledColor;
+    case "approved":
+      return AppColorHelper().statusApprovedFilledColor;
+    default:
+      return Colors.grey;
+  }
+}
+
+Color getStatusTextColor(String status) {
+  switch (status.toLowerCase()) {
+    case "to do":
+      return AppColorHelper().statusToDoTextColor;
+    case "in progress":
+      return AppColorHelper().statusInProgressTextColor;
+    case "approved":
+      return AppColorHelper().statusApprovedTextColor;
+    default:
+      return Colors.grey;
+  }
 }
 
 class LoopingProgressBar extends StatefulWidget {

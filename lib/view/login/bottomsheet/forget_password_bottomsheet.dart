@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/login_controller.dart';
+import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -60,10 +61,12 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
             ),
             height(25),
             Center(
-              child: appText("an************90@gmail.com",
-                  color: AppColorHelper().primaryTextColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14),
+              child: controller.rxMailResponse.value == null
+                  ? SizedBox(height: 15, child: textLoader())
+                  : appText(controller.rxMailResponse.value?.emailId ?? '',
+                      color: AppColorHelper().primaryTextColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14),
             ),
             height(43),
             Center(
@@ -106,12 +109,20 @@ class ForgetPasswordBottomsheet extends AppBaseView<LoginController> {
             SafeArea(
               child: buttonContainer(
                 onPressed: () {
-                  navigateToAndRemoveAll(createPasswordPageRoute);
+                  controller.verifyVerificationCode().then((success) {
+                    if (success) {
+                      navigateToAndRemoveAll(createPasswordPageRoute);
+                    } else {
+                      goBack();
+                    }
+                  });
                 },
                 color: AppColorHelper().primaryColor,
-                appText(verifyOtp.tr,
-                    color: AppColorHelper().textColor,
-                    fontWeight: FontWeight.w500),
+                controller.rxIsLoading.value
+                    ? buttonLoader()
+                    : appText(verifyOtp.tr,
+                        color: AppColorHelper().textColor,
+                        fontWeight: FontWeight.w500),
               ),
             ),
           ],

@@ -85,58 +85,58 @@ class AuthService extends AppBaseService {
   //   }
   // }
 
-  // Future<EmailResponse?> getMail(List<CommonRequest> request) async {
-  //   var response = await httpService.postService<EmailResponse>(
-  //     endpoint: getMailApiEndpoint(),
-  //     headers: await getHeaders(
-  //       authorization: false,
-  //       xCorrelationId: false,
-  //       sid: false,
-  //     ),
-  //     data: request,
-  //     fromJsonT: (json) => EmailResponse.fromJson(json),
-  //   );
-  //   if (response != null && response.data != null) {
-  //     return response.data;
-  //   }
-  //   return null;
-  // }
+  Future<EmailResponse?> getMail(List<CommonRequest> request) async {
+    var response = await httpService.postService<EmailResponse>(
+      endpoint: getMailApiEndpoint(),
+      headers: await getHeaders(
+        authorization: false,
+        xCorrelationId: false,
+        sid: false,
+      ),
+      data: request,
+      fromJsonT: (json) => EmailResponse.fromJson(json),
+    );
+    if (response != null && response.data != null) {
+      return response.data;
+    }
+    return null;
+  }
 
-  // Future<OtpResponse?> getOtp(List<CommonRequest> request) async {
-  //   var response = await httpService.postService<OtpResponse>(
-  //     endpoint: getOtpApiEndpoint(),
-  //     headers: await getHeaders(
-  //       authorization: false,
-  //       xCorrelationId: false,
-  //       sid: false,
-  //     ),
-  //     data: request,
-  //     fromJsonT: (json) => OtpResponse.fromJson(json),
-  //   );
-  //   if (response != null && response.data != null) {
-  //     return response.data;
-  //   }
-  //   return null;
-  // }
+  Future<OtpResponse?> getOtp(List<CommonRequest> request) async {
+    var response = await httpService.postService<OtpResponse>(
+      endpoint: getVerificationCodeApiEndpoint(),
+      headers: await getHeaders(
+        authorization: false,
+        xCorrelationId: false,
+        sid: false,
+      ),
+      data: request,
+      fromJsonT: (json) => OtpResponse.fromJson(json),
+    );
+    if (response != null && response.data != null) {
+      return response.data;
+    }
+    return null;
+  }
 
-  // Future<bool> verifyOtp(List<CommonRequest> request) async {
-  //   var response = await httpService.postService(
-  //     endpoint: getverifyOtpApiEndpoint(),
-  //     headers: await getHeaders(
-  //       authorization: false,
-  //       xCorrelationId: false,
-  //       sid: false,
-  //     ),
-  //     data: request,
-  //     fromJsonT: (json) => json,
-  //   );
-  //   if (response != null && response.success != null) {
-  //     appLog('Change password response: ${response.success}');
-  //     return response.success!;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  Future<bool> verifyOtp(List<CommonRequest> request) async {
+    var response = await httpService.postService(
+      endpoint: getverifyOtpApiEndpoint(),
+      headers: await getHeaders(
+        authorization: false,
+        xCorrelationId: false,
+        sid: false,
+      ),
+      data: request,
+      fromJsonT: (json) => json,
+    );
+    if (response != null && response.success != null) {
+      appLog('Change password response: ${response.success}');
+      return response.success!;
+    } else {
+      return false;
+    }
+  }
 
   Future<RefreshResponse?> refresh(RefreshRequest request) async {
     final response = await httpService.postService(

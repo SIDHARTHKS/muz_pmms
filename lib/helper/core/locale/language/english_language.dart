@@ -183,4 +183,8 @@ Map<String, String> enUS = {
   requestedBy: 'Requested By : ',
   clientRefId: 'Client Ref ID : ',
   tokenId: 'Token ID : ',
+  viewThisStory: 'View this story',
+  storiesInToken: 'Stories in this token',
+  newStory: 'Newstory',
+  noStory: 'No stories added',
 };

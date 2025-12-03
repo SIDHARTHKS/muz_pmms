@@ -16,8 +16,8 @@ import '../dialogues/rejected_dialogue.dart';
 import '../dialogues/success_dialogue.dart';
 import '../widget/common_widget.dart';
 
-class TaskDetailsScreen extends AppBaseView<TasksController> {
-  const TaskDetailsScreen({super.key});
+class PlTaskDetailsScreen extends AppBaseView<TasksController> {
+  const PlTaskDetailsScreen({super.key});
 
   @override
   Widget buildView() => _widgetView();
@@ -163,14 +163,13 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color:
-                                  _getPriorityColor(task.priority ?? "Medium")
-                                      .withValues(alpha: 0.30),
+                              color: getPriorityColor(task.priority ?? "Medium")
+                                  .withValues(alpha: 0.30),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: appText(
                               task.priority ?? "Medium",
-                              color: _getPriorityTextColor(
+                              color: getPriorityTextColor(
                                   task.priority ?? "Medium"),
                               fontWeight: FontWeight.w500,
                               fontSize: 12,
@@ -405,31 +404,5 @@ class TaskDetailsScreen extends AppBaseView<TasksController> {
         ),
       ),
     );
-  }
-
-  Color _getPriorityColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighColor;
-      case "medium":
-        return AppColorHelper().statusMediumColor;
-      case "low":
-        return AppColorHelper().statusLowColor;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getPriorityTextColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighTextColor;
-      case "medium":
-        return AppColorHelper().statusMediumTextColor;
-      case "low":
-        return AppColorHelper().statusLowTextColor;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -96,7 +96,7 @@ class TasksScreen extends AppBaseView<TasksController> {
 
   Expanded _tabView() {
     return Expanded(
-        child: controller.rxTabScreens[controller.rxTabIndex.value]);
+        child: controller.rxPlTabScreens[controller.rxTabIndex.value]);
   }
 
   Padding _divider() {

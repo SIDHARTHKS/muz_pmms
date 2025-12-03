@@ -11,9 +11,16 @@ class AppBaseService {
   final HttpService httpService = Get.find<HttpService>();
   final MyApplication myApplication = Get.find<MyApplication>();
 
+  // auth
   getLoginApiEndpoint() => '/login'; //
   getUserLoginApiEndpoint() => '/userlogin'; //
   getRefreshApiEndpoint() => '/refreshtoken'; //
+
+  getMailApiEndpoint() => '/getEmailID'; //
+  getVerificationCodeApiEndpoint() => '/sendVerificationCode'; //
+  getverifyOtpApiEndpoint() => '/verifyVerificationCode'; //
+
+  // profile
   getProfileApiEndpoint() => '/getProfileDetails'; //
 
   // dashboard

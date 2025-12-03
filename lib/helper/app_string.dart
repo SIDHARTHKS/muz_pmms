@@ -265,3 +265,9 @@ const String createdBy = 'createdBy';
 const String requestedBy = 'requestedBy';
 const String clientRefId = 'clientRefId';
 const String tokenId = 'tokenId';
+
+const String viewThisStory = 'Viewthisstory';
+
+const String storiesInToken = 'Storiesinthistoken';
+const String newStory = 'New story';
+const String noStory = 'Nostoriesadded';

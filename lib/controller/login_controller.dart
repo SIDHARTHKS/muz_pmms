@@ -50,6 +50,7 @@ class LoginController extends AppBaseController {
   TextEditingController otpcontroller2 = TextEditingController();
   TextEditingController otpcontroller3 = TextEditingController();
   TextEditingController otpcontroller4 = TextEditingController();
+  RxString enteredOtp = ''.obs;
   //
 
   RxBool rxRememberMe = true.obs;
@@ -60,6 +61,9 @@ class LoginController extends AppBaseController {
   Rxn<LoginResponse> rxLoginResponse = Rxn<LoginResponse>();
   Rxn<UserLoginResponse> rxUserLoginResponse = Rxn<UserLoginResponse>();
   RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
+  // forget
+  Rxn<EmailResponse> rxMailResponse = Rxn<EmailResponse>();
+  Rxn<OtpResponse> rxOtpResponse = Rxn<OtpResponse>();
 
   @override
   Future<void> onInit() async {
@@ -256,6 +260,122 @@ class LoginController extends AppBaseController {
       //remember me
       myApp.preferenceHelper!.setBool(rememberMeKey, rxRememberMe.value);
     }
+  }
+
+  Future<bool> handleForgotPassword() async {
+    if (userController.text.isEmpty) {
+      showErrorSnackbar(
+          message: 'Unable to proceed due to an error.Enter your usercode');
+      return false;
+    }
+
+    await getMail().then((success) async {
+      if (success) {
+        await _sendVerification();
+      }
+      return true;
+    });
+    return false;
+  }
+
+  Future<bool> getMail() async {
+    try {
+      showLoader();
+      String username = userController.text.trim();
+      if (!username.endsWith("@MUZIRIS")) {
+        username += "@MUZIRIS";
+      }
+      var mailRequestList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "GET_EMAIL"),
+        CommonRequest(attribute: "userCode", value: username),
+      ];
+      EmailResponse? response = await _authService.getMail(mailRequestList);
+      if (response != null) {
+        rxMailResponse.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  Future<bool> _sendVerification() async {
+    try {
+      showLoader();
+
+      String username = userController.text.trim();
+      if (!username.endsWith("@MUZIRIS")) {
+        username += "@MUZIRIS";
+      }
+      var otpRequestList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(
+            attribute: "transSubType", value: "VERIFICATION_CODE_GNRTE"),
+        CommonRequest(attribute: "userCode", value: username),
+        CommonRequest(attribute: "usepasswordrCode", value: ""),
+        CommonRequest(
+            attribute: "email", value: rxMailResponse.value!.emailId ?? ''),
+        CommonRequest(attribute: "verificationCode", value: ""),
+        CommonRequest(attribute: "flag", value: "UPDATE_PASSWORD"),
+      ];
+      OtpResponse? response = await _authService.getOtp(otpRequestList);
+      if (response != null) {
+        rxOtpResponse.value = response;
+
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  Future<bool> verifyVerificationCode() async {
+    try {
+      showLoader();
+
+      String username = userController.text.trim();
+      if (!username.endsWith("@MUZIRIS")) {
+        username += "@MUZIRIS";
+      }
+      String otp = await combineOTP();
+      var otpVerificationList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(
+            attribute: "transSubType", value: "VERIFY_VERIFICATIONCODE"),
+        CommonRequest(attribute: "userCode", value: ""),
+        CommonRequest(attribute: "password", value: ""),
+        CommonRequest(attribute: "email", value: ""),
+        CommonRequest(attribute: "verificationCode", value: otp),
+      ];
+      bool response = await _authService.verifyOtp(otpVerificationList);
+      return response;
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+      return false;
+    } finally {
+      hideLoader();
+    }
+  }
+
+  Future<String> combineOTP() async {
+    String value1 = otpcontroller1.text;
+    String value2 = otpcontroller2.text;
+    String value3 = otpcontroller3.text;
+    String value4 = otpcontroller4.text;
+    enteredOtp.value = '$value1$value2$value3$value4';
+    appLog('ENTEREDOTP:${enteredOtp.value} ');
+    otpcontroller1.clear();
+    otpcontroller2.clear();
+    otpcontroller3.clear();
+    otpcontroller4.clear();
+    return enteredOtp.value;
   }
 
   void isValidPass(String value) {

@@ -12,8 +12,9 @@ import 'package:pmms/view/login/creat_password_screen.dart';
 import 'package:pmms/view/notifications/notification_screen.dart';
 import 'package:pmms/view/settings/settings_screen.dart';
 import 'package:pmms/view/splash/splash_screen.dart' show SplashScreen;
-import 'package:pmms/view/tasks/task_details_screen.dart';
+import 'package:pmms/view/tasks/pl_task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
+import 'package:pmms/view/tasks/tl_task_detail_screen.dart';
 
 import '../binding/home_binding.dart';
 import '../binding/login_binding.dart';
@@ -29,7 +30,8 @@ const landingPageRoute = '/landing';
 const homePageRoute = '/home';
 
 const tasksPageRoute = '/mytasks';
-const taskDetailsPageRoute = '/tasksDetails';
+const plTaskDetailsPageRoute = '/pltasksDetails';
+const tlTaskDetailsPageRoute = '/tltasksDetails';
 const createTokenPageRoute = '/createToken';
 const createStoryPageRoute = '/createStory';
 const settingsPageRoute = '/settings';
@@ -78,8 +80,14 @@ final routes = [
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
   GetPage(
-      name: taskDetailsPageRoute,
-      page: () => const TaskDetailsScreen(),
+      name: plTaskDetailsPageRoute,
+      page: () => const PlTaskDetailsScreen(),
+      // binding: const TasksBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 200)),
+  GetPage(
+      name: tlTaskDetailsPageRoute,
+      page: () => const TlTaskDetailScreen(),
       // binding: const TasksBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),

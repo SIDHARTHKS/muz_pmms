@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
+import 'package:pmms/helper/enum.dart';
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/view/tasks/tabviews/story_view.dart';
-import 'package:pmms/view/tasks/tabviews/tokens_view.dart';
+import 'package:pmms/view/tasks/tabviews/pl_tokens_view.dart';
+import 'package:pmms/view/tasks/tabviews/tl_token_view.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
@@ -49,6 +51,9 @@ class TasksController extends AppBaseController
 
   Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
 
+  // filter
+  RxList<FilterModel> rxTaskFilterTypeList = <FilterModel>[].obs;
+
   //
 
   @override
@@ -58,6 +63,7 @@ class TasksController extends AppBaseController
     setDefaultFilters();
     // setDateRange();
     _setArguments();
+    _setFilterNames();
     super.onInit();
   }
 
@@ -157,14 +163,48 @@ class TasksController extends AppBaseController
         requestTypeFilterCount.value;
   }
 
-  List rxTabLabel = [token.tr, story.tr];
-  List rxTabScreens = [const TokensView(), const StoryView()];
+  List rxTabLabel = [token.tr, story.tr, token.tr];
+  List rxPlTabScreens = [
+    const PlTokensView(),
+    const StoryView(),
+    const TlTokenView()
+  ];
+  List rxTlTabScreens = [const PlTokensView(), const StoryView()];
 
   void switchTab(int index) {
     rxTabIndex(index);
   }
 
   // filters
+
+  void _setFilterNames() {
+    List<String> filterItems = [
+      'All',
+      'To Do',
+      'In Progress',
+      'Hold',
+      'Completed'
+    ];
+    List<FilterType> filterTypes = [
+      FilterType.all,
+      FilterType.todo,
+      FilterType.inprogress,
+      FilterType.hold,
+      FilterType.completed
+    ];
+    List<FilterModel> list = [];
+    for (int i = 0; i < filterTypes.length; i++) {
+      list.add(
+        FilterModel(
+          name: filterItems[i],
+          filterType: filterTypes[i],
+        ),
+      );
+    }
+    rxTaskFilterTypeList.value = list;
+  }
+
+  //
 
   List<String> tokenTypes = ['Pending', 'Approved', 'Rejected', 'In Progress'];
 

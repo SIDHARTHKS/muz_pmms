@@ -149,31 +149,36 @@ class LoginScreen extends AppBaseView<LoginController> {
                   height(30),
                   GestureDetector(
                     onTap: () async {
-                      await showModalBottomSheet(
-                        context: Get.context!,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) {
-                          return Padding(
-                            // This padding pushes the sheet up when the keyboard appears
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                              child: SizedBox(
-                                height: Platform.isAndroid
-                                    ? (Get.height * 0.52)
-                                    : (Get.height * 0.58),
-                                child: const ForgetPasswordBottomsheet(),
-                              ),
-                            ),
+                      controller.handleForgotPassword().then((success) async {
+                        if (success) {
+                          await showModalBottomSheet(
+                            context: Get.context!,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return Padding(
+                                // This padding pushes the sheet up when the keyboard appears
+                                padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                  child: SizedBox(
+                                    height: Platform.isAndroid
+                                        ? (Get.height * 0.52)
+                                        : (Get.height * 0.58),
+                                    child: const ForgetPasswordBottomsheet(),
+                                  ),
+                                ),
+                              );
+                            },
                           );
-                        },
-                      );
+                        }
+                      });
                     },
                     child: Stack(
                       clipBehavior: Clip.none,

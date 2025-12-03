@@ -54,6 +54,18 @@ class AppTheme {
   final Color statusMediumTextColor;
   final Color statusHighTextColor;
 
+  final Color statusToDoColor;
+  final Color statusInProgressColor;
+  final Color statusApprovedColor;
+
+  final Color statusToDoTextColor;
+  final Color statusInProgressTextColor;
+  final Color statusApprovedTextColor;
+
+  final Color statusPendingFilledColor;
+  final Color statusInProgressFilledColor;
+  final Color statusApprovedFilledColor;
+
   final Color checkColor;
 
   final String fontFamily;
@@ -110,6 +122,15 @@ class AppTheme {
     required this.statusMediumTextColor,
     required this.statusHighTextColor,
     required this.checkColor,
+    required this.statusToDoColor,
+    required this.statusInProgressColor,
+    required this.statusApprovedColor,
+    required this.statusToDoTextColor,
+    required this.statusInProgressTextColor,
+    required this.statusApprovedTextColor,
+    required this.statusPendingFilledColor,
+    required this.statusInProgressFilledColor,
+    required this.statusApprovedFilledColor,
   });
 }
 
@@ -181,6 +202,18 @@ AppTheme _demoDarkTheme() => AppTheme(
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
 
+      statusToDoColor: const Color.fromRGBO(206, 227, 243, 1),
+      statusInProgressColor: const Color.fromRGBO(255, 245, 229, 1),
+      statusApprovedColor: const Color.fromRGBO(255, 245, 229, 1),
+
+      statusToDoTextColor: const Color.fromRGBO(58, 90, 115, 1),
+      statusInProgressTextColor: const Color.fromRGBO(187, 133, 53, 1),
+      statusApprovedTextColor: const Color.fromRGBO(187, 133, 53, 1),
+
+      statusPendingFilledColor: const Color.fromARGB(255, 160, 160, 160),
+      statusInProgressFilledColor: const Color.fromRGBO(237, 178, 91, 1),
+      statusApprovedFilledColor: const Color.fromRGBO(57, 73, 171, 1),
+
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
       fontFamily: 'Mona Sans',
@@ -242,6 +275,18 @@ AppTheme _demoLightTheme() => AppTheme(
       statusLowTextColor: const Color.fromARGB(255, 23, 154, 198),
       statusMediumTextColor: const Color.fromARGB(255, 156, 80, 5),
       statusHighTextColor: const Color.fromARGB(255, 184, 29, 29),
+
+      statusToDoColor: const Color.fromRGBO(206, 227, 243, 1),
+      statusInProgressColor: const Color.fromRGBO(255, 245, 229, 1),
+      statusApprovedColor: const Color.fromRGBO(255, 245, 229, 1),
+
+      statusToDoTextColor: const Color.fromRGBO(58, 90, 115, 1),
+      statusInProgressTextColor: const Color.fromRGBO(187, 133, 53, 1),
+      statusApprovedTextColor: const Color.fromRGBO(187, 133, 53, 1),
+
+      statusPendingFilledColor: const Color.fromARGB(255, 160, 160, 160),
+      statusInProgressFilledColor: const Color.fromRGBO(237, 178, 91, 1),
+      statusApprovedFilledColor: const Color.fromRGBO(57, 73, 171, 1),
 
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
