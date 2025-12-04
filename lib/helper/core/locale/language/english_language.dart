@@ -185,6 +185,6 @@ Map<String, String> enUS = {
   tokenId: 'Token ID : ',
   viewThisStory: 'View this story',
   storiesInToken: 'Stories in this token',
-  newStory: 'Newstory',
+  newStory: 'New story',
   noStory: 'No stories added',
 };

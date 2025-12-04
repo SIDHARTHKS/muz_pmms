@@ -44,71 +44,73 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  height(10),
+                  height(20),
                   _primaryDetailsBox(task),
                   _tokenBox(task),
                   _storyTab(),
-                  // _noStoryBox()
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: Container(
-                          height: 40,
-                          width: Get.width,
-                          decoration: BoxDecoration(
-                            color: AppColorHelper().cardColor,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
-                              children: [
-                                _filterButton("All", "12"),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15.0),
-                                  child: Container(
-                                    height: 20,
-                                    width: 1,
-                                    color: AppColorHelper()
-                                        .primaryTextColor
-                                        .withValues(alpha: 0.2),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 35,
-                                  width: Get.width * 0.65,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        controller.rxTaskFilterTypeList.length -
-                                            1, // skip first
-                                    itemBuilder: (context, index) {
-                                      var item =
-                                          controller.rxTaskFilterTypeList[
-                                              index + 1]; // shift index
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0),
-                                        child: _filterButton(item.name, "4"),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
+                  _noStoryBox(),
+                  // _storyBox()
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  SizedBox _storyBox() {
+    return SizedBox(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Container(
+              height: 40,
+              width: Get.width,
+              decoration: BoxDecoration(
+                color: AppColorHelper().cardColor,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  children: [
+                    _filterButton("All", "12"),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Container(
+                        height: 20,
+                        width: 1,
+                        color: AppColorHelper()
+                            .primaryTextColor
+                            .withValues(alpha: 0.2),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 35,
+                      width: Get.width * 0.65,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.rxTaskFilterTypeList.length -
+                            1, // skip first
+                        itemBuilder: (context, index) {
+                          var item = controller
+                              .rxTaskFilterTypeList[index + 1]; // shift index
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: _filterButton(item.name, "4"),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -146,7 +148,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
       padding: const EdgeInsets.symmetric(vertical: 18.0),
       child: Container(
         width: Get.width,
-        height: 400,
+        height: 300,
         decoration: BoxDecoration(
             color: AppColorHelper().cardColor,
             borderRadius: BorderRadius.circular(5),
@@ -178,7 +180,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
             fontSize: 14),
         Row(
           children: [
-            _addStoryButton(),
+            // _addStoryButton(),
             width(10),
             Image.asset(
               Assets.icons.filter.path,

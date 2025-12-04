@@ -3,15 +3,17 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/model/notification_model.dart';
 import 'package:pmms/model/task_model.dart';
+import 'package:pmms/service/notification_services.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
-import '../service/home_service.dart';
 
 class HomeController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   //
-  final HomeService _homeService = Get.find<HomeService>();
+
+  final NotificationServices _notificationServices =
+      Get.find<NotificationServices>();
 
   //
   final isInitCalled = false.obs;
@@ -41,6 +43,34 @@ class HomeController extends AppBaseController
     }
     appLog("userid =${rxUserId.value}");
   }
+
+  // Future<bool> fetchNotifications() async {
+  //   try {
+  //     showLoader();
+  //     String id = myApp.preferenceHelper!.getString(employeeIdKey);
+  //     var notificationRequestList = [
+  //       CommonRequest(attribute: "transType", value: "LIST"),
+  //       CommonRequest(attribute: "transSubType", value: "ALERTS"),
+  //       CommonRequest(attribute: "EmployeeID", value: id),
+  //       CommonRequest(attribute: "AlternateKeyID", value: ""),
+  //       CommonRequest(attribute: "Flag", value: ""),
+  //       CommonRequest(attribute: "ApproveRejectionFlag", value: ""),
+  //       CommonRequest(attribute: "ReadID", value: ""),
+  //       CommonRequest(attribute: "AlternateKeyIDStr", value: ""),
+  //     ];
+  //     List<TaskResponse>? response =
+  //         await _notificationServices.getNotifications(notificationRequestList);
+  //     if (response != null) {
+  //       rxTasksResponse.value = response;
+  //       return true;
+  //     }
+  //   } catch (e) {
+  //     appLog('$exceptionMsg $e', logging: Logging.error);
+  //   } finally {
+  //     hideLoader();
+  //   }
+  //   return false;
+  // }
 
   // mock data
   List<NotificationModel> notifications = [

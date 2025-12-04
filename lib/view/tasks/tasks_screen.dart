@@ -34,9 +34,9 @@ class TasksScreen extends AppBaseView<TasksController> {
             child: Obx(() {
               return Column(
                 children: [
-                  height(20),
+                  height(10),
                   _tabBar(),
-                  _divider(),
+                  height(10),
                   _searchBar(),
                   controller.totalFilterCount.value != 0
                       ? _filterDetails()
@@ -99,19 +99,19 @@ class TasksScreen extends AppBaseView<TasksController> {
         child: controller.rxPlTabScreens[controller.rxTabIndex.value]);
   }
 
-  Padding _divider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child:
-          divider(color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
-    );
-  }
-
-  SizedBox _tabBar() {
-    return SizedBox(
+  Container _tabBar() {
+    return Container(
       width: Get.width,
-      height: 30,
+      height: 50,
+      decoration: BoxDecoration(
+          color: AppColorHelper().transparentColor,
+          border: Border(
+              bottom: BorderSide(
+                  color:
+                      AppColorHelper().primaryTextColor.withValues(alpha: 0.07),
+                  width: 1))),
       child: ListView.builder(
+          padding: EdgeInsets.zero,
           scrollDirection: Axis.horizontal,
           itemCount: controller.rxTabLabel.length,
           itemBuilder: (context, index) {
@@ -138,7 +138,15 @@ class TasksScreen extends AppBaseView<TasksController> {
           controller.switchTab(index);
         },
         child: Container(
-            color: AppColorHelper().transparentColor,
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.zero,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: selected
+                            ? AppColorHelper().primaryColor
+                            : Colors.transparent,
+                        width: 2))),
             child: Row(
               children: [
                 appText(title,
@@ -151,8 +159,9 @@ class TasksScreen extends AppBaseView<TasksController> {
                     fontWeight: FontWeight.w500),
                 width(6),
                 Container(
-                  width: 22,
-                  height: 22,
+                  width: 23,
+                  height: 23,
+                  padding: EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                       color: selected
                           ? AppColorHelper().primaryColor
@@ -163,7 +172,7 @@ class TasksScreen extends AppBaseView<TasksController> {
                   child: Center(
                     child: appText(count,
                         fontWeight: FontWeight.w500,
-                        fontSize: 15,
+                        fontSize: 11,
                         color: selected
                             ? AppColorHelper().textColor
                             : AppColorHelper().primaryTextColor),

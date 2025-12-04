@@ -4,11 +4,9 @@ import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
-import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
-import 'package:pmms/view/widget/text/app_text.dart';
 
 class StoryView extends AppBaseView<TasksController> {
   const StoryView({super.key});
@@ -49,7 +47,7 @@ class StoryView extends AppBaseView<TasksController> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 15),
+                        vertical: 20, horizontal: 15),
                     decoration: BoxDecoration(
                       color: AppColorHelper().cardColor,
                       borderRadius: BorderRadius.circular(5),
@@ -103,14 +101,7 @@ class StoryView extends AppBaseView<TasksController> {
                               .borderColor
                               .withValues(alpha: 0.3),
                         ),
-                        height(6),
                         height(16),
-                        appText(task.description ?? "--",
-                            fontSize: 13,
-                            height: 1.6,
-                            fontWeight: FontWeight.w400,
-                            color: AppColorHelper().primaryTextColor),
-                        _divider(),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -131,7 +122,54 @@ class StoryView extends AppBaseView<TasksController> {
                             ],
                           ),
                         ),
-                        height(18),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          child: Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            height: 50,
+                            decoration: BoxDecoration(
+                                color: AppColorHelper()
+                                    .primaryColor
+                                    .withValues(alpha: 0.05),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    appText("Logged Time : ",
+                                        color: AppColorHelper()
+                                            .primaryTextColor
+                                            .withValues(alpha: 0.6),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13),
+                                    appText("0.00",
+                                        color:
+                                            AppColorHelper().primaryTextColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    appText("Estimated Time : ",
+                                        color: AppColorHelper()
+                                            .primaryTextColor
+                                            .withValues(alpha: 0.6),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13),
+                                    appText("0.00",
+                                        color:
+                                            AppColorHelper().primaryTextColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                         Row(
                           children: [
                             Expanded(
@@ -163,9 +201,8 @@ class StoryView extends AppBaseView<TasksController> {
                                 },
                                 appText(
                                   viewThisStory.tr,
-                                  color: AppColorHelper()
-                                      .secondaryTextColor
-                                      .withValues(alpha: 0.7),
+                                  fontSize: 13,
+                                  color: AppColorHelper().secondaryTextColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -195,14 +232,6 @@ class StoryView extends AppBaseView<TasksController> {
             fontSize: 13,
             color: AppColorHelper().primaryTextColor)
       ],
-    );
-  }
-
-  Padding _divider() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 5.0),
-      child:
-          divider(color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
     );
   }
 }
