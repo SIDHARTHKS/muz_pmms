@@ -7,7 +7,6 @@ import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
-import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 
@@ -50,7 +49,7 @@ class TlTokenView extends AppBaseView<TasksController> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 15),
+                        vertical: 18, horizontal: 18),
                     decoration: BoxDecoration(
                       color: AppColorHelper().cardColor,
                       borderRadius: BorderRadius.circular(5),
@@ -217,13 +216,10 @@ class TlTokenView extends AppBaseView<TasksController> {
                                   controller.setTask(task);
                                   navigateTo(tlTaskDetailsPageRoute);
                                 },
-                                appText(
-                                  viewToken.tr,
-                                  color: AppColorHelper()
-                                      .secondaryTextColor
-                                      .withValues(alpha: 0.7),
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                appText(viewToken.tr,
+                                    color: AppColorHelper().secondaryTextColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13),
                               ),
                             ),
                           ],

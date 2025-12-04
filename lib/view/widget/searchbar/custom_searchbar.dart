@@ -72,7 +72,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           hintText: widget.hintText.tr,
           hintStyle: TextStyle(
             letterSpacing: 0,
-            fontSize: isTablet ? 18 : 14,
+            fontSize: isTablet ? 16 : 13,
             color: AppColorHelper().primaryTextColor.withOpacity(0.6),
             fontWeight: FontWeight.w400,
           ),
@@ -109,7 +109,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             },
             child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 10.0),
+                    horizontal: 12.0, vertical: 12.0),
                 child: Image.asset(Assets.icons.filter.path)),
           ),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),

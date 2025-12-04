@@ -47,7 +47,7 @@ class StoryView extends AppBaseView<TasksController> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 15),
+                        vertical: 18, horizontal: 18),
                     decoration: BoxDecoration(
                       color: AppColorHelper().cardColor,
                       borderRadius: BorderRadius.circular(5),
@@ -73,8 +73,8 @@ class StoryView extends AppBaseView<TasksController> {
                               decoration: BoxDecoration(
                                   color:
                                       getStatusColor(task.currentStatus ?? "--")
-                                          .withValues(alpha: 0.30),
-                                  borderRadius: BorderRadius.circular(5),
+                                          .withValues(alpha: 0.4),
+                                  borderRadius: BorderRadius.circular(3),
                                   border: Border.all(
                                       color: getStatusTextColor(
                                           task.currentStatus ?? "--"))),

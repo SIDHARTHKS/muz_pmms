@@ -336,6 +336,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                   _descriptionBox(task),
                   _divider(),
                   _horizontalDetailBox(task),
+                  height(15),
                 ],
               ),
             ),
