@@ -389,7 +389,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           appText(description.tr,
-              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
+              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.6),
               fontSize: 13,
               fontWeight: FontWeight.w400),
           SizedBox(
@@ -423,7 +423,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   color:
-                      AppColorHelper().primaryTextColor.withValues(alpha: 0.5)),
+                      AppColorHelper().primaryTextColor.withValues(alpha: 0.6)),
               appText("TKN-${task.tokenId ?? "--"}",
                   color: AppColorHelper().primaryTextColor,
                   fontWeight: FontWeight.w800)
@@ -455,7 +455,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
         appText(type,
             fontWeight: FontWeight.w400,
             fontSize: 13,
-            color: AppColorHelper().primaryTextColor.withValues(alpha: 0.5)),
+            color: AppColorHelper().primaryTextColor.withValues(alpha: 0.6)),
         appText(name,
             fontWeight: FontWeight.w500,
             fontSize: 13,

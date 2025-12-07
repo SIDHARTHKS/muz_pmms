@@ -207,3 +207,26 @@ class TaskResponse {
         "currentStatus": currentStatus,
       };
 }
+
+CreateTokenResponse createTokenResponseFromJson(String str) =>
+    CreateTokenResponse.fromJson(json.decode(str));
+
+String createTokenResponseToJson(CreateTokenResponse data) =>
+    json.encode(data.toJson());
+
+class CreateTokenResponse {
+  String? message;
+
+  CreateTokenResponse({
+    this.message,
+  });
+
+  factory CreateTokenResponse.fromJson(Map<String, dynamic> json) =>
+      CreateTokenResponse(
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "message": message,
+      };
+}

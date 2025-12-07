@@ -26,6 +26,13 @@ class AppBaseService {
   // dashboard
   getTasksApiEndpoint() => '/mytask'; //
 
+  // token
+  getCreateTokenApiEndpoint() => '/generatetoken'; //
+
+  // filter
+  getFiltersApiEndpoint() => '/mytaskdropdown'; //
+  getDropdownApiEndpoint() => '/taskdropdown'; //
+
   // settings
   // getVersionApiEndpoint() => '/getLastVersionDetail'; //
   // getVersionInfoApiEndpoint() => '/getVersionDetail'; //

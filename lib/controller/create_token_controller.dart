@@ -1,15 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
+import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/model/task_model.dart';
+import 'package:pmms/service/task_services.dart';
 import 'package:pmms/view/createToken/pages/create_token_page1.dart';
 import 'package:pmms/view/createToken/pages/create_token_page2.dart';
 import 'package:pmms/view/createToken/pages/create_token_page3.dart';
+import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
+import '../helper/enum.dart';
 
 class CreateTokenController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
+  final TaskServices _taskServices = Get.find<TaskServices>();
   //
   final isInitCalled = false.obs;
 
@@ -17,6 +24,7 @@ class CreateTokenController extends AppBaseController
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController additionaldescriptionController =
       TextEditingController();
+  final TextEditingController clientRefIdController = TextEditingController();
 
   // pages
   RxInt rxCurrentPageIndex = 0.obs;
@@ -25,27 +33,36 @@ class CreateTokenController extends AppBaseController
   final RxBool rxToggle = false.obs;
 
   //filter
-  Rxn<CommonDropdownResponse> rxSelectedProject = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedRequest = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedPriority =
-      Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedTeam = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedModule = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedOption = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedAsignee = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedClientId =
-      Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedRequestedBy =
-      Rxn<CommonDropdownResponse>();
+  Rxn<FiltersResponse> rxSelectedProject = Rxn<FiltersResponse>();
+  Rxn<FiltersResponse> rxSelectedRequest = Rxn<FiltersResponse>();
+  Rxn<FiltersResponse> rxSelectedPriority = Rxn<FiltersResponse>();
+  Rxn<DropDownResponse> rxSelectedTeam = Rxn<DropDownResponse>();
+  Rxn<DropDownResponse> rxSelectedModule = Rxn<DropDownResponse>();
+  Rxn<DropDownResponse> rxSelectedOption = Rxn<DropDownResponse>();
+  Rxn<DropDownResponse> rxSelectedAsignee = Rxn<DropDownResponse>();
+  Rxn<DropDownResponse> rxSelectedRequestedBy = Rxn<DropDownResponse>();
 
   //dates
 
   DateTime rxRequestedOn = DateTime.now();
   DateTime rxDueDate = DateTime.now();
 
+  // responses
+  Rxn<CreateTokenResponse> rxGenerateTokenResponse = Rxn<CreateTokenResponse>();
+  RxList<FiltersResponse> rxProjectsList = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxPriorityList = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxRequestList = <FiltersResponse>[].obs;
+  //
+  RxList<DropDownResponse> rxTeamList = <DropDownResponse>[].obs;
+  RxList<DropDownResponse> rxModuleList = <DropDownResponse>[].obs;
+  RxList<DropDownResponse> rxOptionsList = <DropDownResponse>[].obs;
+  RxList<DropDownResponse> rxAssigneeList = <DropDownResponse>[].obs;
+  RxList<DropDownResponse> rxRequestedByList = <DropDownResponse>[].obs;
+
   @override
   Future<void> onInit() async {
     isInitCalled(true);
+
     super.onInit();
   }
 
@@ -70,98 +87,220 @@ class CreateTokenController extends AppBaseController
       }
     }
   }
-  ////////////////////////////////////////////////////////////////////////////// filter
 
-  void setDefaultFilters() {
-    rxSelectedProject.value = projectList[0];
-    rxSelectedRequest.value = requestTypes[0];
-    rxSelectedPriority.value = priorityTypes[0];
-    rxSelectedTeam.value = teamList[0];
-    rxSelectedModule.value = moduleList[0];
-    rxSelectedOption.value = optionList[0];
-    rxSelectedAsignee.value = assigneeList[0];
-    rxSelectedClientId.value = clientRefIdList[0];
-    rxSelectedRequestedBy.value = requestedByList[0];
+  bool checkIsFilled() {
+    if (descriptionController.text.isEmpty) {
+      showErrorSnackbar(message: "Please enter description");
+      return false;
+    }
+    return true;
   }
+  ////////////////////////////////////////////////////////////////////////////// filter
 
   List<String> tokenTypes = ['Pending', 'Approved', 'Rejected', 'In Progress'];
 
-  final List<CommonDropdownResponse> projectList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'GEN', mccName: 'General'),
-    CommonDropdownResponse(
-        mccId: '2', mccCode: 'JUELISV2', mccName: 'JuelIS V2'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'PAYROLL', mccName: 'Payroll'),
-    CommonDropdownResponse(
-        mccId: '4', mccCode: 'MRETAILP', mccName: 'MRetail - Pulimoottil'),
-    CommonDropdownResponse(
-        mccId: '5', mccCode: 'MRETAILS', mccName: 'MRetail - Seematti'),
-  ];
-
-  final List<CommonDropdownResponse> requestTypes = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'SUP', mccName: 'Support'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'ERR', mccName: 'Error'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'MOD', mccName: 'Modification'),
-  ];
-
-  final List<CommonDropdownResponse> priorityTypes = [
-    CommonDropdownResponse(mccId: '2', mccCode: 'HIG', mccName: 'High'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'MED', mccName: 'Medium'),
-    CommonDropdownResponse(mccId: '1', mccCode: 'LOW', mccName: 'Low'),
-  ];
-
-  final List<CommonDropdownResponse> teamList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'DEV', mccName: 'Development'),
-    CommonDropdownResponse(
-        mccId: '2', mccCode: 'QA', mccName: 'Quality Assurance'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'OPS', mccName: 'Operations'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'SUP', mccName: 'Support Team'),
-  ];
-
-  final List<CommonDropdownResponse> moduleList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'AUTH', mccName: 'Back Office'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'PAY', mccName: 'Payment'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'UI', mccName: 'User Interface'),
-    CommonDropdownResponse(
-        mccId: '4', mccCode: 'NOTIF', mccName: 'Notifications'),
-  ];
-
-  final List<CommonDropdownResponse> optionList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'LOW', mccName: 'Notification'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'MED', mccName: 'Modification'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'HIGH', mccName: 'Updation'),
-  ];
-
-  final List<CommonDropdownResponse> assigneeList = [
-    CommonDropdownResponse(
-        mccId: '1', mccCode: 'USR1', mccName: 'Annette Black'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'USR2', mccName: 'Jane Smith'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'USR3', mccName: 'Alex Johnson'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'USR4', mccName: 'Priya Menon'),
-  ];
-
-  final List<CommonDropdownResponse> clientRefIdList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'CL001', mccName: '0085'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'CL002', mccName: '0096'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'CL003', mccName: '0023'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'CL004', mccName: '0045'),
-  ];
-
-  final List<CommonDropdownResponse> requestedByList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'EMP001', mccName: 'Muziris'),
-    CommonDropdownResponse(
-        mccId: '2', mccCode: 'EMP002', mccName: 'Anjali Nair'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'EMP003', mccName: 'Rahul Menon'),
-    CommonDropdownResponse(
-        mccId: '4', mccCode: 'EMP004', mccName: 'Sneha Varma'),
-  ];
+  void setDefaultFilters() {
+    rxSelectedProject.value = rxProjectsList[0];
+    rxSelectedRequest.value = rxRequestList[0];
+    rxSelectedPriority.value = rxPriorityList[0];
+  }
 
   //////////////////////////////////////////////////////////////////////////////
 
+  Future<bool> callGenerateToken() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+
+      if (requiredDataSelected()) {
+        var generateTokenRequestList = [
+          CommonRequest(attribute: "transType", value: "INSERT"),
+          CommonRequest(attribute: "transSutransSubTypebType", value: "INSERT"),
+          CommonRequest(attribute: "IssueType", value: "TOKEN"),
+          CommonRequest(
+              attribute: "Description", value: descriptionController.text),
+          CommonRequest(
+              attribute: "AdditionalInfo",
+              value: additionaldescriptionController.text),
+          CommonRequest(attribute: "Attachments", value: ""),
+          CommonRequest(attribute: "RequestID", value: "0"),
+          CommonRequest(attribute: "LoginEmpID", value: id),
+          CommonRequest(
+              attribute: "ProjectID",
+              value: rxSelectedProject.value?.mccId ?? ""), /////doubt
+          CommonRequest(attribute: "TeamID", value: ""),
+          CommonRequest(attribute: "ModuleID", value: ""),
+          CommonRequest(attribute: "OptionID", value: ""),
+          CommonRequest(attribute: "AssigneeID", value: ""),
+          CommonRequest(attribute: "RequestTypeMccID", value: ""), //
+          CommonRequest(attribute: "RequestedByID", value: ""), //
+          CommonRequest(attribute: "PriorityMccID", value: ""), //
+          CommonRequest(attribute: "CurrentStatusMccID", value: ""), //
+          CommonRequest(attribute: "ClientRefID", value: ""), //
+          CommonRequest(attribute: "RequestOnDate", value: ""), //
+          CommonRequest(attribute: "DueDate", value: ""), //
+        ];
+        CreateTokenResponse? response =
+            await _taskServices.createToken(generateTokenRequestList);
+        if (response != null) {
+          rxGenerateTokenResponse.value = response;
+          clearFieldsAfterTokenCreation();
+          return true;
+        }
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  bool requiredDataSelected() {
+    if (isNullOrEmpty(rxSelectedProject.value?.mccId) ||
+        isNullOrEmpty(descriptionController.text) ||
+        isNullOrEmpty(rxSelectedPriority.value?.mccId)) {
+      showErrorSnackbar(message: "Missing Ids");
+      return false;
+    }
+
+    return true;
+  }
+
+  bool isNullOrEmpty(String? value) {
+    return value == null || value.trim().isEmpty;
+  }
+
+  void clearFieldsAfterTokenCreation() {
+    descriptionController.clear();
+    additionaldescriptionController.clear();
+    rxDueDate = DateTime.now();
+    rxRequestedOn = DateTime.now();
+    rxCurrentPageIndex.value = 0;
+  }
+
+  Future<bool> fetchDropdowns(
+      String projectId,
+      String moduleId,
+      String teamId,
+      String flag,
+      RxList updateList,
+      Rxn selectedList,
+      String issueType,
+      bool loaderEnabled) async {
+    try {
+      if (loaderEnabled) {
+        showLoader();
+      }
+      if (projectId.isEmpty || projectId == "") {
+        showErrorSnackbar(message: "Error finding project id");
+        rxCurrentPageIndex.value = 0;
+        return false;
+      }
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var dropdownRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "DROP_DOWNS"),
+        CommonRequest(attribute: "Date", value: ""),
+        CommonRequest(attribute: "flag", value: flag),
+        CommonRequest(attribute: "ProjectID", value: projectId),
+        CommonRequest(attribute: "ModuleID", value: ""),
+        CommonRequest(attribute: "TeamID", value: teamId),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "StoryTypeMccID", value: ""),
+        CommonRequest(attribute: "IssueType", value: issueType),
+      ];
+      List<DropDownResponse>? response =
+          await _taskServices.callDropdowns(dropdownRequestsList);
+      if (response != null) {
+        updateList.clear();
+        updateList.value = response;
+        selectedList.value = updateList.isNotEmpty ? updateList[0] : null;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  Future<bool> fetchFilters(
+      String flag, RxList updateList, bool loaderEnabled) async {
+    try {
+      if (loaderEnabled) {
+        showLoader();
+      }
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var filterRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "DropDown"),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "flag", value: flag),
+      ];
+      List<FiltersResponse>? response =
+          await _taskServices.callFilter(filterRequestsList);
+      if (response != null) {
+        updateList.clear();
+        updateList.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  Future<void> callAndSetFilters(bool loaderEnabled) async {
+    bool setProject =
+        await fetchFilters(typeProject, rxProjectsList, loaderEnabled);
+    bool setPriority =
+        await fetchFilters(typePriority, rxPriorityList, loaderEnabled);
+    bool setRequest =
+        await fetchFilters(typeRequest, rxRequestList, loaderEnabled);
+    if (setProject && setPriority && setRequest) {
+      setDefaultFilters();
+    } else {
+      showErrorSnackbar(message: "Failed to load filters");
+      navigateToAndRemove(homePageRoute);
+    }
+  }
+
+  Future<void> fetchProjectBasedDropdown(String projectId, String moduelID,
+      String teamID, bool loaderEnabled) async {
+    await fetchDropdowns(projectId, moduelID, teamID, "TEAM", rxTeamList,
+        rxSelectedTeam, "TOKEN", loaderEnabled);
+    await fetchDropdowns(projectId, moduelID, teamID, "MODULE", rxModuleList,
+        rxSelectedModule, "TOKEN", loaderEnabled);
+    await fetchDropdowns(projectId, moduelID, teamID, "OPTION", rxOptionsList,
+        rxSelectedOption, "TOKEN", loaderEnabled);
+    await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
+        rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
+    await fetchAssigneDropdown(
+        projectId, moduelID, rxSelectedTeam.value?.id ?? "", loaderEnabled);
+  }
+
+  Future<void> fetchAssigneDropdown(String projectId, String moduelID,
+      String teamID, bool loaderEnabled) async {
+    await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
+        rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
+  }
+
+  Future<void> fetchRequestedByDropdown(String projectId, String moduelID,
+      String teamID, bool loaderEnabled) async {
+    await fetchDropdowns(projectId, moduelID, teamID, "REQUESTEDBY",
+        rxRequestedByList, rxSelectedRequestedBy, "TOKEN", loaderEnabled);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+
   Future<bool> fetchInitData() async {
-    setDefaultFilters();
+    await callAndSetFilters(false);
+    await fetchProjectBasedDropdown(
+        rxSelectedProject.value?.mccId ?? '', "", "", false);
     return true;
   }
 }

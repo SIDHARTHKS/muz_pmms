@@ -8,7 +8,6 @@ import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
-
 import '../../../model/dropdown_model.dart';
 import '../../widget/dropdown/custom_dropdown.dart';
 
@@ -28,67 +27,75 @@ class CreateTokenPage2 extends AppBaseView<CreateTokenController> {
             child: divider(
                 color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
           ),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<DropDownResponse>(
             label: team.tr,
             widgetHeight: 53,
             isRequired: false,
-            items: controller.teamList,
+            items: controller.rxTeamList,
             selectedValue: controller.rxSelectedTeam.value,
-            onChanged: (value) {
+            onChanged: (value) async {
+              await controller.fetchAssigneDropdown(
+                  controller.rxSelectedProject.value?.mccId ?? '',
+                  "",
+                  value?.id ?? "",
+                  true);
               controller.rxSelectedTeam.value = value;
             },
-            itemLabelBuilder: (item) => item.mccName ?? '',
+            itemLabelBuilder: (item) => item.name ?? '',
           ),
           height(15),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<DropDownResponse>(
             label: module.tr,
             widgetHeight: 53,
             isRequired: false,
-            items: controller.moduleList,
+            items: controller.rxModuleList,
             selectedValue: controller.rxSelectedModule.value,
             onChanged: (value) {
               controller.rxSelectedModule.value = value;
             },
-            itemLabelBuilder: (item) => item.mccName ?? '',
+            itemLabelBuilder: (item) => item.name ?? '',
           ),
           height(15),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<DropDownResponse>(
             label: option.tr,
             widgetHeight: 53,
             isRequired: false,
-            items: controller.optionList,
+            items: controller.rxOptionsList,
             selectedValue: controller.rxSelectedOption.value,
-            onChanged: (value) {
+            onChanged: (value) async {
               controller.rxSelectedOption.value = value;
             },
-            itemLabelBuilder: (item) => item.mccName ?? '',
+            itemLabelBuilder: (item) => item.name ?? '',
           ),
           height(15),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<DropDownResponse>(
             label: assignee.tr,
             widgetHeight: 53,
             isRequired: false,
-            items: controller.assigneeList,
+            items: controller.rxAssigneeList,
             selectedValue: controller.rxSelectedAsignee.value,
             onChanged: (value) {
               controller.rxSelectedAsignee.value = value;
             },
-            itemLabelBuilder: (item) => item.mccName ?? '',
+            itemLabelBuilder: (item) => item.name ?? '',
           )
         ],
       );
     });
   }
 
-  Row _selectedDetailsSection() {
-    return Row(
-      children: [
-        _selectedContainer(
-            project.tr, controller.rxSelectedProject.value?.mccName ?? "--"),
-        width(10),
-        _selectedContainer(
-            type.tr, controller.rxSelectedRequest.value?.mccName ?? "--")
-      ],
+  SingleChildScrollView _selectedDetailsSection() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _selectedContainer(
+              project.tr, controller.rxSelectedProject.value?.mccName ?? "--"),
+          width(10),
+          _selectedContainer(
+              type.tr, controller.rxSelectedRequest.value?.mccName ?? "--")
+        ],
+      ),
     );
   }
 

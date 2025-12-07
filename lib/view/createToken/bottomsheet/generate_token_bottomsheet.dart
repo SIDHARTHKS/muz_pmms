@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/create_token_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -9,7 +10,9 @@ import 'package:pmms/view/widget/common_widget.dart';
 import '../../../helper/navigation.dart';
 
 class GenerateTokenBottomsheet extends StatelessWidget {
-  const GenerateTokenBottomsheet({super.key});
+  final CreateTokenController _tokenController =
+      Get.find<CreateTokenController>();
+  GenerateTokenBottomsheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +65,18 @@ class GenerateTokenBottomsheet extends StatelessWidget {
                 fontWeight: FontWeight.w500),
           ),
           height(30),
-          buttonContainer(
+          buttonContainer(onPressed: () async {
+            await _tokenController.callGenerateToken();
+          },
               color: AppColorHelper().primaryColor,
               appText(generateToken.tr,
                   color: AppColorHelper().textColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w500)),
           height(12),
-          buttonContainer(
+          buttonContainer(onPressed: () {
+            goBack();
+          },
               color: AppColorHelper().cardColor,
               borderColor: AppColorHelper().borderColor.withValues(alpha: 0.3),
               appText(fillRemainingFields.tr,

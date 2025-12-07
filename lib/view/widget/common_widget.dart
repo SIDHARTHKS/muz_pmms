@@ -664,7 +664,7 @@ Widget appText(
   return Text(
     text,
     style: TextStyle(
-        fontFamily: "MonaSans", // Use your custom font family here
+        fontFamily: "Mona Sans", // Use your custom font family here
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,

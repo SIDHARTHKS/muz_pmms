@@ -11,6 +11,7 @@ import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/view/tasks/bottomsheet/description_bottomsheet.dart';
 import 'package:pmms/view/tasks/bottomsheet/edit_bottomsheet.dart';
+import 'package:pmms/view/widget/progress_loader.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import '../dialogues/rejected_dialogue.dart';
 import '../dialogues/success_dialogue.dart';
@@ -45,6 +46,11 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // ProgressLoader(
+                  //   color: AppColorHelper().primaryColor,
+                  //   height: 3,
+                  // ),
+
                   height(10),
                   Row(
                     children: [
@@ -347,8 +353,8 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
   }
 
   Padding _editableDetails(
-      String title, String subtitle, List<CommonDropdownResponse> list) {
-    CommonDropdownResponse selected = CommonDropdownResponse();
+      String title, String subtitle, List<FiltersResponse> list) {
+    FiltersResponse selected = FiltersResponse();
     for (var i in list) {
       if (i.mccName!.toLowerCase() == subtitle.toLowerCase()) {
         selected = i;

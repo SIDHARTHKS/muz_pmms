@@ -28,7 +28,7 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
             child: divider(
                 color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
           ),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<FiltersResponse>(
             label: module.tr,
             widgetHeight: 55,
             isRequired: false,
@@ -40,7 +40,7 @@ class CreateStoryPage2 extends AppBaseView<CreateStoryController> {
             itemLabelBuilder: (item) => item.mccName ?? '',
           ),
           height(15),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<FiltersResponse>(
             label: option.tr,
             widgetHeight: 55,
             isRequired: false,

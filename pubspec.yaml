@@ -74,6 +74,19 @@ flutter:
     - assets/icons/
     - assets/fonts/
 
+  fonts:
+    - family: Mona Sans
+      fonts:
+        - asset: assets/fonts/MonaSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/MonaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/MonaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/MonaSans-SemiBold.ttf
+          weight: 600  
+      
+         
 
 flutter_launcher_icons:
   android: true
@@ -84,18 +97,6 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
 
-  fonts:
-    - family: 'MonaSans'
-      fonts:
-        - asset: assets/fonts/MonaSans-Light.ttf
-          weight: 300
-        - asset: assets/fonts/MonaSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/MonaSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/MonaSans-Bold.ttf
-          weight: 700
-         
   
  
 

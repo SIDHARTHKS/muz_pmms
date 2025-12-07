@@ -10,8 +10,8 @@ import '../../widget/common_widget.dart';
 
 class EditBottomsheet extends StatefulWidget {
   final String label;
-  final List<CommonDropdownResponse> list;
-  final CommonDropdownResponse selectedItem;
+  final List<FiltersResponse> list;
+  final FiltersResponse selectedItem;
 
   const EditBottomsheet({
     super.key,
@@ -29,7 +29,7 @@ class _FilterBottomsheetState extends State<EditBottomsheet> {
   final appColor = AppColorHelper();
 
   // local temp map to store selected items (copied from controller)
-  late CommonDropdownResponse selectedItem;
+  late FiltersResponse selectedItem;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _FilterBottomsheetState extends State<EditBottomsheet> {
     super.initState();
   }
 
-  void _changeSelection(CommonDropdownResponse value) {
+  void _changeSelection(FiltersResponse value) {
     selectedItem = value;
     setState(() {});
   }

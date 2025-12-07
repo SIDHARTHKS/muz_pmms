@@ -51,7 +51,7 @@ class PlTokensView extends AppBaseView<TasksController> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 18, horizontal: 18),
+                        vertical: 20, horizontal: 20),
                     decoration: BoxDecoration(
                       color: AppColorHelper().cardColor,
                       borderRadius: BorderRadius.circular(5),
@@ -265,9 +265,7 @@ class PlTokensView extends AppBaseView<TasksController> {
                                 },
                                 appText(
                                   approve.tr,
-                                  color: AppColorHelper()
-                                      .secondaryTextColor
-                                      .withValues(alpha: 0.7),
+                                  color: AppColorHelper().secondaryTextColor,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),

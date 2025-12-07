@@ -198,6 +198,7 @@ class HttpService extends GetxService {
       // return _handleResponse(response);
       null;
     }
+    return null;
   }
 
   Future<Future<AppBaseResponse<T>?>?> _handleUnAuthorised<T>({

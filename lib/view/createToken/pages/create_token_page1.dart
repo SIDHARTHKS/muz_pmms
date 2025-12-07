@@ -44,28 +44,34 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
               child: divider(
                   color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
             ),
-            CustomDropdown<CommonDropdownResponse>(
+            CustomDropdown<FiltersResponse>(
               label: project.tr,
               widgetHeight: 52,
               isRequired: true,
-              items: controller.projectList,
+              items: controller.rxProjectsList,
               selectedValue: controller.rxSelectedProject.value,
-              onChanged: (value) {
+              onChanged: (value) async {
                 controller.rxSelectedProject.value = value;
+                await controller.fetchProjectBasedDropdown(
+                    controller.rxSelectedProject.value?.mccId ?? '',
+                    "",
+                    "",
+                    true);
               },
               itemLabelBuilder: (item) => item.mccName ?? '',
             ),
             height(10),
-            CustomRadioButton<CommonDropdownResponse>(
+            CustomRadioButton<FiltersResponse>(
               label: requestType.tr,
               widgetHeight: 35,
               isRequired: true,
-              items: controller.requestTypes,
+              items: controller.rxRequestList,
               selectedValue: controller.rxSelectedRequest.value,
               onChanged: (value) {
                 controller.rxSelectedRequest.value = value;
               },
-              itemLabelBuilder: (item) => item.mccName ?? '',
+              itemLabelBuilder: (item) =>
+                  capitalizeFirstOnly(item.mccName ?? ''),
               itemIdBuilder: (item) => item.mccId,
               bgColor: AppColorHelper().primaryColor.withValues(alpha: 0.2),
               textColor: AppColorHelper().primaryColor,
@@ -75,11 +81,11 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
             height(10),
             _moreDescriptionField(),
             height(16),
-            CustomRadioButton<CommonDropdownResponse>(
+            CustomRadioButton<FiltersResponse>(
               label: priority.tr,
               widgetHeight: 35,
               isRequired: true,
-              items: controller.priorityTypes,
+              items: controller.rxPriorityList,
               selectedValue: controller.rxSelectedPriority.value,
               onChanged: (value) {
                 controller.rxSelectedPriority.value = value;
@@ -87,10 +93,10 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
               itemLabelBuilder: (item) => item.mccName ?? '',
               itemIdBuilder: (item) => item.mccId,
               bgColor: _getPriorityColor(
-                      controller.rxSelectedPriority.value!.mccName ?? "High")
+                      controller.rxSelectedPriority.value?.mccName ?? "High")
                   .withValues(alpha: 0.2),
               textColor: _getPriorityTextColor(
-                  controller.rxSelectedPriority.value!.mccName ?? "High"),
+                  controller.rxSelectedPriority.value?.mccName ?? "High"),
               borderColor: AppColorHelper().transparentColor,
               widgetWidth: 90,
             ),

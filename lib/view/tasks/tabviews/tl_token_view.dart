@@ -49,7 +49,7 @@ class TlTokenView extends AppBaseView<TasksController> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 18, horizontal: 18),
+                        vertical: 20, horizontal: 20),
                     decoration: BoxDecoration(
                       color: AppColorHelper().cardColor,
                       borderRadius: BorderRadius.circular(5),

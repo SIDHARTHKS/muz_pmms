@@ -271,3 +271,9 @@ const String viewThisStory = 'Viewthisstory';
 const String storiesInToken = 'Storiesinthistoken';
 const String newStory = 'New story';
 const String noStory = 'Nostoriesadded';
+
+// TYPES
+
+const String typeProject = 'PROJECT';
+const String typePriority = 'PRIORITY';
+const String typeRequest = 'REQUEST_TYPE';

@@ -5,6 +5,7 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/view/widget/datepicker/custom_datepicker.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
+import 'package:pmms/view/widget/textfield/common_textfield.dart';
 import '../../../helper/color_helper.dart';
 import '../../../helper/sizer.dart';
 import '../../../model/dropdown_model.dart';
@@ -27,28 +28,18 @@ class CreateTokenPage3 extends AppBaseView<CreateTokenController> {
             child: divider(
                 color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
           ),
-          CustomDropdown<CommonDropdownResponse>(
-            label: clientRefID.tr,
-            widgetHeight: 53,
-            isRequired: false,
-            items: controller.clientRefIdList,
-            selectedValue: controller.rxSelectedClientId.value,
-            onChanged: (value) {
-              controller.rxSelectedClientId.value = value;
-            },
-            itemLabelBuilder: (item) => item.mccName ?? '',
-          ),
+          _clientIdContainer(),
           height(15),
-          CustomDropdown<CommonDropdownResponse>(
+          CustomDropdown<DropDownResponse>(
             label: requestBy.tr,
             widgetHeight: 53,
             isRequired: false,
-            items: controller.requestedByList,
+            items: controller.rxRequestedByList,
             selectedValue: controller.rxSelectedRequestedBy.value,
             onChanged: (value) {
               controller.rxSelectedRequestedBy.value = value;
             },
-            itemLabelBuilder: (item) => item.mccName ?? '',
+            itemLabelBuilder: (item) => item.name ?? '',
           ),
           height(15),
           CustomDatePicker(
@@ -108,15 +99,42 @@ class CreateTokenPage3 extends AppBaseView<CreateTokenController> {
     });
   }
 
-  Row _selectedDetailsSection() {
-    return Row(
+  Column _clientIdContainer() {
+    return Column(
       children: [
-        _selectedContainer(
-            project.tr, controller.rxSelectedProject.value?.mccName ?? "--"),
-        width(10),
-        _selectedContainer(
-            type.tr, controller.rxSelectedRequest.value?.mccName ?? "--")
+        Row(
+          children: [
+            width(2),
+            appText(
+              clientRefID.tr,
+              fontSize: 13,
+              color: AppColorHelper().lightTextColor,
+              fontWeight: FontWeight.w400,
+            ),
+          ],
+        ),
+        height(2),
+        CommonTextfield(
+          label: clientRefID.tr,
+          controller: controller.clientRefIdController,
+          maxLines: 1,
+        )
       ],
+    );
+  }
+
+  SingleChildScrollView _selectedDetailsSection() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _selectedContainer(
+              project.tr, controller.rxSelectedProject.value?.mccName ?? "--"),
+          width(10),
+          _selectedContainer(
+              type.tr, controller.rxSelectedRequest.value?.mccName ?? "--")
+        ],
+      ),
     );
   }
 

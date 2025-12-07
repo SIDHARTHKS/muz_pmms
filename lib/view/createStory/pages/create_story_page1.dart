@@ -53,7 +53,7 @@ class CreateStoryPage1 extends AppBaseView<CreateStoryController> {
                 height(12),
                 _descritpionField(),
                 height(12),
-                CustomDropdown<CommonDropdownResponse>(
+                CustomDropdown<FiltersResponse>(
                   label: storyType.tr,
                   widgetHeight: 52,
                   isRequired: true,
@@ -65,7 +65,7 @@ class CreateStoryPage1 extends AppBaseView<CreateStoryController> {
                   itemLabelBuilder: (item) => item.mccName ?? '',
                 ),
                 height(12),
-                CustomDropdown<CommonDropdownResponse>(
+                CustomDropdown<FiltersResponse>(
                   label: assignee.tr,
                   widgetHeight: 52,
                   isRequired: true,

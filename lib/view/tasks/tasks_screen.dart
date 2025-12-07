@@ -34,9 +34,9 @@ class TasksScreen extends AppBaseView<TasksController> {
             child: Obx(() {
               return Column(
                 children: [
-                  height(10),
+                  height(15),
                   _tabBar(),
-                  height(10),
+                  height(15),
                   _searchBar(),
                   controller.totalFilterCount.value != 0
                       ? _filterDetails()
@@ -55,7 +55,7 @@ class TasksScreen extends AppBaseView<TasksController> {
     return Padding(
       padding: const EdgeInsets.only(top: 14.0, bottom: 4.0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         height: 38,
         width: Get.width,
         decoration: BoxDecoration(

@@ -169,7 +169,7 @@ class TasksController extends AppBaseController
     const StoryView(),
     const TlTokenView()
   ];
-  List rxTlTabScreens = [const PlTokensView(), const StoryView()];
+  List rxTlTabScreens = [const TlTokenView(), const StoryView()];
 
   void switchTab(int index) {
     rxTabIndex(index);
@@ -208,61 +208,50 @@ class TasksController extends AppBaseController
 
   List<String> tokenTypes = ['Pending', 'Approved', 'Rejected', 'In Progress'];
 
-  final List<CommonDropdownResponse> projectList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'GEN', mccName: 'General'),
-    CommonDropdownResponse(
-        mccId: '2', mccCode: 'JUELISV2', mccName: 'JuelIS V2'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'PAYROLL', mccName: 'Payroll'),
-    CommonDropdownResponse(
+  final List<FiltersResponse> projectList = [
+    FiltersResponse(mccId: '1', mccCode: 'GEN', mccName: 'General'),
+    FiltersResponse(mccId: '2', mccCode: 'JUELISV2', mccName: 'JuelIS V2'),
+    FiltersResponse(mccId: '3', mccCode: 'PAYROLL', mccName: 'Payroll'),
+    FiltersResponse(
         mccId: '4', mccCode: 'MRETAILP', mccName: 'MRetail - Pulimoottil'),
-    CommonDropdownResponse(
+    FiltersResponse(
         mccId: '5', mccCode: 'MRETAILS', mccName: 'MRetail - Seematti'),
   ];
 
   // 👥 Team List
-  final List<CommonDropdownResponse> teamList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'DEV', mccName: 'Development'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'QA', mccName: 'Service'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'SUP', mccName: 'Support'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'OPS', mccName: 'Operations'),
-    CommonDropdownResponse(
-        mccId: '5', mccCode: 'HR', mccName: 'Human Resources'),
+  final List<FiltersResponse> teamList = [
+    FiltersResponse(mccId: '1', mccCode: 'DEV', mccName: 'Development'),
+    FiltersResponse(mccId: '2', mccCode: 'QA', mccName: 'Service'),
+    FiltersResponse(mccId: '3', mccCode: 'SUP', mccName: 'Support'),
+    FiltersResponse(mccId: '4', mccCode: 'OPS', mccName: 'Operations'),
+    FiltersResponse(mccId: '5', mccCode: 'HR', mccName: 'Human Resources'),
   ];
 
 // 🧱 Module List
-  final List<CommonDropdownResponse> moduleList = [
-    CommonDropdownResponse(
-        mccId: '1', mccCode: 'LOGIN', mccName: 'Back Office'),
-    CommonDropdownResponse(
-        mccId: '2', mccCode: 'UI', mccName: 'UI Enhancements'),
-    CommonDropdownResponse(mccId: '3', mccCode: 'REPORT', mccName: 'Reports'),
-    CommonDropdownResponse(
-        mccId: '4', mccCode: 'NOTIFY', mccName: 'Notifications'),
-    CommonDropdownResponse(
-        mccId: '5', mccCode: 'API', mccName: 'API Integration'),
+  final List<FiltersResponse> moduleList = [
+    FiltersResponse(mccId: '1', mccCode: 'LOGIN', mccName: 'Back Office'),
+    FiltersResponse(mccId: '2', mccCode: 'UI', mccName: 'UI Enhancements'),
+    FiltersResponse(mccId: '3', mccCode: 'REPORT', mccName: 'Reports'),
+    FiltersResponse(mccId: '4', mccCode: 'NOTIFY', mccName: 'Notifications'),
+    FiltersResponse(mccId: '5', mccCode: 'API', mccName: 'API Integration'),
   ];
 
 // ⚙️ Option List
-  final List<CommonDropdownResponse> optionList = [
-    CommonDropdownResponse(mccId: '1', mccCode: 'BUG', mccName: 'Notification'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'MOD', mccName: 'Modification'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'SUPPORT', mccName: 'Support Request'),
-    CommonDropdownResponse(
-        mccId: '4', mccCode: 'FEATURE', mccName: 'New Feature'),
-    CommonDropdownResponse(mccId: '5', mccCode: 'OTHER', mccName: 'Other'),
+  final List<FiltersResponse> optionList = [
+    FiltersResponse(mccId: '1', mccCode: 'BUG', mccName: 'Notification'),
+    FiltersResponse(mccId: '2', mccCode: 'MOD', mccName: 'Modification'),
+    FiltersResponse(mccId: '3', mccCode: 'SUPPORT', mccName: 'Support Request'),
+    FiltersResponse(mccId: '4', mccCode: 'FEATURE', mccName: 'New Feature'),
+    FiltersResponse(mccId: '5', mccCode: 'OTHER', mccName: 'Other'),
   ];
 
 // 👤 Assignee List
-  final List<CommonDropdownResponse> assigneeList = [
-    CommonDropdownResponse(
-        mccId: '1', mccCode: 'SID', mccName: 'Annette Black'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'ANU', mccName: 'Sidharth KS'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'RAHUL', mccName: 'Rahul Menon'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'NEHA', mccName: 'Neha Joseph'),
-    CommonDropdownResponse(
-        mccId: '5', mccCode: 'ARUN', mccName: 'Arun Krishnan'),
+  final List<FiltersResponse> assigneeList = [
+    FiltersResponse(mccId: '1', mccCode: 'SID', mccName: 'Annette Black'),
+    FiltersResponse(mccId: '2', mccCode: 'ANU', mccName: 'Sidharth KS'),
+    FiltersResponse(mccId: '3', mccCode: 'RAHUL', mccName: 'Rahul Menon'),
+    FiltersResponse(mccId: '4', mccCode: 'NEHA', mccName: 'Neha Joseph'),
+    FiltersResponse(mccId: '5', mccCode: 'ARUN', mccName: 'Arun Krishnan'),
   ];
   List<String> priority = [
     'High',

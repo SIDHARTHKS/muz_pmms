@@ -92,13 +92,15 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                         appText(generateToken.tr,
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500), onPressed: () async {
-                        await showDialog(
-                          context: Get.context!,
-                          barrierDismissible: true,
-                          builder: (_) => const TokenGenerateDialogue(
-                            id: "TKN -782",
-                          ),
-                        );
+                        if (controller.checkIsFilled()) {
+                          await showDialog(
+                            context: Get.context!,
+                            barrierDismissible: true,
+                            builder: (_) => const TokenGenerateDialogue(
+                              id: "TKN -782",
+                            ),
+                          );
+                        }
                         controller.rxCurrentPageIndex(0);
                         navigateToAndRemove(homePageRoute);
                       })
@@ -113,12 +115,14 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                                   color: AppColorHelper().secondaryTextColor,
                                   fontWeight: FontWeight.w500),
                               onPressed: () async {
-                            await showModalBottomSheet(
-                                context: Get.context!,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) =>
-                                    const GenerateTokenBottomsheet());
+                            if (controller.checkIsFilled()) {
+                              await showModalBottomSheet(
+                                  context: Get.context!,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) =>
+                                      GenerateTokenBottomsheet());
+                            }
                           }),
                           width(15),
                           buttonContainer(
@@ -126,8 +130,21 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                               color: AppColorHelper().primaryColor,
                               appText(next.tr,
                                   color: AppColorHelper().textColor,
-                                  fontWeight: FontWeight.w500), onPressed: () {
-                            controller.nextPage(true);
+                                  fontWeight: FontWeight.w500),
+                              onPressed: () async {
+                            if (controller.rxCurrentPageIndex.value == 1) {
+                              await controller.fetchRequestedByDropdown(
+                                  controller.rxSelectedProject.value?.mccId ??
+                                      '',
+                                  controller.rxSelectedModule.value?.id ?? '',
+                                  controller.rxSelectedTeam.value?.id ?? '',
+                                  true);
+                              controller.nextPage(true);
+                            } else {
+                              if (controller.checkIsFilled()) {
+                                controller.nextPage(true);
+                              }
+                            }
                           }),
                         ],
                       )
@@ -176,31 +193,5 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
             fontWeight: FontWeight.w600)
       ],
     );
-  }
-
-  Color _getPriorityColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighColor;
-      case "medium":
-        return AppColorHelper().statusMediumColor;
-      case "low":
-        return AppColorHelper().statusLowColor;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getPriorityTextColor(String priority) {
-    switch (priority.toLowerCase()) {
-      case "high":
-        return AppColorHelper().statusHighTextColor;
-      case "medium":
-        return AppColorHelper().statusMediumTextColor;
-      case "low":
-        return AppColorHelper().statusLowTextColor;
-      default:
-        return Colors.grey;
-    }
   }
 }

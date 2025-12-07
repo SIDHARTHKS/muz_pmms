@@ -25,11 +25,10 @@ class CreateStoryController extends AppBaseController
   final RxBool rxToggle = false.obs;
 
   //filter
-  Rxn<CommonDropdownResponse> rxSelectedStoryType =
-      Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedAsignee = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedModule = Rxn<CommonDropdownResponse>();
-  Rxn<CommonDropdownResponse> rxSelectedOption = Rxn<CommonDropdownResponse>();
+  Rxn<FiltersResponse> rxSelectedStoryType = Rxn<FiltersResponse>();
+  Rxn<FiltersResponse> rxSelectedAsignee = Rxn<FiltersResponse>();
+  Rxn<FiltersResponse> rxSelectedModule = Rxn<FiltersResponse>();
+  Rxn<FiltersResponse> rxSelectedOption = Rxn<FiltersResponse>();
 
   //dates
   DateTime rxRequestedOn = DateTime.now();
@@ -78,87 +77,85 @@ class CreateStoryController extends AppBaseController
     minutesController.text = "00";
   }
 
-  final List<CommonDropdownResponse> storyTypeList = [
-    CommonDropdownResponse(
+  final List<FiltersResponse> storyTypeList = [
+    FiltersResponse(
       mccId: '1',
       mccCode: 'DEVELOPMENT',
       mccName: 'Development',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '2',
       mccCode: 'BUG',
       mccName: 'Bug',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '3',
       mccCode: 'FEATURE',
       mccName: 'Feature',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '4',
       mccCode: 'IMPROVEMENT',
       mccName: 'Improvement',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '5',
       mccCode: 'TASK',
       mccName: 'Task',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '6',
       mccCode: 'SPIKE',
       mccName: 'Spike / Research',
     ),
   ];
 
-  final List<CommonDropdownResponse> assigneeList = [
-    CommonDropdownResponse(
-        mccId: '1', mccCode: 'USR1', mccName: 'Annette Black'),
-    CommonDropdownResponse(mccId: '2', mccCode: 'USR2', mccName: 'Jane Smith'),
-    CommonDropdownResponse(
-        mccId: '3', mccCode: 'USR3', mccName: 'Alex Johnson'),
-    CommonDropdownResponse(mccId: '4', mccCode: 'USR4', mccName: 'Priya Menon'),
+  final List<FiltersResponse> assigneeList = [
+    FiltersResponse(mccId: '1', mccCode: 'USR1', mccName: 'Annette Black'),
+    FiltersResponse(mccId: '2', mccCode: 'USR2', mccName: 'Jane Smith'),
+    FiltersResponse(mccId: '3', mccCode: 'USR3', mccName: 'Alex Johnson'),
+    FiltersResponse(mccId: '4', mccCode: 'USR4', mccName: 'Priya Menon'),
   ];
 
-  final List<CommonDropdownResponse> moduleTypeList = [
-    CommonDropdownResponse(
+  final List<FiltersResponse> moduleTypeList = [
+    FiltersResponse(
       mccId: '1',
       mccCode: 'NA',
       mccName: 'NA',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '2',
       mccCode: 'MODULE1',
       mccName: 'Module1',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '3',
       mccCode: 'MODULE2',
       mccName: 'Module2',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '4',
       mccCode: 'MODULE3',
       mccName: 'Module3',
     ),
   ];
-  final List<CommonDropdownResponse> optionTypeList = [
-    CommonDropdownResponse(
+  final List<FiltersResponse> optionTypeList = [
+    FiltersResponse(
       mccId: '1',
       mccCode: 'NA',
       mccName: 'NA',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '2',
       mccCode: 'OPTION1',
       mccName: 'Option1',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '3',
       mccCode: 'OPTION2',
       mccName: 'Option2',
     ),
-    CommonDropdownResponse(
+    FiltersResponse(
       mccId: '4',
       mccCode: 'OPTION3',
       mccName: 'Option3',
