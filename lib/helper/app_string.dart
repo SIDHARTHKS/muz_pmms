@@ -196,6 +196,7 @@ const String type = 'type';
 const String module = 'module';
 const String option = 'option';
 const String assignee = 'assignee';
+
 const String clientRefID = 'clientRefID';
 const String requestBy = 'requestBy';
 const String requestOn = 'requestOn';
@@ -271,6 +272,14 @@ const String viewThisStory = 'Viewthisstory';
 const String storiesInToken = 'Storiesinthistoken';
 const String newStory = 'New story';
 const String noStory = 'Nostoriesadded';
+
+const String assignedTo = 'assignedTo';
+const String startaDate = 'startaDate';
+const String endDate = 'endDate';
+
+const String loggedTime = 'LoggedTime';
+const String estimatedTime = 'EstimatedTime';
+const String viewWorkLog = 'viewWorkLog';
 
 // TYPES
 

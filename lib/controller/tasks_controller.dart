@@ -50,6 +50,7 @@ class TasksController extends AppBaseController
   RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
 
   Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
+  Rxn<TaskResponse> rxStoryDetail = Rxn<TaskResponse>();
 
   // filter
   RxList<FilterModel> rxTaskFilterTypeList = <FilterModel>[].obs;
@@ -149,6 +150,10 @@ class TasksController extends AppBaseController
 
   void setTask(TaskResponse task) {
     rxTaskDetail(task);
+  }
+
+  void setStory(TaskResponse task) {
+    rxStoryDetail(task);
   }
 
   void checkFilters() {

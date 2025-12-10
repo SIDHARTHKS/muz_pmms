@@ -11,11 +11,34 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsFontsGen {
+  const $AssetsFontsGen();
+
+  /// File path: assets/fonts/MonaSans-Light.ttf
+  String get monaSansLight => 'assets/fonts/MonaSans-Light.ttf';
+
+  /// File path: assets/fonts/MonaSans-Medium.ttf
+  String get monaSansMedium => 'assets/fonts/MonaSans-Medium.ttf';
+
+  /// File path: assets/fonts/MonaSans-Regular.ttf
+  String get monaSansRegular => 'assets/fonts/MonaSans-Regular.ttf';
+
+  /// File path: assets/fonts/MonaSans-SemiBold.ttf
+  String get monaSansSemiBold => 'assets/fonts/MonaSans-SemiBold.ttf';
+
+  /// List of all assets
+  List<String> get values =>
+      [monaSansLight, monaSansMedium, monaSansRegular, monaSansSemiBold];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
   /// File path: assets/icons/EDIT.png
   AssetGenImage get edit => const AssetGenImage('assets/icons/EDIT.png');
+
+  /// File path: assets/icons/arrowup.png
+  AssetGenImage get arrowup => const AssetGenImage('assets/icons/arrowup.png');
 
   /// File path: assets/icons/back.png
   AssetGenImage get back => const AssetGenImage('assets/icons/back.png');
@@ -42,6 +65,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/info.png
   AssetGenImage get info => const AssetGenImage('assets/icons/info.png');
 
+  /// File path: assets/icons/linkIcon.png
+  AssetGenImage get linkIcon =>
+      const AssetGenImage('assets/icons/linkIcon.png');
+
   /// File path: assets/icons/noNotification.png
   AssetGenImage get noNotification =>
       const AssetGenImage('assets/icons/noNotification.png');
@@ -66,6 +93,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<AssetGenImage> get values => [
         edit,
+        arrowup,
         back,
         calander,
         changePass,
@@ -73,6 +101,7 @@ class $AssetsIconsGen {
         darkmode,
         filter,
         info,
+        linkIcon,
         noNotification,
         notificationSettings,
         rejected,
@@ -131,6 +160,7 @@ class $AssetsImagesGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }

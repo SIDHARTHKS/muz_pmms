@@ -877,7 +877,7 @@ Color getPriorityTextColor(String priority) {
 Color getStatusColor(String status) {
   switch (status.toLowerCase()) {
     case "to do":
-      return AppColorHelper().statusToDoColor;
+      return AppColorHelper().statusToDoFilledColor;
     case "in progress":
       return AppColorHelper().statusInProgressFilledColor;
     case "approved":

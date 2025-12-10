@@ -72,6 +72,7 @@ class AppColorHelper {
       _currentTheme.statusInProgressFilledColor;
   Color get statusApprovedFilledColor =>
       _currentTheme.statusApprovedFilledColor;
+  Color get statusToDoFilledColor => _currentTheme.statusToDoFilledColor;
 
   Color get checkColor => _currentTheme.checkColor;
 }

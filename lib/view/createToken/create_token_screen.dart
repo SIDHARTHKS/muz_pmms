@@ -9,6 +9,7 @@ import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/createToken/bottomsheet/generate_token_bottomsheet.dart';
 import 'package:pmms/view/dialogues/token_generate_dialogue.dart';
+import 'package:pmms/view/widget/progress_loader.dart';
 import '../../controller/create_token_controller.dart';
 import '../widget/common_widget.dart';
 
@@ -18,11 +19,11 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
   @override
   Widget buildView() => _widgetView();
 
-  Scaffold _widgetView() => appScaffold(
-        canpop: true,
-        body: appFutureBuilder<void>(
-            () => controller.fetchInitData(), (context, snapshot) => _body(),
-            loaderWidget: fullScreenloader()),
+  Scaffold _widgetView() => appScaffold(canpop: true, body: _body()
+      // appFutureBuilder<void>(
+      //   () => controller.fetchInitData(), (context, snapshot) => _body(),
+      //   // loaderWidget: fullScreenloader()
+      // ),
       );
   GestureDetector _body() {
     return GestureDetector(
@@ -42,6 +43,11 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
               return Column(
                 children: [
                   height(5),
+                  controller.rxIsLoading.value
+                      ? ProgressLoader(
+                          color: AppColorHelper().primaryColor,
+                        )
+                      : height(0),
                   _progressBar(progress),
                   height(10),
                   Expanded(
@@ -93,13 +99,17 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500), onPressed: () async {
                         if (controller.checkIsFilled()) {
-                          await showDialog(
-                            context: Get.context!,
-                            barrierDismissible: true,
-                            builder: (_) => const TokenGenerateDialogue(
-                              id: "TKN -782",
-                            ),
-                          );
+                          await controller.callGenerateToken().then((success) {
+                            if (success) {
+                              showDialog(
+                                context: Get.context!,
+                                barrierDismissible: true,
+                                builder: (_) => const TokenGenerateDialogue(
+                                  id: "TKN -782",
+                                ),
+                              );
+                            }
+                          });
                         }
                         controller.rxCurrentPageIndex(0);
                         navigateToAndRemove(homePageRoute);

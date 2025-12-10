@@ -4,8 +4,9 @@ import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
+import 'package:pmms/helper/navigation.dart';
+import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
-import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 
 class StoryView extends AppBaseView<TasksController> {
@@ -183,21 +184,8 @@ class StoryView extends AppBaseView<TasksController> {
                                     .withValues(alpha: 0.8),
                                 width: 0.1,
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    builder: (_) => const SuccessDialogue(
-                                      title: "Approved \n Successfully",
-                                      subtitle:
-                                          "This token request has been  \n approved successfully.",
-                                    ),
-                                  );
-                                  Future.delayed(const Duration(seconds: 1),
-                                      () {
-                                    if (Navigator.canPop(context)) {
-                                      Navigator.of(context).pop();
-                                    }
-                                  });
+                                  controller.setStory(task);
+                                  navigateTo(storyDetailsPageRoute);
                                 },
                                 appText(
                                   viewThisStory.tr,

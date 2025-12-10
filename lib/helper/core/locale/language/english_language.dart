@@ -187,4 +187,10 @@ Map<String, String> enUS = {
   storiesInToken: 'Stories in this token',
   newStory: 'New story',
   noStory: 'No stories added',
+  assignedTo: 'Assigned to',
+  startaDate: 'Start Date',
+  endDate: 'End Date',
+  loggedTime: 'Logged Time',
+  estimatedTime: 'Estimated Time',
+  viewWorkLog: 'View Work Log',
 };

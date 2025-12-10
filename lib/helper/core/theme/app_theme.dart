@@ -65,6 +65,7 @@ class AppTheme {
   final Color statusPendingFilledColor;
   final Color statusInProgressFilledColor;
   final Color statusApprovedFilledColor;
+  final Color statusToDoFilledColor;
 
   final Color checkColor;
 
@@ -131,6 +132,7 @@ class AppTheme {
     required this.statusPendingFilledColor,
     required this.statusInProgressFilledColor,
     required this.statusApprovedFilledColor,
+    required this.statusToDoFilledColor,
   });
 }
 
@@ -213,6 +215,7 @@ AppTheme _demoDarkTheme() => AppTheme(
       statusPendingFilledColor: const Color.fromARGB(255, 160, 160, 160),
       statusInProgressFilledColor: const Color.fromRGBO(237, 178, 91, 1),
       statusApprovedFilledColor: const Color.fromRGBO(57, 73, 171, 1),
+      statusToDoFilledColor: const Color.fromARGB(255, 83, 181, 255),
 
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 
@@ -287,6 +290,7 @@ AppTheme _demoLightTheme() => AppTheme(
       statusPendingFilledColor: const Color.fromARGB(255, 160, 160, 160),
       statusInProgressFilledColor: const Color.fromRGBO(237, 178, 91, 1),
       statusApprovedFilledColor: const Color.fromRGBO(57, 73, 171, 1),
+      statusToDoFilledColor: const Color.fromARGB(255, 83, 181, 255),
 
       checkColor: const Color.fromRGBO(102, 206, 16, 1),
 

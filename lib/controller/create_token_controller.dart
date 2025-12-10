@@ -62,7 +62,7 @@ class CreateTokenController extends AppBaseController
   @override
   Future<void> onInit() async {
     isInitCalled(true);
-
+    fetchInitData();
     super.onInit();
   }
 
