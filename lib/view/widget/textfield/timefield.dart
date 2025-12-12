@@ -53,14 +53,19 @@ class Timefield extends StatelessWidget {
                   fillColor: Colors.transparent,
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-                  suffix: appText(
-                    "hrs",
-                    fontSize: 13,
-                    color: AppColorHelper()
-                        .primaryTextColor
-                        .withValues(alpha: 0.5),
-                    fontWeight: FontWeight.w400,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: appText(
+                      "hrs",
+                      fontSize: 13,
+                      color: AppColorHelper()
+                          .primaryTextColor
+                          .withValues(alpha: 0.5),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
+                  suffixIconConstraints:
+                      const BoxConstraints(minWidth: 0, minHeight: 0),
                   border: InputBorder.none,
                 ),
               ),
@@ -97,13 +102,20 @@ class Timefield extends StatelessWidget {
                   fillColor: Colors.transparent,
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
-                  suffix: appText(
-                    "mins",
-                    fontSize: 13,
-                    color: AppColorHelper()
-                        .primaryTextColor
-                        .withValues(alpha: 0.5),
-                    fontWeight: FontWeight.w400,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: appText(
+                      "mins",
+                      fontSize: 13,
+                      color: AppColorHelper()
+                          .primaryTextColor
+                          .withValues(alpha: 0.5),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  suffixIconConstraints: const BoxConstraints(
+                    minWidth: 0,
+                    minHeight: 0,
                   ),
                   border: InputBorder.none,
                 ),

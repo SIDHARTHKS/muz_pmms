@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/create_story_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -7,23 +8,21 @@ import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
-import 'package:pmms/view/createToken/bottomsheet/generate_token_bottomsheet.dart';
-import 'package:pmms/view/dialogues/token_generate_dialogue.dart';
-import 'package:pmms/view/widget/progress_loader.dart';
-import '../../controller/create_token_controller.dart';
-import '../widget/common_widget.dart';
+import 'package:pmms/view/createStory/bottomsheet/generate_story_bottomsheet.dart';
+import 'package:pmms/view/dialogues/success_dialogue.dart';
+import 'package:pmms/view/widget/common_widget.dart';
 
-class CreateTokenScreen extends AppBaseView<CreateTokenController> {
-  const CreateTokenScreen({super.key});
+class EditStoryScreen extends AppBaseView<CreateStoryController> {
+  const EditStoryScreen({super.key});
 
   @override
   Widget buildView() => _widgetView();
 
-  Scaffold _widgetView() => appScaffold(canpop: true, body: _body()
-      // appFutureBuilder<void>(
-      //   () => controller.fetchInitData(), (context, snapshot) => _body(),
-      //   // loaderWidget: fullScreenloader()
-      // ),
+  Scaffold _widgetView() => appScaffold(
+        canpop: true,
+        body: appFutureBuilder<void>(
+            () => controller.fetchInitData(), (context, snapshot) => _body(),
+            loaderWidget: fullScreenloader()),
       );
   GestureDetector _body() {
     return GestureDetector(
@@ -32,27 +31,25 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
-        appBar: customAppBar(createtoken.tr),
+        resizeToAvoidBottomInset: true,
+        appBar: customAppBar(
+            "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}"),
         body: appContainer(
           enableSafeArea: true,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
             child: Obx(() {
-              final progress = (controller.rxCurrentPageIndex.value + 1) / 3;
+              final progress = (controller.rxCurrentPageIndex.value + 1) /
+                  controller.pageList.length;
 
               return Column(
                 children: [
-                  height(5),
-                  controller.rxIsLoading.value
-                      ? ProgressLoader(
-                          color: AppColorHelper().primaryColor,
-                        )
-                      : height(0),
+                  height(20),
                   _progressBar(progress),
                   height(10),
                   Expanded(
                       child: controller
-                          .pageList[controller.rxCurrentPageIndex.value]),
+                          .editPageList[controller.rxCurrentPageIndex.value]),
                   _navButtons(),
                 ],
               );
@@ -93,24 +90,21 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
               children: [
                 isLast
                     ? buttonContainer(
-                        width: 195,
                         color: AppColorHelper().primaryColor,
-                        appText(generateToken.tr,
+                        appText(update.tr,
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500), onPressed: () async {
-                        if (controller.checkIsFilled()) {
-                          await controller.callGenerateToken().then((success) {
-                            if (success) {
-                              showDialog(
-                                context: Get.context!,
-                                barrierDismissible: true,
-                                builder: (_) => const TokenGenerateDialogue(
-                                  id: "TKN -782",
-                                ),
-                              );
-                            }
-                          });
-                        }
+                        await showDialog(
+                          context: Get.context!,
+                          barrierDismissible: true,
+                          builder: (_) => SuccessDialogue(
+                            title: "Story Updated Successfully",
+                            subtitle1: "Your story",
+                            subtitle2:
+                                "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"} ",
+                            subtitle3: "has been updated successfully",
+                          ),
+                        );
                         controller.rxCurrentPageIndex(0);
                         navigateToAndRemove(homePageRoute);
                       })
@@ -121,18 +115,18 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                               color: AppColorHelper()
                                   .primaryColor
                                   .withValues(alpha: 0.1),
-                              appText(generate.tr,
+                              appText(update.tr,
                                   color: AppColorHelper().secondaryTextColor,
                                   fontWeight: FontWeight.w500),
                               onPressed: () async {
-                            if (controller.checkIsFilled()) {
-                              await showModalBottomSheet(
-                                  context: Get.context!,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) =>
-                                      GenerateTokenBottomsheet());
-                            }
+                            await showModalBottomSheet(
+                                context: Get.context!,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) =>
+                                    const GenerateStoryBottomsheet(
+                                      isCreate: false,
+                                    ));
                           }),
                           width(15),
                           buttonContainer(
@@ -140,21 +134,8 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                               color: AppColorHelper().primaryColor,
                               appText(next.tr,
                                   color: AppColorHelper().textColor,
-                                  fontWeight: FontWeight.w500),
-                              onPressed: () async {
-                            if (controller.rxCurrentPageIndex.value == 1) {
-                              await controller.fetchRequestedByDropdown(
-                                  controller.rxSelectedProject.value?.mccId ??
-                                      '',
-                                  controller.rxSelectedModule.value?.id ?? '',
-                                  controller.rxSelectedTeam.value?.id ?? '',
-                                  true);
-                              controller.nextPage(true);
-                            } else {
-                              if (controller.checkIsFilled()) {
-                                controller.nextPage(true);
-                              }
-                            }
+                                  fontWeight: FontWeight.w500), onPressed: () {
+                            controller.nextPage(true);
                           }),
                         ],
                       )
@@ -197,7 +178,8 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
           ),
         ),
         width(8),
-        appText("${controller.rxCurrentPageIndex.value + 1}/3",
+        appText(
+            "${controller.rxCurrentPageIndex.value + 1}/${controller.pageList.length}",
             color: AppColorHelper().primaryTextColor,
             fontSize: 15,
             fontWeight: FontWeight.w600)

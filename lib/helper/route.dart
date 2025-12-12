@@ -12,6 +12,7 @@ import 'package:pmms/view/login/creat_password_screen.dart';
 import 'package:pmms/view/notifications/notification_screen.dart';
 import 'package:pmms/view/settings/settings_screen.dart';
 import 'package:pmms/view/splash/splash_screen.dart' show SplashScreen;
+import 'package:pmms/view/story/editStory/edit_story_screen.dart';
 import 'package:pmms/view/story/story_details_view.dart';
 import 'package:pmms/view/tasks/pl_task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
@@ -36,6 +37,7 @@ const tlTaskDetailsPageRoute = '/tltasksDetails';
 const storyDetailsPageRoute = '/storyDetails';
 const createTokenPageRoute = '/createToken';
 const createStoryPageRoute = '/createStory';
+const editStoryPageRoute = '/editStory';
 const settingsPageRoute = '/settings';
 const changePasswordPageRoute = '/changePassword';
 
@@ -108,6 +110,12 @@ final routes = [
   GetPage(
       name: createStoryPageRoute,
       page: () => const CreateStoryScreen(),
+      binding: const CreateStoryBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 350)),
+  GetPage(
+      name: editStoryPageRoute,
+      page: () => const EditStoryScreen(),
       binding: const CreateStoryBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 350)),

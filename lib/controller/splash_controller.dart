@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/date_helper.dart';
 import '../helper/app_message.dart';
 import '../helper/app_string.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/enum.dart';
 import '../helper/shared_pref.dart';
-import '../helper/single_app.dart';
 import '../model/app_model.dart';
 import '../model/task_model.dart';
 import '../service/task_services.dart';
@@ -61,12 +61,13 @@ class SplashController extends AppBaseController
     try {
       showLoader();
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      String now = DateHelper().formatForApi(DateTime.now());
       var tasksRequestsList = [
         CommonRequest(attribute: "transType", value: "LIST"),
         CommonRequest(attribute: "transSubType", value: "MYTASK"),
         CommonRequest(attribute: "EmployeeID", value: id),
         CommonRequest(attribute: "dateFrom", value: ""),
-        CommonRequest(attribute: "dateTo", value: ""),
+        CommonRequest(attribute: "dateTo", value: now),
         CommonRequest(attribute: "StatusMccID", value: ""),
         CommonRequest(attribute: "ProjectID", value: ""),
         CommonRequest(attribute: "PriorityMccID", value: ""),

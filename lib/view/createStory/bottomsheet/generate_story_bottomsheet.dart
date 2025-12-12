@@ -9,7 +9,8 @@ import 'package:pmms/view/widget/common_widget.dart';
 import '../../../helper/navigation.dart';
 
 class GenerateStoryBottomsheet extends StatelessWidget {
-  const GenerateStoryBottomsheet({super.key});
+  final bool isCreate;
+  const GenerateStoryBottomsheet({this.isCreate = true, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +45,12 @@ class GenerateStoryBottomsheet extends StatelessWidget {
             scale: 3.7,
           ),
           height(40),
-          appText(generateStoryNow.tr,
+          appText(isCreate ? generateStoryNow.tr : updateStoryNow.tr,
               height: 1.2,
               textAlign: TextAlign.center,
               color: AppColorHelper().primaryColor,
               fontSize: 28,
-              fontWeight: FontWeight.w700),
+              fontWeight: FontWeight.w800),
           height(12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -64,7 +65,7 @@ class GenerateStoryBottomsheet extends StatelessWidget {
           height(30),
           buttonContainer(
               color: AppColorHelper().primaryColor,
-              appText(createstory.tr,
+              appText(isCreate ? createstory.tr : updatestory.tr,
                   color: AppColorHelper().textColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w500)),

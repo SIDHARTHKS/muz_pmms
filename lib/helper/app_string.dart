@@ -24,6 +24,7 @@ const String fbEidKey = 'fbEidKey';
 const String darkModeKey = 'darkModeKey';
 const String appRefreshTimeKey = 'appRefreshTimeKey';
 const String notificationKey = 'notificationKey';
+const String currentStoryKey = 'currentStoryKey';
 
 //Arguments key
 const String companiesKey = 'companiesKey';
@@ -175,6 +176,7 @@ const String mytask = 'my tasks';
 const String createtoken = 'createtoken';
 const String addNewStory = 'AddNewstory';
 const String createstory = 'createstory';
+const String updatestory = 'updatestory';
 const String generate = 'generate';
 const String generateToken = 'generateToken';
 const String viewToken = 'View this token';
@@ -260,7 +262,10 @@ const String estimateTime = 'EstimateTime';
 const String requestDate = 'Request Date';
 const String plannedStartDate = 'Planned Start Date';
 const String plannedEndDate = 'Planned End Date';
+const String ogStartDate = 'Original Start Date';
+const String ogEndDate = 'Original End Date';
 const String generateStoryNow = 'wouldyouliketogeneratethestorynnow?';
+const String updateStoryNow = 'wouldyouliketoupdatethestorynnow?';
 const String createdBy = 'createdBy';
 
 const String requestedBy = 'requestedBy';

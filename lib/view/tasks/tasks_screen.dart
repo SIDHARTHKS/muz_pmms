@@ -6,6 +6,7 @@ import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/searchbar/custom_searchbar.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/common_widget.dart';
 
 class TasksScreen extends AppBaseView<TasksController> {
@@ -17,7 +18,11 @@ class TasksScreen extends AppBaseView<TasksController> {
   Scaffold _widgetView() => appScaffold(
         canpop: true,
         body: appFutureBuilder<void>(
-            () => controller.fetchInitData(), (context, snapshot) => _body(),
+            () => controller.fetchInitData(),
+            (context, snapshot) => SmartRefresher(
+                controller: controller.pullController,
+                onRefresh: controller.refreshTasks,
+                child: _body()),
             loaderWidget: fullScreenloader()),
       );
   GestureDetector _body() {

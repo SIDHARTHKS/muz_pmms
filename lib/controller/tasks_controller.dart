@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
+import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/enum.dart';
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/service/task_services.dart';
 import 'package:pmms/view/tasks/tabviews/story_view.dart';
 import 'package:pmms/view/tasks/tabviews/pl_tokens_view.dart';
 import 'package:pmms/view/tasks/tabviews/tl_token_view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/navigation.dart';
@@ -15,6 +18,8 @@ import '../model/task_model.dart';
 
 class TasksController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
+  final TaskServices _taskServices = Get.find<TaskServices>();
+  final RefreshController pullController = RefreshController();
   //
   final isInitCalled = false.obs;
 
@@ -104,35 +109,13 @@ class TasksController extends AppBaseController
     }
   }
 
-  // Future<void> setFilters() async {
-  //   try {
-  //     showLoader();
-  //     String id = myApp.preferenceHelper!.getString(employeeIdKey);
-  //     var tasksRequestsList = [
-  //       CommonRequest(attribute: "transType", value: "LIST"),
-  //       CommonRequest(attribute: "transSubType", value: "DropDown"),
-  //       CommonRequest(attribute: "EmployeeID", value: id),
-  //       CommonRequest(attribute: "dateFrom", value: ""),
-  //     ];
-  //     List<TaskResponse>? response =
-  //         await _taskServices.getTasks(tasksRequestsList);
-  //     if (response != null) {
-  //       rxTasksResponse.value = response;
-  //       return true;
-  //     }
-  //   } catch (e) {
-  //     appLog('$exceptionMsg $e', logging: Logging.error);
-  //   } finally {
-  //     hideLoader();
-  //   }
-  //   return false;
-  // }
-
   Future<void> filterTasks() async {
     rxTokens.clear();
     rxStory.clear();
+
     for (int i = 0; i < rxTasksResponse.length; i++) {
-      if (rxTasksResponse[i].issueType == "TOKEN") {
+      String type = (rxTasksResponse[i].issueType ?? "").trim().toUpperCase();
+      if (type == "TOKEN") {
         rxTokens.add(rxTasksResponse[i]);
       } else {
         rxStory.add(rxTasksResponse[i]);
@@ -154,6 +137,49 @@ class TasksController extends AppBaseController
 
   void setStory(TaskResponse task) {
     rxStoryDetail(task);
+  }
+
+  Future<void> refreshTasks() async {
+    try {
+      await fetchTasks().then((success) async {
+        if (success) {
+          await filterTasks();
+          pullController.refreshCompleted();
+        }
+      });
+    } catch (e) {
+      pullController.refreshFailed();
+    }
+  }
+
+  Future<bool> fetchTasks() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      String now = DateHelper().formatForApi(DateTime.now());
+      var tasksRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "MYTASK"),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "dateFrom", value: ""),
+        CommonRequest(attribute: "dateTo", value: now),
+        CommonRequest(attribute: "StatusMccID", value: ""),
+        CommonRequest(attribute: "ProjectID", value: ""),
+        CommonRequest(attribute: "PriorityMccID", value: ""),
+        CommonRequest(attribute: "RequestTypeMccID", value: ""),
+      ];
+      List<TaskResponse>? response =
+          await _taskServices.getTasks(tasksRequestsList);
+      if (response != null) {
+        rxTasksResponse.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
   }
 
   void checkFilters() {

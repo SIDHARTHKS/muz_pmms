@@ -128,4 +128,11 @@ class DateHelper {
     ];
     return months[month - 1];
   }
+
+  String formatForApi(DateTime date) {
+    String y = date.year.toString();
+    String m = date.month.toString().padLeft(2, '0');
+    String d = date.day.toString().padLeft(2, '0');
+    return "$y-$m-$d";
+  }
 }

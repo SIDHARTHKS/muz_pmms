@@ -7,6 +7,8 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/date_helper.dart';
+import 'package:pmms/helper/navigation.dart';
+import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
@@ -39,9 +41,13 @@ class StoryDetailsView extends AppBaseView<TasksController> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  height(10),
+                  height(18),
                   Row(
-                    children: [_statusContainer(task)],
+                    children: [
+                      _statusContainer(task),
+                      width(10),
+                      _typeContainer(task)
+                    ],
                   ),
                   height(10),
                   _descriptionBox(task),
@@ -58,7 +64,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                   _assigneeBox(task),
                   _datesSection(task),
                   height(15),
-                  _attatchmentsSection(),
+                  task.attachment != " " ? _attatchmentsSection() : height(0),
                   height(15),
                   Row(
                     children: [
@@ -183,17 +189,22 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _dropItem("Hold Story"),
+                      _dropItem("Hold Story", () {}),
                       divider(
                           color: AppColorHelper()
                               .dividerColor
                               .withValues(alpha: 0.2)),
-                      _dropItem("Edit Story"),
+                      _dropItem("Edit Story", () {
+                        Map<String, dynamic> arg = {
+                          currentStoryKey: controller.rxStoryDetail.value
+                        };
+                        navigateTo(editStoryPageRoute, arguments: arg);
+                      }),
                       divider(
                           color: AppColorHelper()
                               .dividerColor
                               .withValues(alpha: 0.2)),
-                      _dropItem("Reject Story"),
+                      _dropItem("Reject Story", () {}),
                     ],
                   ),
                 ),
@@ -205,9 +216,9 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  GestureDetector _dropItem(String item) {
+  GestureDetector _dropItem(String item, VoidCallback ontap) {
     return GestureDetector(
-      onTap: () {},
+      onTap: ontap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: Row(
@@ -294,12 +305,12 @@ class StoryDetailsView extends AppBaseView<TasksController> {
               TextSpan(
                 text: "${task.assignee} - ",
                 style: textStyle(
-                    13, AppColorHelper().primaryTextColor, FontWeight.w500),
+                    14, AppColorHelper().primaryTextColor, FontWeight.w500),
               ),
               TextSpan(
                 text: 'Logged work on 21 Nov 2025, 05:30 pm',
                 style: textStyle(
-                    13,
+                    14,
                     AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
                     FontWeight.w500),
               ),
@@ -314,14 +325,14 @@ class StoryDetailsView extends AppBaseView<TasksController> {
               TextSpan(
                 text: "Time Spent : ",
                 style: textStyle(
-                    13,
+                    14,
                     AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
                     FontWeight.w500),
               ),
               TextSpan(
                 text: '07:30 h',
                 style: textStyle(
-                    13, AppColorHelper().primaryTextColor, FontWeight.w500),
+                    14, AppColorHelper().primaryTextColor, FontWeight.w500),
               )
             ],
           ),
@@ -330,7 +341,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         ///////////////
         appText(
             "Payment method clutter if all options appear at once without grouping.",
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: FontWeight.w400,
             color: AppColorHelper().primaryTextColor),
         divider(color: AppColorHelper().dividerColor.withValues(alpha: 0.2))
@@ -399,7 +410,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
             ),
           ),
         ),
-        width(2),
+        width(12),
         appText("${90} %",
             fontSize: 13,
             fontWeight: FontWeight.w500,
@@ -456,12 +467,14 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         children: [
           _infoColums(
               requestDate.tr,
-              capitalizeFirstOnly((DateHelper.convertDateTimeToString(
-                  dateTime: task.requestDateTime!)))),
+              (DateHelper.formatToShortMonthDateYear(
+                  task.requestDateTime ?? DateTime(0000)))),
           verticalDivider(),
-          _infoColums(startaDate.tr, capitalizeFirstOnly("00/00/0000")),
+          _infoColums(startaDate.tr,
+              (DateHelper.formatToShortMonthDateYear(DateTime(0000)))),
           verticalDivider(),
-          _infoColums(endDate.tr, capitalizeFirstOnly("00/00/0000")),
+          _infoColums(endDate.tr,
+              (DateHelper.formatToShortMonthDateYear(DateTime(0000)))),
         ],
       ),
     );
@@ -517,7 +530,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
       height: 50,
       decoration: BoxDecoration(
           color: AppColorHelper().cardColor,
-          borderRadius: BorderRadius.circular(1),
+          borderRadius: BorderRadius.circular(3),
           border: Border.all(
               color: AppColorHelper().borderColor.withValues(alpha: 0.5))),
       child: Row(
@@ -611,6 +624,22 @@ class StoryDetailsView extends AppBaseView<TasksController> {
       child: appText(
         capitalizeFirstOnly(task.currentStatus ?? "--"),
         color: AppColorHelper().textColor,
+        fontWeight: FontWeight.w500,
+        fontSize: 12,
+      ),
+    );
+  }
+
+  Container _typeContainer(TaskResponse task) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColorHelper().primaryColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: appText(
+        "UIUX",
+        color: AppColorHelper().primaryColor,
         fontWeight: FontWeight.w500,
         fontSize: 12,
       ),

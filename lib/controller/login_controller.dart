@@ -8,6 +8,7 @@ import '../helper/app_message.dart';
 import '../helper/app_string.dart';
 import '../helper/core/base/app_base_controller.dart';
 import '../helper/core/environment/env.dart';
+import '../helper/date_helper.dart';
 import '../helper/deviceInfo.dart';
 import '../helper/enum.dart';
 import '../model/app_model.dart';
@@ -204,12 +205,13 @@ class LoginController extends AppBaseController {
     try {
       showLoader();
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      String now = DateHelper().formatForApi(DateTime.now());
       var tasksRequestsList = [
         CommonRequest(attribute: "transType", value: "LIST"),
         CommonRequest(attribute: "transSubType", value: "MYTASK"),
         CommonRequest(attribute: "EmployeeID", value: id),
         CommonRequest(attribute: "dateFrom", value: ""),
-        CommonRequest(attribute: "dateTo", value: ""),
+        CommonRequest(attribute: "dateTo", value: now),
         CommonRequest(attribute: "StatusMccID", value: ""),
         CommonRequest(attribute: "ProjectID", value: ""),
         CommonRequest(attribute: "PriorityMccID", value: ""),

@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pmms/helper/app_message.dart';
+import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/createStory/pages/create_story_page1.dart';
 import 'package:pmms/view/createStory/pages/create_story_page2.dart';
+import 'package:pmms/view/story/editStory/pages/edit_story_page1.dart';
+import 'package:pmms/view/story/editStory/pages/edit_story_page2.dart';
 import '../helper/core/base/app_base_controller.dart';
 
 class CreateStoryController extends AppBaseController
@@ -38,10 +43,30 @@ class CreateStoryController extends AppBaseController
   DateTime rxPlannedStartDate = DateTime.now();
   DateTime rxPlannedEndDate = DateTime.now();
 
+  // story
+  Rxn<TaskResponse> rxCurrentStoryDetail = Rxn<TaskResponse>();
+
   @override
   Future<void> onInit() async {
     isInitCalled(true);
+
     super.onInit();
+  }
+
+  /////////////////////////////
+  Future<void> _setArguments() async {
+    final arguments = Get.arguments;
+    if (arguments != null && arguments[currentStoryKey] != null) {
+      rxCurrentStoryDetail(arguments[currentStoryKey]);
+      setFields();
+    } else {
+      setDefaultFilters();
+      appLog("new story");
+    }
+  }
+
+  void setFields() {
+    descriptionController.text = rxCurrentStoryDetail.value?.description ?? "";
   }
 
   ////////////////////////////////////////////////////////////////////////////// pages
@@ -49,6 +74,11 @@ class CreateStoryController extends AppBaseController
   List<Widget> pageList = [
     const CreateStoryPage1(),
     const CreateStoryPage2(),
+  ];
+
+  List<Widget> editPageList = [
+    const EditStoryPage1(),
+    const EditStoryPage2(),
   ];
 
   void nextPage(bool isForward) {
@@ -165,8 +195,7 @@ class CreateStoryController extends AppBaseController
   //////////////////////////////////////////////////////////////////////////////
 
   Future<bool> fetchInitData() async {
-    setDefaultFilters();
-
+    _setArguments();
     return true;
   }
 }

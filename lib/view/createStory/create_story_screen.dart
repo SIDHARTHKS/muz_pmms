@@ -9,7 +9,7 @@ import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/createStory/bottomsheet/generate_story_bottomsheet.dart';
-import 'package:pmms/view/createToken/bottomsheet/generate_token_bottomsheet.dart';
+import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/dialogues/token_generate_dialogue.dart';
 
 import '../widget/common_widget.dart';
@@ -99,8 +99,11 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                         await showDialog(
                           context: Get.context!,
                           barrierDismissible: true,
-                          builder: (_) => const TokenGenerateDialogue(
-                            id: "TKN -782",
+                          builder: (_) => const SuccessDialogue(
+                            title: "Story Created Successfully",
+                            subtitle1: "Your new story ",
+                            subtitle2: "TKN -782-12 ",
+                            subtitle3: "has been created successfully",
                           ),
                         );
                         controller.rxCurrentPageIndex(0);
@@ -173,9 +176,9 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
             ],
           ),
         ),
-        width(5),
+        width(8),
         appText(
-            "${controller.rxCurrentPageIndex.value + 1}/ ${controller.pageList.length}",
+            "${controller.rxCurrentPageIndex.value + 1}/${controller.pageList.length}",
             color: AppColorHelper().primaryTextColor,
             fontSize: 15,
             fontWeight: FontWeight.w600)

@@ -7,14 +7,18 @@ class SuccessDialogue extends StatefulWidget {
   final double width;
   final double height;
   final String title;
-  final String subtitle;
+  final String subtitle1;
+  final String subtitle2;
+  final String subtitle3;
 
   const SuccessDialogue({
     super.key,
     this.width = 350,
     this.height = 470,
     required this.title,
-    required this.subtitle,
+    required this.subtitle1,
+    required this.subtitle2,
+    required this.subtitle3,
   });
 
   @override
@@ -27,7 +31,7 @@ class _SuccessDialogueState extends State<SuccessDialogue> {
     super.initState();
 
     // Auto-dismiss after 300ms (safe and non-layout-mutating)
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(seconds: 10), () {
       if (mounted) Navigator.pop(context);
     });
   }
@@ -59,7 +63,7 @@ class _SuccessDialogueState extends State<SuccessDialogue> {
                 widget.title,
                 textAlign: TextAlign.center,
                 fontSize: 28,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 color: AppColorHelper().primaryColor,
                 height: 1.3,
               ),
@@ -69,10 +73,30 @@ class _SuccessDialogueState extends State<SuccessDialogue> {
                 scale: 3.7,
               ),
               const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  appText(
+                    widget.subtitle1,
+                    textAlign: TextAlign.center,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: AppColorHelper().primaryTextColor,
+                  ),
+                  appText(
+                    widget.subtitle2,
+                    textAlign: TextAlign.center,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColorHelper().primaryColor,
+                  ),
+                ],
+              ),
               appText(
-                widget.subtitle,
+                widget.subtitle3,
                 textAlign: TextAlign.center,
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: AppColorHelper().primaryTextColor,
               ),

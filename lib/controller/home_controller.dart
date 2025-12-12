@@ -12,9 +12,6 @@ class HomeController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   //
 
-  final NotificationServices _notificationServices =
-      Get.find<NotificationServices>();
-
   //
   final isInitCalled = false.obs;
   RxString rxUserName = ''.obs;

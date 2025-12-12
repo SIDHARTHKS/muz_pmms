@@ -277,8 +277,8 @@ class CreateTokenController extends AppBaseController
         rxSelectedModule, "TOKEN", loaderEnabled);
     await fetchDropdowns(projectId, moduelID, teamID, "OPTION", rxOptionsList,
         rxSelectedOption, "TOKEN", loaderEnabled);
-    await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
-        rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
+    // await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
+    //     rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
     await fetchAssigneDropdown(
         projectId, moduelID, rxSelectedTeam.value?.id ?? "", loaderEnabled);
   }

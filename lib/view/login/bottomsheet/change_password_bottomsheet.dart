@@ -154,7 +154,9 @@ class ChangePasswordBottomsheet extends AppBaseView<ChangePasswordController> {
                               false, // prevents user from closing early
                           builder: (_) => const SuccessDialogue(
                             title: passwordresetSuccessfully,
-                            subtitle: passwordresetSuccessfullyDialogue,
+                            subtitle1: passwordresetSuccessfullyDialogue,
+                            subtitle2: "",
+                            subtitle3: "",
                           ),
                         );
 

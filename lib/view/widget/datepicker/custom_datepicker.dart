@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -191,8 +189,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                   color: _controller.text.isNotEmpty
                       ? colors.primaryTextColor
                       : Colors.grey,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
                 ),
                 AnimatedRotation(
                   turns: _isOpen ? 0.5 : 0,

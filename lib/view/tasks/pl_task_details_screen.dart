@@ -330,8 +330,9 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
                       barrierDismissible: true,
                       builder: (_) => const SuccessDialogue(
                             title: "Approved \n Successfully",
-                            subtitle:
-                                "This token request has been  \n approved successfully.",
+                            subtitle1: "This token request has been",
+                            subtitle2: "",
+                            subtitle3: "approved successfully.",
                           ));
                   Future.delayed(const Duration(seconds: 1), () {
                     if (Navigator.canPop(Get.context!)) {
