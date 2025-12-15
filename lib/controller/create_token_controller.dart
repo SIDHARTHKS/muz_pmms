@@ -115,7 +115,7 @@ class CreateTokenController extends AppBaseController
       if (requiredDataSelected()) {
         var generateTokenRequestList = [
           CommonRequest(attribute: "transType", value: "INSERT"),
-          CommonRequest(attribute: "transSutransSubTypebType", value: "INSERT"),
+          CommonRequest(attribute: "transSubType", value: "INSERT"),
           CommonRequest(attribute: "IssueType", value: "TOKEN"),
           CommonRequest(
               attribute: "Description", value: descriptionController.text),

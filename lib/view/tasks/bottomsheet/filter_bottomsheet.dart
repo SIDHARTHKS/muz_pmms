@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/date_helper.dart';
+import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/view/widget/datepicker/custom_daterangepicker.dart';
 import '../../../helper/color_helper.dart';
 import '../../../helper/navigation.dart';
@@ -21,30 +22,34 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
   final appColor = AppColorHelper();
 
   // local temp map to store selected items (copied from controller)
-  late Map<String, RxList<String>> selectedItems;
+  late Map<String, RxList<FiltersResponse>> selectedItems;
 
   @override
   void initState() {
     super.initState();
+
     selectedItems = {
-      "Token Type": RxList<String>.from(controller.rxSelectedTokenTypes),
-      "Project": RxList<String>.from(controller.rxSelectedProjects),
-      "Priority": RxList<String>.from(controller.rxSelectedPriority),
-      "Request Type": RxList<String>.from(controller.rxSelectedRequestTypes),
+      "Token Type":
+          RxList<FiltersResponse>.from(controller.rxSelectedTokenTypes),
+      "Project": RxList<FiltersResponse>.from(controller.rxSelectedProjects),
+      "Priority": RxList<FiltersResponse>.from(controller.rxSelectedPriority),
+      "Request Type":
+          RxList<FiltersResponse>.from(controller.rxSelectedRequestTypes),
     };
   }
 
-  void _toggleSelection(String group, String value) {
+  void _toggleSelection(String group, FiltersResponse option) {
     final list = selectedItems[group]!;
-    if (list.contains(value)) {
-      list.remove(value);
+    if (list.contains(option)) {
+      list.remove(option);
     } else {
-      list.add(value);
+      list.add(option);
     }
     setState(() {});
   }
 
-  Widget _buildCheckboxOption(String group, String option, bool isSelected) {
+  Widget _buildCheckboxOption(
+      String group, FiltersResponse option, bool isSelected) {
     return GestureDetector(
       onTap: () => _toggleSelection(group, option),
       child: Padding(
@@ -56,14 +61,12 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
               height: 24,
               width: 24,
               decoration: BoxDecoration(
-                color: isSelected
-                    ? appColor.primaryColor
-                    : appColor.primaryColor.withValues(alpha: 0.01),
+                color: isSelected ? appColor.primaryColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(
                   color: isSelected
                       ? appColor.primaryColor
-                      : appColor.primaryColor.withValues(alpha: 0.1),
+                      : appColor.primaryTextColor.withOpacity(0.3),
                 ),
               ),
               child: isSelected
@@ -73,7 +76,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
             width(12),
             Expanded(
               child: appText(
-                option,
+                (option.mccName)?.capitalizeFirst ?? "",
                 color: appColor.primaryTextColor,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
@@ -85,7 +88,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     );
   }
 
-  Widget _buildFilterSection(String title, List<String> options) {
+  Widget _buildFilterSection(String title, List<FiltersResponse> options) {
     final selectedGroup = selectedItems[title] ?? RxList<String>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,10 +115,10 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
   @override
   Widget build(BuildContext context) {
     final filters = {
-      "Token Type": controller.tokenTypes,
-      "Project": controller.projectList.map((e) => e.mccName).toList(),
-      "Priority": controller.priority,
-      "Request Type": controller.requestTypes,
+      "Token Type": controller.rxTypeFilters,
+      "Project": controller.rxProjectFilters,
+      "Priority": controller.rxPriorityFilters,
+      "Request Type": controller.rxRequestFilters,
     };
 
     return Container(
@@ -216,8 +219,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
             child: SingleChildScrollView(
               child: Column(
                 children: filters.entries
-                    .map((entry) => _buildFilterSection(
-                        entry.key, entry.value.whereType<String>().toList()))
+                    .map((entry) => _buildFilterSection(entry.key,
+                        entry.value.whereType<FiltersResponse>().toList()))
                     .toList(),
               ),
             ),

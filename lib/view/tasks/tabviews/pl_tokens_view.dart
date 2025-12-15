@@ -254,7 +254,7 @@ class PlTokensView extends AppBaseView<TasksController> {
                                       builder: (_) => const SuccessDialogue(
                                         title: "Approved \n Successfully",
                                         subtitle1:
-                                            "This token request has been  \n approved successfully.",
+                                            "This token request has been",
                                         subtitle2: "",
                                         subtitle3: "approved successfully.",
                                       ),

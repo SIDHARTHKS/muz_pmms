@@ -154,5 +154,23 @@ class FilterModel {
   final String name;
   final FilterType filterType;
 
-  FilterModel({required this.name, required this.filterType});
+  FilterModel({
+    required this.name,
+    required this.filterType,
+  });
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "filterType": filterType.toString(),
+        // Example: "FilterType.tokenStatus"
+      };
+
+  factory FilterModel.fromJson(Map<String, dynamic> json) {
+    return FilterModel(
+      name: json["name"],
+      filterType: FilterType.values.firstWhere(
+        (e) => e.toString() == json["filterType"],
+      ),
+    );
+  }
 }

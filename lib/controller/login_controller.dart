@@ -12,6 +12,7 @@ import '../helper/date_helper.dart';
 import '../helper/deviceInfo.dart';
 import '../helper/enum.dart';
 import '../model/app_model.dart';
+import '../model/dropdown_model.dart';
 import '../model/login_model.dart';
 import '../service/auth_service.dart';
 
@@ -181,12 +182,8 @@ class LoginController extends AppBaseController {
           await _authService.userLogin(userLoginRequestList);
       if (response != null) {
         rxUserLoginResponse.value = response;
-        await fetchTasks().then((done) async {
-          if (done) {
-            // Save login data here
-            await _saveLoginDataToPref();
-          }
-        });
+        await _saveLoginDataToPref();
+        await fetchTasks();
         // Clear controllers if needed
         userController.clear();
         passwordController.clear();
@@ -221,6 +218,7 @@ class LoginController extends AppBaseController {
           await _taskServices.getTasks(tasksRequestsList);
       if (response != null) {
         rxTasksResponse.value = response;
+
         return true;
       }
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
+import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/searchbar/custom_searchbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -32,7 +33,13 @@ class TasksScreen extends AppBaseView<TasksController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
-        appBar: customAppBar(mytask.tr),
+        appBar: customAppBar(
+          mytask.tr,
+          onTap: () {
+            controller.setToDefault();
+            goBack();
+          },
+        ),
         body: appContainer(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -166,7 +173,7 @@ class TasksScreen extends AppBaseView<TasksController> {
                 Container(
                   width: 23,
                   height: 23,
-                  padding: EdgeInsets.all(2.0),
+                  padding: const EdgeInsets.all(2.0),
                   decoration: BoxDecoration(
                       color: selected
                           ? AppColorHelper().primaryColor
@@ -193,6 +200,9 @@ class TasksScreen extends AppBaseView<TasksController> {
     return SizedBox(
       height: 55,
       child: CustomSearchBar(
+        onChanged: (value) {
+          controller.onSearchChanged(value);
+        },
         controller: controller.searchController,
         hintText: "Search tokens, projects, modules",
       ),

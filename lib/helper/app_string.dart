@@ -26,6 +26,11 @@ const String appRefreshTimeKey = 'appRefreshTimeKey';
 const String notificationKey = 'notificationKey';
 const String currentStoryKey = 'currentStoryKey';
 
+const String typeFilterDataKey = 'typeFilterDataKey';
+const String projectFilterDataKey = 'projectFilterDataKey';
+const String priorityFilterDataKey = 'priorityFilterDataKey';
+const String requestFilterDataKey = 'requestFilterDataKey';
+
 //Arguments key
 const String companiesKey = 'companiesKey';
 const String branchesKey = 'branchesKey';

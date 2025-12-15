@@ -82,9 +82,16 @@ String taskResponseToJson(List<TaskResponse> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class TaskResponse {
+  String? projectName;
+  int? projectId;
+  String? issueType;
+  String? optionName;
+  String? requestedBy;
   DateTime? requestDateTime;
+  int? requestTypeId;
   String? requestType;
   String? clientRefId;
+  int? priorityId;
   String? tokenId;
   String? team;
   int? teamId;
@@ -92,29 +99,34 @@ class TaskResponse {
   String? assignee;
   int? assigneeId;
   String? attachment;
-  String? issueType;
   String? storyType;
   String? estimateTime;
+  int? currentStatusId;
   String? iadStatus;
   String? iadAssigneeEmpId;
   String? projectImage;
+  dynamic countOfStory;
+  dynamic parentRequestId;
   String? requestId;
-  String? projectName;
-  int? projectId;
-  String? taskResponseIssueType;
-  String? optionName;
-  String? requestedBy;
   String? module;
   String? priority;
   String? description;
   String? role;
+  String? createdBy;
   int? optionId;
   String? currentStatus;
 
   TaskResponse({
+    this.projectName,
+    this.projectId,
+    this.issueType,
+    this.optionName,
+    this.requestedBy,
     this.requestDateTime,
+    this.requestTypeId,
     this.requestType,
     this.clientRefId,
+    this.priorityId,
     this.tokenId,
     this.team,
     this.teamId,
@@ -122,32 +134,37 @@ class TaskResponse {
     this.assignee,
     this.assigneeId,
     this.attachment,
-    this.issueType,
     this.storyType,
     this.estimateTime,
+    this.currentStatusId,
     this.iadStatus,
     this.iadAssigneeEmpId,
     this.projectImage,
+    this.countOfStory,
+    this.parentRequestId,
     this.requestId,
-    this.projectName,
-    this.projectId,
-    this.taskResponseIssueType,
-    this.optionName,
-    this.requestedBy,
     this.module,
     this.priority,
     this.description,
     this.role,
+    this.createdBy,
     this.optionId,
     this.currentStatus,
   });
 
   factory TaskResponse.fromJson(Map<String, dynamic> json) => TaskResponse(
+        projectName: json["projectName"],
+        projectId: json["projectID"],
+        issueType: json["issueType"],
+        optionName: json["optionName"],
+        requestedBy: json["requestedBy"],
         requestDateTime: json["requestDateTime"] == null
             ? null
             : DateTime.parse(json["requestDateTime"]),
+        requestTypeId: json["requestTypeID"],
         requestType: json["requestType"],
         clientRefId: json["clientRefID"],
+        priorityId: json["priorityID"],
         tokenId: json["tokenID"],
         team: json["team"],
         teamId: json["teamID"],
@@ -155,31 +172,36 @@ class TaskResponse {
         assignee: json["assignee"],
         assigneeId: json["assigneeID"],
         attachment: json["attachment"],
-        issueType: json["issueTYPE"],
         storyType: json["storyType"],
         estimateTime: json["estimateTime"],
+        currentStatusId: json["currentStatusID"],
         iadStatus: json["iadStatus"],
         iadAssigneeEmpId: json["iadAssigneeEmpID"],
         projectImage: json["projectImage"],
+        countOfStory: json["countOfStory"],
+        parentRequestId: json["parentRequestID"],
         requestId: json["requestID"],
-        projectName: json["projectName"],
-        projectId: json["projectID"],
-        taskResponseIssueType: json["issueType"],
-        optionName: json["optionName"],
-        requestedBy: json["requestedBy"],
         module: json["module"],
         priority: json["priority"],
         description: json["description"],
         role: json["role"],
+        createdBy: json["createdBy"],
         optionId: json["optionID"],
         currentStatus: json["currentStatus"],
       );
 
   Map<String, dynamic> toJson() => {
+        "projectName": projectName,
+        "projectID": projectId,
+        "issueType": issueType,
+        "optionName": optionName,
+        "requestedBy": requestedBy,
         "requestDateTime":
             "${requestDateTime!.year.toString().padLeft(4, '0')}-${requestDateTime!.month.toString().padLeft(2, '0')}-${requestDateTime!.day.toString().padLeft(2, '0')}",
+        "requestTypeID": requestTypeId,
         "requestType": requestType,
         "clientRefID": clientRefId,
+        "priorityID": priorityId,
         "tokenID": tokenId,
         "team": team,
         "teamID": teamId,
@@ -187,22 +209,20 @@ class TaskResponse {
         "assignee": assignee,
         "assigneeID": assigneeId,
         "attachment": attachment,
-        "issueTYPE": issueType,
         "storyType": storyType,
         "estimateTime": estimateTime,
+        "currentStatusID": currentStatusId,
         "iadStatus": iadStatus,
         "iadAssigneeEmpID": iadAssigneeEmpId,
         "projectImage": projectImage,
+        "countOfStory": countOfStory,
+        "parentRequestID": parentRequestId,
         "requestID": requestId,
-        "projectName": projectName,
-        "projectID": projectId,
-        "issueType": taskResponseIssueType,
-        "optionName": optionName,
-        "requestedBy": requestedBy,
         "module": module,
         "priority": priority,
         "description": description,
         "role": role,
+        "createdBy": createdBy,
         "optionID": optionId,
         "currentStatus": currentStatus,
       };

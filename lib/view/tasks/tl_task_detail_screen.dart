@@ -100,7 +100,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                           return Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: _filterButton(item.name, "4"),
+                            child: _filterButton(item.mccName ?? "", "4"),
                           );
                         },
                       ),

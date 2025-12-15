@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
@@ -32,11 +34,33 @@ class TasksController extends AppBaseController
   // searchbar
   TextEditingController searchController = TextEditingController();
 
+  // description edit
+  TextEditingController descriptionController = TextEditingController();
+
+  // tasks
+  RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
+  RxList<TaskResponse> rxFilteredTasksResponse = <TaskResponse>[].obs;
+  RxList<TaskResponse> rxDisplayedTasks = <TaskResponse>[].obs;
+  //
+  RxList<TaskResponse> rxTokens = <TaskResponse>[].obs;
+  RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
+
+  Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
+  Rxn<TaskResponse> rxStoryDetail = Rxn<TaskResponse>();
+
   // filter
-  var rxSelectedTokenTypes = <String>[].obs;
-  var rxSelectedProjects = <String>[].obs;
-  var rxSelectedPriority = <String>[].obs;
-  var rxSelectedRequestTypes = <String>[].obs;
+
+  RxList<FiltersResponse> rxTaskFilterTypeList = <FiltersResponse>[].obs;
+
+  RxList<FiltersResponse> rxTypeFilters = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxProjectFilters = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxPriorityFilters = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxRequestFilters = <FiltersResponse>[].obs;
+
+  var rxSelectedTokenTypes = <FiltersResponse>[].obs;
+  var rxSelectedProjects = <FiltersResponse>[].obs;
+  var rxSelectedPriority = <FiltersResponse>[].obs;
+  var rxSelectedRequestTypes = <FiltersResponse>[].obs;
 
   RxInt tokenTypeFilterCount = 0.obs;
   RxInt projectTypeFilterCount = 0.obs;
@@ -45,31 +69,14 @@ class TasksController extends AppBaseController
 
   RxInt totalFilterCount = 0.obs;
 
-  // description edit
-  TextEditingController descriptionController = TextEditingController();
-
-  // tasks
-  RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
-
-  RxList<TaskResponse> rxTokens = <TaskResponse>[].obs;
-  RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
-
-  Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
-  Rxn<TaskResponse> rxStoryDetail = Rxn<TaskResponse>();
-
-  // filter
-  RxList<FilterModel> rxTaskFilterTypeList = <FilterModel>[].obs;
-
   //
 
   @override
   Future<void> onInit() async {
-    // await _setArguments();
     isInitCalled(true);
-    setDefaultFilters();
-    // setDateRange();
+    setDateRange();
     _setArguments();
-    _setFilterNames();
+    _fetchFilters();
     super.onInit();
   }
 
@@ -80,56 +87,7 @@ class TasksController extends AppBaseController
     );
   }
 
-  void setDefaultFilters() {
-    if (rxSelectedTokenTypes.isEmpty) {
-      // rxSelectedTokenTypes.add("Pending");
-    }
-    if (rxSelectedProjects.isEmpty) {
-      // rxSelectedProjects.add("General");
-    }
-    if (rxSelectedPriority.isEmpty) {
-      // rxSelectedPriority.add("");
-    }
-    if (rxSelectedRequestTypes.isEmpty) {
-      // rxSelectedRequestTypes.add("");
-    }
-    checkFilters();
-  }
-
-  Future<void> _setArguments() async {
-    var arguments = Get.arguments;
-    var task = arguments[tasksDataKey];
-    if (arguments != null) {
-      rxTasksResponse(task);
-      await filterTasks();
-    } else {
-      showErrorSnackbar(
-          message: "Unable To Fetch Task Details. Please Login Again");
-      navigateToAndRemoveAll(loginPageRoute);
-    }
-  }
-
-  Future<void> filterTasks() async {
-    rxTokens.clear();
-    rxStory.clear();
-
-    for (int i = 0; i < rxTasksResponse.length; i++) {
-      String type = (rxTasksResponse[i].issueType ?? "").trim().toUpperCase();
-      if (type == "TOKEN") {
-        rxTokens.add(rxTasksResponse[i]);
-      } else {
-        rxStory.add(rxTasksResponse[i]);
-      }
-    }
-  }
-
-  void resetsetFilters() {
-    rxSelectedTokenTypes.clear();
-    rxSelectedProjects.clear();
-    rxSelectedPriority.clear();
-    rxSelectedRequestTypes.clear();
-    checkFilters();
-  }
+  //////////////////////////////// TASK/STORY ////////////////////////////////
 
   void setTask(TaskResponse task) {
     rxTaskDetail(task);
@@ -139,11 +97,46 @@ class TasksController extends AppBaseController
     rxStoryDetail(task);
   }
 
+  //////////////////////////////// FETCHING/SETTING TASK ////////////////////////////////
+
+  Future<void> _setArguments() async {
+    var arguments = Get.arguments;
+    var task = arguments[tasksDataKey];
+    if (arguments != null) {
+      rxTasksResponse(task);
+      rxFilteredTasksResponse(task);
+      await sortTasks();
+    } else {
+      showErrorSnackbar(
+          message: "Unable To Fetch Task Details. Please Login Again");
+      navigateToAndRemoveAll(loginPageRoute);
+    }
+  }
+
+  ////////// SORT TASK AND TOKEN
+
+  Future<void> sortTasks() async {
+    rxTokens.clear();
+    rxStory.clear();
+    for (int i = 0; i < rxFilteredTasksResponse.length; i++) {
+      String type =
+          (rxFilteredTasksResponse[i].issueType ?? "").trim().toUpperCase();
+      appLog("issues : ${rxFilteredTasksResponse[i].issueType}");
+      if (type == "TOKEN") {
+        rxTokens.add(rxFilteredTasksResponse[i]);
+      } else {
+        rxStory.add(rxFilteredTasksResponse[i]);
+      }
+    }
+  }
+
+  /////////////////////// REFRESH
+
   Future<void> refreshTasks() async {
     try {
       await fetchTasks().then((success) async {
         if (success) {
-          await filterTasks();
+          await sortTasks();
           pullController.refreshCompleted();
         }
       });
@@ -182,6 +175,113 @@ class TasksController extends AppBaseController
     return false;
   }
 
+  //////////////////////////////// FILTERS FETCH  ////////////////////////////////
+
+  Future<void> _fetchFilters() async {
+    await handleFilter(
+      prefKey: typeFilterDataKey,
+      apiFlag: "TOKEN_STATUS",
+      targetList: rxTypeFilters,
+    );
+
+    await handleFilter(
+      prefKey: priorityFilterDataKey,
+      apiFlag: "PRIORITY",
+      targetList: rxPriorityFilters,
+    );
+
+    await handleFilter(
+      prefKey: projectFilterDataKey,
+      apiFlag: "PROJECT",
+      targetList: rxProjectFilters,
+    );
+
+    await handleFilter(
+      prefKey: requestFilterDataKey,
+      apiFlag: "REQUEST_TYPE",
+      targetList: rxRequestFilters,
+    );
+  }
+
+  Future<void> handleFilter({
+    required String prefKey,
+    required String apiFlag,
+    required RxList<FiltersResponse> targetList,
+  }) async {
+    if (hasFilterData(prefKey)) {
+      targetList.value = loadFilterList(prefKey);
+      return;
+    }
+
+    // Fetch from API
+    bool success = await fetchFilterData(apiFlag, targetList, false);
+    if (success) {
+      saveFilterList(prefKey, targetList);
+    }
+  }
+
+  // CHECK PREF FOR FILTER
+
+  bool hasFilterData(String key) {
+    final data = myApp.preferenceHelper?.getString(key);
+    return data != null && data.isNotEmpty;
+  }
+
+  // SAVE FILTER TO PREF
+  void saveFilterList(String key, RxList<FiltersResponse> list) {
+    final jsonString = jsonEncode(list.map((e) => e.toJson()).toList());
+    myApp.preferenceHelper?.setString(key, jsonString);
+  }
+
+  // LOAD FILTER FROM PREF
+  List<FiltersResponse> loadFilterList(String key) {
+    final jsonString = myApp.preferenceHelper?.getString(key);
+    if (jsonString == null || jsonString.isEmpty) return [];
+
+    final decoded = jsonDecode(jsonString) as List;
+    return decoded.map((e) => FiltersResponse.fromJson(e)).toList();
+  }
+
+  // FILTERS API CALL
+  Future<bool> fetchFilterData(
+      String flag, RxList updateList, bool loaderEnabled) async {
+    try {
+      if (loaderEnabled) {
+        showLoader();
+      }
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var filterRequestsList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "DropDown"),
+        CommonRequest(attribute: "EmployeeID", value: id),
+        CommonRequest(attribute: "flag", value: flag),
+      ];
+      List<FiltersResponse>? response =
+          await _taskServices.callFilter(filterRequestsList);
+      if (response != null) {
+        updateList.clear();
+        updateList.value = response;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  void resetsetFilters() {
+    rxSelectedTokenTypes.clear();
+    rxSelectedProjects.clear();
+    rxSelectedPriority.clear();
+    rxSelectedRequestTypes.clear();
+    searchController.clear();
+    rxFilteredTasksResponse.value = List<TaskResponse>.from(rxTasksResponse);
+    splitDisplayedTasks();
+    checkFilters();
+  }
+
   void checkFilters() {
     tokenTypeFilterCount.value = rxSelectedTokenTypes.length;
     projectTypeFilterCount.value = rxSelectedProjects.length;
@@ -192,7 +292,121 @@ class TasksController extends AppBaseController
         projectTypeFilterCount.value +
         priorityTypeFilterCount.value +
         requestTypeFilterCount.value;
+    if (totalFilterCount.value > 0) {
+      applyFilters();
+    } else {
+      setToDefault();
+    }
   }
+
+  void setToDefault() {
+    sortTasks();
+    searchController.clear();
+  }
+
+  //
+  List<TaskResponse> applyFiltersOnly() {
+    final typeFilters = rxSelectedTokenTypes;
+    final projectFilters = rxSelectedProjects;
+    final priorityFilters = rxSelectedPriority;
+    final requestTypeFilters = rxSelectedRequestTypes;
+
+    final dateRange = selectedDateRange;
+
+    return rxTasksResponse.where((item) {
+      bool match = true;
+
+      // TOKEN / STORY STATUS
+      if (typeFilters.isNotEmpty) {
+        match = match &&
+            typeFilters.any((f) =>
+                item.currentStatus?.toLowerCase() ==
+                    (f.mccName ?? "").toLowerCase() ||
+                item.iadStatus?.toLowerCase() ==
+                    (f.mccName ?? "").toLowerCase());
+      }
+
+      // PROJECT
+      if (projectFilters.isNotEmpty) {
+        match = match &&
+            projectFilters.any((f) =>
+                item.projectId.toString() == f.mccName ||
+                item.projectName == f.mccName);
+      }
+
+      // PRIORITY
+      if (priorityFilters.isNotEmpty) {
+        match = match &&
+            priorityFilters.any((f) =>
+                item.priority?.toLowerCase() ==
+                (f.mccName ?? "").toLowerCase());
+      }
+
+      // REQUEST TYPE
+      if (requestTypeFilters.isNotEmpty) {
+        match = match &&
+            requestTypeFilters.any((f) =>
+                item.requestType?.toLowerCase() ==
+                (f.mccName ?? "").toLowerCase());
+      }
+
+      return match;
+    }).toList();
+  }
+//
+
+  ////////////////////////////////////////  SEARCH  /////////////////////////////////////////
+  ///
+
+  List<TaskResponse> applySearch(List<TaskResponse> list, String query) {
+    if (query.isEmpty) return list;
+    final q = query.toLowerCase();
+
+    return list.where((item) {
+      return (item.tokenId?.toLowerCase().contains(q) ?? false) ||
+          (item.projectName?.toLowerCase().contains(q) ?? false) ||
+          (item.projectId?.toString().contains(q) ?? false) ||
+          (item.module?.toLowerCase().contains(q) ?? false);
+    }).toList();
+  }
+
+  void onSearchChanged(String value) {
+    final query = value.trim();
+
+    // Always search on the filtered list, NOT displayed list
+    List<TaskResponse> base = rxFilteredTasksResponse;
+
+    rxDisplayedTasks.value = applySearch(base, query);
+
+    // Split for tokens/story view
+    splitDisplayedTasks();
+  }
+
+  ////////////////////////////////////////  FILTER & SEARCH  /////////////////////////////////////////
+  void applyFilters() {
+    // Apply filters only
+    List<TaskResponse> filtered = applyFiltersOnly();
+
+    rxFilteredTasksResponse.value = filtered;
+    rxDisplayedTasks.value =
+        applySearch(filtered, searchController.text.trim());
+    splitDisplayedTasks();
+  }
+
+  void splitDisplayedTasks() {
+    rxTokens.clear();
+    rxStory.clear();
+
+    for (final item in rxDisplayedTasks) {
+      if ((item.issueType ?? '').toUpperCase() == "TOKEN") {
+        rxTokens.add(item);
+      } else {
+        rxStory.add(item);
+      }
+    }
+  }
+
+  ////////////////////////////////////////  TABS  /////////////////////////////////////////
 
   List rxTabLabel = [token.tr, story.tr, token.tr];
   List rxPlTabScreens = [
@@ -200,39 +414,9 @@ class TasksController extends AppBaseController
     const StoryView(),
     const TlTokenView()
   ];
-  List rxTlTabScreens = [const TlTokenView(), const StoryView()];
 
   void switchTab(int index) {
     rxTabIndex(index);
-  }
-
-  // filters
-
-  void _setFilterNames() {
-    List<String> filterItems = [
-      'All',
-      'To Do',
-      'In Progress',
-      'Hold',
-      'Completed'
-    ];
-    List<FilterType> filterTypes = [
-      FilterType.all,
-      FilterType.todo,
-      FilterType.inprogress,
-      FilterType.hold,
-      FilterType.completed
-    ];
-    List<FilterModel> list = [];
-    for (int i = 0; i < filterTypes.length; i++) {
-      list.add(
-        FilterModel(
-          name: filterItems[i],
-          filterType: filterTypes[i],
-        ),
-      );
-    }
-    rxTaskFilterTypeList.value = list;
   }
 
   //

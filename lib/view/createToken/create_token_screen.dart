@@ -101,18 +101,25 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                         if (controller.checkIsFilled()) {
                           await controller.callGenerateToken().then((success) {
                             if (success) {
+                              var tokenId = controller
+                                      .rxGenerateTokenResponse.value?.message ??
+                                  "--";
                               showDialog(
                                 context: Get.context!,
-                                barrierDismissible: true,
-                                builder: (_) => const TokenGenerateDialogue(
-                                  id: "TKN -782",
-                                ),
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  Future.delayed(const Duration(seconds: 2),
+                                      () {
+                                    goBack();
+                                  });
+                                  return TokenGenerateDialogue(
+                                      id: "TKN-$tokenId");
+                                },
                               );
+                              controller.rxCurrentPageIndex(0);
                             }
                           });
                         }
-                        controller.rxCurrentPageIndex(0);
-                        navigateToAndRemove(homePageRoute);
                       })
                     : Row(
                         children: [
