@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -105,25 +106,46 @@ class StoryView extends AppBaseView<TasksController> {
                                 .withValues(alpha: 0.3),
                           ),
                           height(16),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _infoColums(
-                                    project.tr,
-                                    capitalizeFirstOnly(
-                                        task.projectName ?? "--")),
-                                width(40),
-                                _infoColums(module.tr,
-                                    capitalizeFirstOnly(task.module ?? "--")),
-                                width(40),
-                                _infoColums(assignee.tr,
-                                    capitalizeFirstOnly(task.assignee ?? "--")),
-                                // width(40),
-                                // _infoColums(createdBy.tr, task),
-                                width(40),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  controller: controller
+                                      .getHorizontalScrollController(index),
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _infoColums(
+                                        project.tr,
+                                        capitalizeFirstOnly(
+                                            task.projectName ?? "--"),
+                                      ),
+                                      width(40),
+                                      _infoColums(
+                                        module.tr,
+                                        capitalizeFirstOnly(
+                                            task.module ?? "--"),
+                                      ),
+                                      width(40),
+                                      _infoColums(
+                                        assignee.tr,
+                                        capitalizeFirstOnly(
+                                            task.assignee ?? "--"),
+                                      ),
+                                      width(40),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                return controller.hasOverflow(index).value
+                                    ? Image.asset(
+                                        Assets.icons.overflowRight.path,
+                                        scale: 4,
+                                      )
+                                    : const SizedBox();
+                              }),
+                            ],
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15.0),

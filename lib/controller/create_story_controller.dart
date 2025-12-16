@@ -8,8 +8,8 @@ import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/createStory/pages/create_story_page1.dart';
 import 'package:pmms/view/createStory/pages/create_story_page2.dart';
-import 'package:pmms/view/story/editStory/pages/edit_story_page1.dart';
-import 'package:pmms/view/story/editStory/pages/edit_story_page2.dart';
+import 'package:pmms/view/editStory/pages/edit_story_page1.dart';
+import 'package:pmms/view/editStory/pages/edit_story_page2.dart';
 import '../helper/core/base/app_base_controller.dart';
 
 class CreateStoryController extends AppBaseController

@@ -11,7 +11,7 @@ import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
-import '../widget/common_widget.dart';
+import '../../../widget/common_widget.dart';
 
 class TlTaskDetailScreen extends AppBaseView<TasksController> {
   const TlTaskDetailScreen({super.key});

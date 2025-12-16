@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -172,35 +173,55 @@ class TlTokenView extends AppBaseView<TasksController> {
                           ),
                           height(16),
                           appText(task.description ?? "--",
-                              fontSize: 13,
+                              fontSize: 14,
                               height: 1.6,
                               fontWeight: FontWeight.w400,
                               color: AppColorHelper().primaryTextColor),
                           _divider(),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _infoColums(
-                                    project.tr,
-                                    capitalizeFirstOnly(
-                                        task.projectName ?? "--")),
-                                width(40),
-                                _infoColums(module.tr,
-                                    capitalizeFirstOnly(task.module ?? "--")),
-                                width(40),
-                                _infoColums(
-                                    option.tr,
-                                    capitalizeFirstOnly(
-                                        task.optionName ?? "--")),
-                                width(40),
-                                _infoColums(assignee.tr,
-                                    capitalizeFirstOnly(task.assignee ?? "--")),
-                                // width(40),
-                                // _infoColums(createdBy.tr, task),
-                                width(40),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  controller: controller
+                                      .getHorizontalScrollController(index),
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _infoColums(
+                                          project.tr,
+                                          capitalizeFirstOnly(
+                                              task.projectName ?? "--")),
+                                      width(40),
+                                      _infoColums(
+                                          module.tr,
+                                          capitalizeFirstOnly(
+                                              task.module ?? "--")),
+                                      width(40),
+                                      _infoColums(
+                                          option.tr,
+                                          capitalizeFirstOnly(
+                                              task.optionName ?? "--")),
+                                      width(40),
+                                      _infoColums(
+                                          assignee.tr,
+                                          capitalizeFirstOnly(
+                                              task.assignee ?? "--")),
+                                      // width(40),
+                                      // _infoColums(createdBy.tr, task),
+                                      width(40),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                return controller.hasOverflow(index).value
+                                    ? Image.asset(
+                                        Assets.icons.overflowRight.path,
+                                        scale: 4,
+                                      )
+                                    : const SizedBox();
+                              }),
+                            ],
                           ),
                           height(18),
                           Row(
@@ -245,12 +266,16 @@ class TlTokenView extends AppBaseView<TasksController> {
       children: [
         appText(type,
             fontWeight: FontWeight.w400,
-            fontSize: 13,
+            fontSize: 14,
             color: AppColorHelper().primaryTextColor.withValues(alpha: 0.5)),
-        appText(name,
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            color: AppColorHelper().primaryTextColor)
+        SizedBox(
+          width: 85,
+          child: appText(name,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: AppColorHelper().primaryTextColor,
+              overflow: TextOverflow.ellipsis),
+        )
       ],
     );
   }

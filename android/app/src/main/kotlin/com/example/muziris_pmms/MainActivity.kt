@@ -1,4 +1,4 @@
-package com.muziris.pmmsapp
+package com.muziris.muzpmms
 
 import io.flutter.embedding.android.FlutterActivity
 

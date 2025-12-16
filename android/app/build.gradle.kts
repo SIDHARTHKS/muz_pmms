@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.muziris.pmmsapp"
+    namespace = "com.muziris.muzpmms"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -21,7 +21,7 @@ kotlinOptions {
 }
 
     defaultConfig {
-        applicationId = "com.muziris.pmmsapp"
+        applicationId = "com.muziris.muzpmms"
         minSdk = flutter.minSdkVersion   // 👈 Kotlin DSL property
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -53,7 +53,7 @@ kotlinOptions {
         }
         create("prod") {
             dimension = "environment"
-            resValue("string", "app_name", "Pmms ")
+            resValue("string", "app_name", "Pmms")
         }
     }
 }

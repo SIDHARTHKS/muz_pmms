@@ -77,6 +77,10 @@ class $AssetsIconsGen {
   AssetGenImage get notificationSettings =>
       const AssetGenImage('assets/icons/notificationSettings.png');
 
+  /// File path: assets/icons/overflowRight.png
+  AssetGenImage get overflowRight =>
+      const AssetGenImage('assets/icons/overflowRight.png');
+
   /// File path: assets/icons/rejected.png
   AssetGenImage get rejected =>
       const AssetGenImage('assets/icons/rejected.png');
@@ -104,6 +108,7 @@ class $AssetsIconsGen {
         linkIcon,
         noNotification,
         notificationSettings,
+        overflowRight,
         rejected,
         search,
         success,

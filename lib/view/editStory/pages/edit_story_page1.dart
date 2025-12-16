@@ -11,7 +11,7 @@ import 'package:pmms/view/widget/dropdown/custom_dropdown.dart';
 import 'package:pmms/view/widget/textfield/common_textfield.dart';
 import 'package:pmms/view/widget/textfield/timefield.dart';
 
-import '../../../widget/datepicker/custom_datepicker.dart';
+import '../../widget/datepicker/custom_datepicker.dart';
 
 class EditStoryPage1 extends AppBaseView<CreateStoryController> {
   const EditStoryPage1({super.key});

@@ -265,7 +265,7 @@ class LoginController extends AppBaseController {
   Future<bool> handleForgotPassword() async {
     if (userController.text.isEmpty) {
       showErrorSnackbar(
-          message: 'Unable to proceed due to an error.Enter your usercode');
+          message: 'Unable to proceed due to an error. Enter your usercode');
       return false;
     }
 

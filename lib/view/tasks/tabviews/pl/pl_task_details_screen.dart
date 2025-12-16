@@ -9,13 +9,13 @@ import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/dropdown_model.dart';
+import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/tasks/bottomsheet/description_bottomsheet.dart';
 import 'package:pmms/view/tasks/bottomsheet/edit_bottomsheet.dart';
-import 'package:pmms/view/widget/progress_loader.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
-import '../dialogues/rejected_dialogue.dart';
-import '../dialogues/success_dialogue.dart';
-import '../widget/common_widget.dart';
+import '../../../dialogues/rejected_dialogue.dart';
+import '../../../dialogues/success_dialogue.dart';
+import '../../../widget/common_widget.dart';
 
 class PlTaskDetailsScreen extends AppBaseView<TasksController> {
   const PlTaskDetailsScreen({super.key});
@@ -38,7 +38,7 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
-        appBar: customAppBar(task.requestType ?? ""),
+        appBar: customAppBar(capitalizeFirstOnly(task.requestType ?? "")),
         bottomNavigationBar: _bottomButtons(),
         body: appContainer(
           child: Padding(
@@ -52,177 +52,63 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
                   // ),
 
                   height(10),
-                  Row(
+                  _avatarSection(task),
+                  _tokenSection(task),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: AppColorHelper().circleAvatarBgColor,
-                        radius: 20,
-                        child: appText(
-                          (task.projectName ?? "x").substring(0, 1),
-                          color: AppColorHelper().primaryTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      width(10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  color: AppColorHelper().primaryTextColor,
-                                  fontSize: 13,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: "Requested by ",
-                                    style: textStyle(
-                                      12,
-                                      AppColorHelper()
-                                          .primaryTextColor
-                                          .withValues(alpha: 0.5),
-                                      FontWeight.w400,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: task.requestedBy,
-                                    style: textStyle(
-                                      13,
-                                      AppColorHelper().primaryTextColor,
-                                      FontWeight.w500,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        ", ${DateHelper.formatToShortMonthDateYear(task.requestDateTime ?? DateTime.now())}",
-                                    style: textStyle(
-                                      13,
-                                      AppColorHelper().primaryTextColor,
-                                      FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            height(4),
-                            RichText(
-                              text: TextSpan(
-                                style: textStyle(
-                                  14,
-                                  AppColorHelper().primaryTextColor,
-                                  FontWeight.w700,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: "Client Ref ID: ",
-                                    style: textStyle(
-                                      12,
-                                      AppColorHelper()
-                                          .primaryTextColor
-                                          .withValues(alpha: 0.5),
-                                      FontWeight.w400,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: task.clientRefId,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: AppColorHelper().cardColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      appText(description.tr,
+                          color: AppColorHelper()
+                              .primaryTextColor
+                              .withValues(alpha: 0.7),
+                          fontSize: 13),
+                      height(6),
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              appText("Token ID : ",
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColorHelper()
-                                      .primaryTextColor
-                                      .withValues(alpha: 0.5)),
-                              appText(task.tokenId ?? "--",
-                                  color: AppColorHelper().primaryTextColor,
-                                  fontWeight: FontWeight.w800)
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: getPriorityColor(task.priority ?? "Medium")
-                                  .withValues(alpha: 0.30),
-                              borderRadius: BorderRadius.circular(5),
+                          Expanded(
+                            child: SizedBox(
+                              width: double
+                                  .infinity, // takes full width, but height adapts to content
+                              child: appText(
+                                task.description ?? "",
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                color: AppColorHelper().primaryTextColor,
+                              ),
                             ),
-                            child: appText(
-                              task.priority ?? "Medium",
-                              color: getPriorityTextColor(
-                                  task.priority ?? "Medium"),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                          ),
+                          width(10),
+                          GestureDetector(
+                            onTap: () {
+                              controller.handleDescription(task);
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+                                context: Get.context!,
+                                builder: (context) {
+                                  return DescriptionBottomSheet(
+                                    title: description.tr,
+                                    hintText: "",
+                                    controller:
+                                        controller.descriptionController,
+                                    onClose: () {
+                                      controller.descriptionController.text =
+                                          controller.actualDescription.value;
+                                      goBack();
+                                    },
+                                    onChanged: (value) {
+                                      controller.verifyDescriptionEdit(value);
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                            child: Image.asset(
+                              Assets.icons.edit.path,
+                              height: 18,
+                              width: 18,
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          width: double
-                              .infinity, // takes full width, but height adapts to content
-                          child: appText(
-                            task.description ?? "",
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: AppColorHelper().primaryTextColor,
-                          ),
-                        ),
-                      ),
-                      width(10),
-                      GestureDetector(
-                        onTap: () {
-                          controller.descriptionController.text =
-                              task.description ?? "--";
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: Get.context!,
-                            builder: (context) {
-                              return DescriptionBottomSheet(
-                                  title: description.tr,
-                                  hintText: "",
-                                  controller: controller.descriptionController,
-                                  onClose: () {
-                                    goBack();
-                                  });
-                            },
-                          );
-                        },
-                        child: Image.asset(
-                          Assets.icons.edit.path,
-                          height: 18,
-                          width: 18,
-                        ),
                       ),
                     ],
                   ),
@@ -285,6 +171,143 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
           ),
         ),
       ),
+    );
+  }
+
+  Padding _tokenSection(TaskResponse task) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 18.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        height: 50,
+        decoration: BoxDecoration(
+            color: AppColorHelper().cardColor,
+            borderRadius: BorderRadius.circular(5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                appText("Token ID : ",
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColorHelper()
+                        .primaryTextColor
+                        .withValues(alpha: 0.5)),
+                appText(task.tokenId ?? "--",
+                    color: AppColorHelper().primaryTextColor,
+                    fontWeight: FontWeight.w800)
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: getPriorityColor(task.priority ?? "Medium")
+                    .withValues(alpha: 0.30),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: appText(
+                task.priority ?? "Medium",
+                color: getPriorityTextColor(task.priority ?? "Medium"),
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row _avatarSection(TaskResponse task) {
+    return Row(
+      children: [
+        CircleAvatar(
+          backgroundColor: AppColorHelper().circleAvatarBgColor,
+          radius: 20,
+          child: appText(
+            (task.projectName ?? "x").substring(0, 1),
+            color: AppColorHelper().primaryTextColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        width(10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: AppColorHelper().primaryTextColor,
+                    fontSize: 13,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "Requested by ",
+                      style: textStyle(
+                        12,
+                        AppColorHelper()
+                            .primaryTextColor
+                            .withValues(alpha: 0.5),
+                        FontWeight.w400,
+                      ),
+                    ),
+                    TextSpan(
+                      text: task.requestedBy,
+                      style: textStyle(
+                        13,
+                        AppColorHelper().primaryTextColor,
+                        FontWeight.w500,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          ", ${DateHelper.formatToShortMonthDateYear(task.requestDateTime ?? DateTime.now())}",
+                      style: textStyle(
+                        13,
+                        AppColorHelper().primaryTextColor,
+                        FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              height(4),
+              RichText(
+                text: TextSpan(
+                  style: textStyle(
+                    14,
+                    AppColorHelper().primaryTextColor,
+                    FontWeight.w700,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "Client Ref ID: ",
+                      style: textStyle(
+                        12,
+                        AppColorHelper()
+                            .primaryTextColor
+                            .withValues(alpha: 0.5),
+                        FontWeight.w400,
+                      ),
+                    ),
+                    TextSpan(
+                      text: task.clientRefId,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

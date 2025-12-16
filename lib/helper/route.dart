@@ -12,11 +12,11 @@ import 'package:pmms/view/login/creat_password_screen.dart';
 import 'package:pmms/view/notifications/notification_screen.dart';
 import 'package:pmms/view/settings/settings_screen.dart';
 import 'package:pmms/view/splash/splash_screen.dart' show SplashScreen;
-import 'package:pmms/view/story/editStory/edit_story_screen.dart';
-import 'package:pmms/view/story/story_details_view.dart';
-import 'package:pmms/view/tasks/pl_task_details_screen.dart';
+import 'package:pmms/view/editStory/edit_story_screen.dart';
+import 'package:pmms/view/tasks/tabviews/story/story_details_view.dart';
+import 'package:pmms/view/tasks/tabviews/pl/pl_task_details_screen.dart';
 import 'package:pmms/view/tasks/tasks_screen.dart';
-import 'package:pmms/view/tasks/tl_task_detail_screen.dart';
+import 'package:pmms/view/tasks/tabviews/tl/tl_task_detail_screen.dart';
 
 import '../binding/home_binding.dart';
 import '../binding/login_binding.dart';

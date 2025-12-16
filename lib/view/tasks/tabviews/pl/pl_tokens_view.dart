@@ -12,6 +12,8 @@ import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 
+import '../../../../gen/assets.gen.dart';
+
 class PlTokensView extends AppBaseView<TasksController> {
   const PlTokensView({super.key});
 
@@ -99,7 +101,7 @@ class PlTokensView extends AppBaseView<TasksController> {
                                           TextSpan(
                                             text: requestedBy.tr,
                                             style: textStyle(
-                                              12,
+                                              13,
                                               AppColorHelper()
                                                   .primaryTextColor
                                                   .withValues(alpha: 0.5),
@@ -109,10 +111,11 @@ class PlTokensView extends AppBaseView<TasksController> {
                                           TextSpan(
                                             text: task.requestedBy,
                                             style: textStyle(
-                                              13,
-                                              AppColorHelper().primaryTextColor,
-                                              FontWeight.w500,
-                                            ),
+                                                13,
+                                                AppColorHelper()
+                                                    .primaryTextColor,
+                                                FontWeight.w500,
+                                                height: 2.6),
                                           ),
                                           TextSpan(
                                               text:
@@ -121,35 +124,40 @@ class PlTokensView extends AppBaseView<TasksController> {
                                       ),
                                     ),
                                     height(4),
-                                    RichText(
-                                      text: TextSpan(
-                                        style: TextStyle(
-                                          color:
-                                              AppColorHelper().primaryTextColor,
-                                          fontSize: 13,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: clientRefId.tr,
-                                            style: textStyle(
-                                              12,
-                                              AppColorHelper()
-                                                  .primaryTextColor
-                                                  .withValues(alpha: 0.5),
-                                              FontWeight.w400,
+                                    (task.clientRefId == " " ||
+                                            task.clientRefId == null)
+                                        ? RichText(
+                                            text: TextSpan(
+                                              style: TextStyle(
+                                                color: AppColorHelper()
+                                                    .primaryTextColor,
+                                                fontSize: 13,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: clientRefId.tr,
+                                                  style: textStyle(
+                                                    12,
+                                                    AppColorHelper()
+                                                        .primaryTextColor
+                                                        .withValues(alpha: 0.5),
+                                                    FontWeight.w400,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      task.clientRefId ?? "--",
+                                                  style: textStyle(
+                                                    13,
+                                                    AppColorHelper()
+                                                        .primaryTextColor,
+                                                    FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                          TextSpan(
-                                            text: task.clientRefId ?? "--",
-                                            style: textStyle(
-                                              13,
-                                              AppColorHelper().primaryTextColor,
-                                              FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                          )
+                                        : height(0),
                                   ],
                                 ),
                               ),
@@ -209,30 +217,50 @@ class PlTokensView extends AppBaseView<TasksController> {
                           ),
                           height(16),
                           appText(task.description ?? "--",
-                              fontSize: 13,
+                              fontSize: 14,
                               height: 1.6,
                               fontWeight: FontWeight.w400,
                               color: AppColorHelper().primaryTextColor),
                           _divider(),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _infoColums(
-                                    project.tr,
-                                    capitalizeFirstOnly(
-                                        task.projectName ?? "--")),
-                                width(40),
-                                _infoColums(module.tr,
-                                    capitalizeFirstOnly(task.module ?? "--")),
-                                width(40),
-                                _infoColums(assignee.tr,
-                                    capitalizeFirstOnly(task.assignee ?? "--")),
-                                // width(40),
-                                // _infoColums(createdBy.tr, task),
-                                width(40),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  controller: controller
+                                      .getHorizontalScrollController(index),
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      _infoColums(
+                                          project.tr,
+                                          capitalizeFirstOnly(
+                                              task.projectName ?? "--")),
+                                      width(40),
+                                      _infoColums(
+                                          module.tr,
+                                          capitalizeFirstOnly(
+                                              task.module ?? "--")),
+                                      width(40),
+                                      _infoColums(
+                                          assignee.tr,
+                                          capitalizeFirstOnly(
+                                              task.assignee ?? "--")),
+                                      // width(40),
+                                      // _infoColums(createdBy.tr, task),
+                                      width(40),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                return controller.hasOverflow(index).value
+                                    ? Image.asset(
+                                        Assets.icons.overflowRight.path,
+                                        scale: 4,
+                                      )
+                                    : const SizedBox();
+                              }),
+                            ],
                           ),
                           height(18),
                           Row(
@@ -313,11 +341,11 @@ class PlTokensView extends AppBaseView<TasksController> {
       children: [
         appText(type,
             fontWeight: FontWeight.w400,
-            fontSize: 13,
+            fontSize: 14,
             color: AppColorHelper().primaryTextColor.withValues(alpha: 0.5)),
         appText(name,
             fontWeight: FontWeight.w500,
-            fontSize: 13,
+            fontSize: 14,
             color: AppColorHelper().primaryTextColor)
       ],
     );

@@ -8,9 +8,9 @@ import 'package:pmms/helper/enum.dart';
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/service/task_services.dart';
-import 'package:pmms/view/tasks/tabviews/story_view.dart';
-import 'package:pmms/view/tasks/tabviews/pl_tokens_view.dart';
-import 'package:pmms/view/tasks/tabviews/tl_token_view.dart';
+import 'package:pmms/view/tasks/tabviews/story/story_view.dart';
+import 'package:pmms/view/tasks/tabviews/pl/pl_tokens_view.dart';
+import 'package:pmms/view/tasks/tabviews/tl/tl_token_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
@@ -36,6 +36,8 @@ class TasksController extends AppBaseController
 
   // description edit
   TextEditingController descriptionController = TextEditingController();
+  RxString actualDescription = "".obs;
+  RxBool rxDescriptionChanged = false.obs;
 
   // tasks
   RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
@@ -69,6 +71,10 @@ class TasksController extends AppBaseController
 
   RxInt totalFilterCount = 0.obs;
 
+  // scroll controller
+  final Map<int, ScrollController> horizontalScrollControllers = {};
+  final Map<int, RxBool> hasHorizontalOverflow = {};
+
   //
 
   @override
@@ -80,6 +86,59 @@ class TasksController extends AppBaseController
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    for (final controller in horizontalScrollControllers.values) {
+      controller.dispose();
+    }
+    super.onClose();
+  }
+
+  ScrollController getHorizontalScrollController(int index) {
+    return horizontalScrollControllers.putIfAbsent(index, () {
+      final controller = ScrollController();
+
+      controller.addListener(() => _checkHorizontalOverflow(index));
+
+      // 🔥 IMPORTANT: check once AFTER first layout
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkHorizontalOverflow(index);
+      });
+
+      return controller;
+    });
+  }
+
+  RxBool hasOverflow(int index) {
+    return hasHorizontalOverflow.putIfAbsent(index, () => false.obs);
+  }
+
+  void _checkHorizontalOverflow(int index) {
+    final controller = horizontalScrollControllers[index];
+    if (controller == null || !controller.hasClients) return;
+    hasHorizontalOverflow[index]?.value =
+        controller.position.maxScrollExtent > 0;
+  }
+
+  void resetHorizontalScrollState() {
+    // Dispose all scroll controllers
+    for (final controller in horizontalScrollControllers.values) {
+      controller.dispose();
+    }
+
+    // Clear controllers map
+    horizontalScrollControllers.clear();
+
+    // Reset overflow indicators
+    for (final rx in hasHorizontalOverflow.values) {
+      rx.value = false;
+    }
+
+    // Clear overflow map
+    hasHorizontalOverflow.clear();
+  }
+
+  //////////////////////////////// DATE RANGE ////////////////////////////////
   void setDateRange() {
     selectedDateRange = DateTimeRange(
       start: DateTime.now(), // today
@@ -404,6 +463,23 @@ class TasksController extends AppBaseController
         rxStory.add(item);
       }
     }
+  }
+
+  ////////////////////////////////////////  EDIT DESCRIPTION  /////////////////////////////////////////
+  void handleDescription(TaskResponse task) {
+    descriptionController.text = task.description ?? "--";
+    actualDescription(task.description ?? "--");
+  }
+
+  void verifyDescriptionEdit(String value) {
+    final current = value.trim();
+    final original = actualDescription.value.trim();
+
+    appLog("original: $original");
+    appLog("current : $current");
+
+    rxDescriptionChanged(current != original);
+    appLog("changed: $rxDescriptionChanged");
   }
 
   ////////////////////////////////////////  TABS  /////////////////////////////////////////

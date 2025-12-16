@@ -148,6 +148,7 @@ class TasksScreen extends AppBaseView<TasksController> {
       return GestureDetector(
         onTap: () {
           controller.switchTab(index);
+          controller.resetHorizontalScrollState();
         },
         child: Container(
             padding: EdgeInsets.zero,

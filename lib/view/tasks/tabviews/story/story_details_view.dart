@@ -13,7 +13,7 @@ import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../widget/common_widget.dart';
+import '../../../widget/common_widget.dart';
 
 class StoryDetailsView extends AppBaseView<TasksController> {
   const StoryDetailsView({super.key});
@@ -616,14 +616,16 @@ class StoryDetailsView extends AppBaseView<TasksController> {
 
   Container _statusContainer(TaskResponse task) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
-        color: getStatusColor(task.currentStatus ?? "--"),
-        borderRadius: BorderRadius.circular(3),
-      ),
+          color:
+              getStatusColor(task.currentStatus ?? "--").withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(3),
+          border: Border.all(
+              color: getStatusTextColor(task.currentStatus ?? "--"))),
       child: appText(
         capitalizeFirstOnly(task.currentStatus ?? "--"),
-        color: AppColorHelper().textColor,
+        color: getStatusTextColor(task.currentStatus ?? "--"),
         fontWeight: FontWeight.w500,
         fontSize: 12,
       ),

@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
+import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
+import 'package:pmms/view/widget/text/app_text.dart';
 
 class DescriptionBottomSheet extends StatelessWidget {
+  final TasksController _tasksController = Get.find<TasksController>();
+
   final String title;
   final String hintText;
   final TextEditingController? controller;
   final VoidCallback onClose;
   final ValueChanged<String>? onChanged;
 
-  const DescriptionBottomSheet({
+  DescriptionBottomSheet({
     super.key,
     required this.title,
     required this.hintText,
@@ -78,9 +84,30 @@ class DescriptionBottomSheet extends StatelessWidget {
               autofocus: true,
               controller: controller,
               decoration: _normalFieldDecoration(),
-              maxLines: null,
+              maxLines: 3,
               onChanged: onChanged,
+              style: textStyle(
+                  14, AppColorHelper().primaryTextColor, FontWeight.w500),
             ),
+            const Spacer(),
+            Obx(() {
+              return SafeArea(
+                  child: _tasksController.rxDescriptionChanged.value
+                      ? buttonContainer(onPressed: () {
+                          goBack();
+                        },
+                          color: AppColorHelper().primaryColor,
+                          appText(
+                            save.tr,
+                            color: AppColorHelper().textColor,
+                            fontWeight: FontWeight.w500,
+                          ))
+                      : buttonContainer(appText(
+                          save.tr,
+                          color: AppColorHelper().textColor,
+                          fontWeight: FontWeight.w500,
+                        )));
+            })
           ],
         ),
       ),
@@ -89,15 +116,18 @@ class DescriptionBottomSheet extends StatelessWidget {
 
   InputDecoration _normalFieldDecoration() => InputDecoration(
         contentPadding: const EdgeInsets.all(8),
-        border: _border(color: AppColorHelper().borderColor),
+        border:
+            _border(color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
         labelText: '',
         counterText: '',
         hintText: '',
-        enabledBorder: _border(color: AppColorHelper().borderColor),
-        disabledBorder: _border(color: AppColorHelper().borderColor),
+        enabledBorder:
+            _border(color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
+        disabledBorder:
+            _border(color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
         errorBorder: _border(color: AppColorHelper().errorColor),
-        focusedBorder: _border(
-            color: AppColorHelper().focusedBorderColor.withValues(alpha: 0.5)),
+        focusedBorder:
+            _border(color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
         filled: true,
         fillColor: AppColorHelper().cardColor,
         errorStyle: TextStyle(color: AppColorHelper().errorColor),
@@ -107,5 +137,5 @@ class DescriptionBottomSheet extends StatelessWidget {
         borderRadius: _borderRadius(),
       );
   _borderSide({required Color color}) => BorderSide(color: color);
-  _borderRadius() => BorderRadius.circular(15);
+  _borderRadius() => BorderRadius.circular(6);
 }

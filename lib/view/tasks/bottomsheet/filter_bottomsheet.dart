@@ -53,20 +53,22 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     return GestureDetector(
       onTap: () => _toggleSelection(group, option),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 7.5),
+        padding: const EdgeInsets.only(top: 7.5, bottom: 7.5),
         child: Row(
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              height: 24,
-              width: 24,
+              height: 23,
+              width: 23,
               decoration: BoxDecoration(
-                color: isSelected ? appColor.primaryColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(5),
+                color: isSelected
+                    ? appColor.primaryColor
+                    : appColor.primaryColor.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(4),
                 border: Border.all(
                   color: isSelected
                       ? appColor.primaryColor
-                      : appColor.primaryTextColor.withOpacity(0.3),
+                      : appColor.primaryColor.withValues(alpha: 0.16),
                 ),
               ),
               child: isSelected
@@ -124,7 +126,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     return Container(
       width: Get.width,
       height: Get.height * 0.86,
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
       decoration: BoxDecoration(
         color: appColor.cardColor,
         borderRadius: const BorderRadius.only(
@@ -137,7 +139,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.only(top: 12.0, bottom: 5.0),
+            padding: const EdgeInsets.only(
+                top: 12.0, bottom: 5.0, left: 20, right: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -159,95 +162,149 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
           ),
           height(8),
           Divider(
+              endIndent: 20,
+              indent: 20,
               color: appColor.dividerColor.withValues(alpha: 0.3),
               thickness: 1),
-
-          // Date Range
-          height(10),
-          appText("Date Range",
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.65)),
-          height(15),
-          GestureDetector(
-            onTap: () async {
-              final selectedRange = await showCustomDateRangePicker(
-                context,
-                primaryColor: AppColorHelper().primaryColor,
-                backgroundColor: AppColorHelper().cardColor,
-                textColor: AppColorHelper().primaryTextColor,
-                initialRange: DateTimeRange(
-                  start: controller.selectedDateRange!.start,
-                  end: controller.selectedDateRange!.end,
-                ),
-              );
-
-              if (selectedRange != null) {
-                setState(() {
-                  controller.selectedDateRange = selectedRange;
-                });
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: appColor.cardColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: appColor.borderColor.withValues(alpha: 0)),
-              ),
-              child: Row(
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    Assets.icons.calander.path,
-                    scale: 3.6,
-                  ),
-                  width(15),
-                  appText(
-                      (controller.selectedDateRange != null)
-                          ? "${DateHelper().formatDate(controller.selectedDateRange!.start)}  -  ${DateHelper().formatDate(controller.selectedDateRange!.end)}"
-                          : "Select Dates", //"01 August 2025  -  31 September 2025"
-                      color: appColor.primaryTextColor,
+                  // Date Range
+                  height(10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: appText(
+                      "Date Range",
+                      fontWeight: FontWeight.w500,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500),
+                      color: AppColorHelper()
+                          .primaryTextColor
+                          .withValues(alpha: 0.65),
+                    ),
+                  ),
+                  height(12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final selectedRange = await showCustomDateRangePicker(
+                          context,
+                          primaryColor: AppColorHelper().primaryColor,
+                          backgroundColor: AppColorHelper().cardColor,
+                          textColor: AppColorHelper().primaryTextColor,
+                          initialRange: DateTimeRange(
+                            start: controller.selectedDateRange!.start,
+                            end: controller.selectedDateRange!.end,
+                          ),
+                        );
+
+                        if (selectedRange != null) {
+                          setState(() {
+                            controller.selectedDateRange = selectedRange;
+                          });
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: appColor.cardColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              Assets.icons.calander.path,
+                              scale: 3,
+                            ),
+                            width(5),
+                            appText(
+                              "${DateHelper().formatDate(controller.selectedDateRange!.start)}  -  "
+                              "${DateHelper().formatDate(controller.selectedDateRange!.end)}",
+                              color: appColor.primaryTextColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Filters List
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      children: filters.entries
+                          .map(
+                            (entry) => _buildFilterSection(
+                              entry.key,
+                              entry.value.whereType<FiltersResponse>().toList(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+
+                  // Apply Button
+                  height(16),
                 ],
               ),
             ),
           ),
-
-          // Filters List
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: filters.entries
-                    .map((entry) => _buildFilterSection(entry.key,
-                        entry.value.whereType<FiltersResponse>().toList()))
-                    .toList(),
-              ),
-            ),
-          ),
-
-          // Apply Button
-          height(10),
           SafeArea(
-            child: buttonContainer(
-              color: appColor.primaryColor,
-              appText("Apply Filters",
-                  fontWeight: FontWeight.w500,
-                  color: AppColorHelper().textColor),
-              onPressed: () {
-                controller.rxSelectedTokenTypes
-                    .assignAll(selectedItems["Token Type"]!);
-                controller.rxSelectedProjects
-                    .assignAll(selectedItems["Project"]!);
-                controller.rxSelectedPriority
-                    .assignAll(selectedItems["Priority"]!);
-                controller.rxSelectedRequestTypes
-                    .assignAll(selectedItems["Request Type"]!);
-                controller.checkFilters();
-                goBack();
-              },
-              height: 42,
-              width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  height(10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: buttonContainer(
+                          color: appColor.cardColor,
+                          borderColor: AppColorHelper().borderColor,
+                          appText(
+                            "Clear All Filters",
+                            fontWeight: FontWeight.w500,
+                            color: AppColorHelper().primaryTextColor,
+                          ),
+                          onPressed: () {
+                            controller.resetsetFilters();
+                            goBack();
+                          },
+                          height: 42,
+                        ),
+                      ),
+                      width(10),
+                      Expanded(
+                        child: buttonContainer(
+                          color: appColor.primaryColor,
+                          appText(
+                            "Apply Filters",
+                            fontWeight: FontWeight.w500,
+                            color: AppColorHelper().textColor,
+                          ),
+                          onPressed: () {
+                            controller.rxSelectedTokenTypes
+                                .assignAll(selectedItems["Token Type"]!);
+                            controller.rxSelectedProjects
+                                .assignAll(selectedItems["Project"]!);
+                            controller.rxSelectedPriority
+                                .assignAll(selectedItems["Priority"]!);
+                            controller.rxSelectedRequestTypes
+                                .assignAll(selectedItems["Request Type"]!);
+                            controller.checkFilters();
+                            goBack();
+                          },
+                          height: 42,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
