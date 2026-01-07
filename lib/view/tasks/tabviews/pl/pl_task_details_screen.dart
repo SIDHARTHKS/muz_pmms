@@ -27,7 +27,9 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
         canpop: true,
         body: appFutureBuilder<void>(
           () => controller.fetchInitData(),
-          (context, snapshot) => _body(),
+          (context, snapshot) => Obx(() {
+            return _body();
+          }),
         ),
       );
   GestureDetector _body() {

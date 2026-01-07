@@ -71,6 +71,9 @@ class TasksController extends AppBaseController
 
   RxInt totalFilterCount = 0.obs;
 
+  // selected task/story details
+  Rxn<TaskResponse> rxSelectedToken = Rxn<TaskResponse>();
+
   // scroll controller
   final Map<int, ScrollController> horizontalScrollControllers = {};
   final Map<int, RxBool> hasHorizontalOverflow = {};
@@ -172,7 +175,7 @@ class TasksController extends AppBaseController
     }
   }
 
-  ////////// SORT TASK AND TOKEN
+  ////////// SORT TASK AND TOKEN //////////
 
   Future<void> sortTasks() async {
     rxTokens.clear();
@@ -186,19 +189,21 @@ class TasksController extends AppBaseController
       } else {
         rxStory.add(rxFilteredTasksResponse[i]);
       }
+      appLog("data soreted");
     }
   }
 
-  /////////////////////// REFRESH
+  /////////////////////// REFRESH ///////////////////////
 
   Future<void> refreshTasks() async {
     try {
-      await fetchTasks().then((success) async {
-        if (success) {
-          await sortTasks();
-          pullController.refreshCompleted();
-        }
-      });
+      final success = await fetchTasks();
+      if (success) {
+        resetsetFilters();
+        pullController.refreshCompleted();
+      } else {
+        pullController.refreshFailed();
+      }
     } catch (e) {
       pullController.refreshFailed();
     }
@@ -223,7 +228,9 @@ class TasksController extends AppBaseController
       List<TaskResponse>? response =
           await _taskServices.getTasks(tasksRequestsList);
       if (response != null) {
+        rxTasksResponse.clear();
         rxTasksResponse.value = response;
+        await sortTasks();
         return true;
       }
     } catch (e) {
@@ -233,6 +240,66 @@ class TasksController extends AppBaseController
     }
     return false;
   }
+
+  //////////////////////////////// APPROVE TOKEN  ////////////////////////////////
+
+  Future<bool> approveToken() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tkn = rxSelectedToken.value;
+      var approveList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "TOKEN_APPROVAL"),
+        CommonRequest(attribute: "IssueType", value: "TOKEN"),
+        CommonRequest(
+            attribute: "Description", value: tkn?.description ?? "--"),
+        CommonRequest(attribute: "AdditionalInfo", value: "--"),
+        CommonRequest(attribute: "Attachments", value: tkn?.attachment ?? ""),
+        CommonRequest(
+            attribute: "RequestID", value: tkn?.requestId.toString() ?? ""),
+        CommonRequest(attribute: "LoginEmpID", value: id),
+        CommonRequest(
+            attribute: "ProjectID", value: tkn?.projectId.toString() ?? ""),
+        CommonRequest(attribute: "TeamID", value: tkn?.teamId.toString() ?? ""),
+        CommonRequest(
+            attribute: "ModuleID", value: tkn?.moduleId.toString() ?? ""),
+        CommonRequest(
+            attribute: "OptionID", value: tkn?.optionId.toString() ?? ""),
+        CommonRequest(
+            attribute: "AssigneeID", value: tkn?.assigneeId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestTypeMccID",
+            value: tkn?.requestTypeId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestedByID", value: tkn?.requestedBy ?? ""),
+        CommonRequest(
+            attribute: "PriorityMccID",
+            value: tkn?.priorityId.toString() ?? ""),
+        CommonRequest(
+            attribute: "CurrentStatusMccID",
+            value: tkn?.currentStatusId.toString() ?? ""),
+        CommonRequest(
+            attribute: "ClientRefID", value: tkn?.clientRefId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestOnDate",
+            value: tkn?.requestDateTime.toString() ?? ""),
+        CommonRequest(attribute: "DueDate", value: ""),
+      ];
+      bool? response = await _taskServices.approveRejectToken(approveList);
+      if (response != null && response) {
+        await refreshTasks();
+        return response;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  //////////////////////////////// FILTERS FETCH  ////////////////////////////////
 
   //////////////////////////////// FILTERS FETCH  ////////////////////////////////
 
@@ -337,6 +404,7 @@ class TasksController extends AppBaseController
     rxSelectedRequestTypes.clear();
     searchController.clear();
     rxFilteredTasksResponse.value = List<TaskResponse>.from(rxTasksResponse);
+    rxDisplayedTasks.value = List<TaskResponse>.from(rxFilteredTasksResponse);
     splitDisplayedTasks();
     checkFilters();
   }

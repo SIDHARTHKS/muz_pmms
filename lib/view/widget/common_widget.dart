@@ -365,9 +365,9 @@ Container muzirisLogo({
       child: Image.asset(Assets.images.muziriswhite.path),
     );
 
-LoadingIndicator buttonLoader() => const LoadingIndicator(
+LoadingIndicator buttonLoader({Color color = Colors.white}) => LoadingIndicator(
       indicatorType: Indicator.ballClipRotatePulse,
-      colors: [Colors.white],
+      colors: [color],
     );
 
 LoadingIndicator textLoader() => LoadingIndicator(

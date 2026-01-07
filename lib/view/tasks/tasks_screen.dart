@@ -111,90 +111,100 @@ class TasksScreen extends AppBaseView<TasksController> {
         child: controller.rxPlTabScreens[controller.rxTabIndex.value]);
   }
 
-  Container _tabBar() {
-    return Container(
-      width: Get.width,
-      height: 50,
-      decoration: BoxDecoration(
-          color: AppColorHelper().transparentColor,
+  Widget _tabBar() {
+    return Obx(() {
+      return Container(
+        width: Get.width,
+        height: 50,
+        decoration: BoxDecoration(
           border: Border(
-              bottom: BorderSide(
-                  color:
-                      AppColorHelper().primaryTextColor.withValues(alpha: 0.07),
-                  width: 1))),
-      child: ListView.builder(
-          padding: EdgeInsets.zero,
+            bottom: BorderSide(
+              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.07),
+              width: 1,
+            ),
+          ),
+        ),
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: controller.rxTabLabel.length,
           itemBuilder: (context, index) {
-            final screen = controller.rxTabLabel[index];
-            bool isSelected = (controller.rxTabIndex.value == index);
+            final title = controller.rxTabLabel[index];
+            final isSelected = controller.rxTabIndex.value == index;
+
+            final count = index == 0
+                ? controller.rxTokens.length
+                : controller.rxStory.length;
+
             return Padding(
               padding: const EdgeInsets.only(right: 35.0),
               child: _tabContainer(
-                  screen,
-                  index == 0
-                      ? controller.rxTokens.length.toString()
-                      : controller.rxStory.length.toString(),
-                  isSelected,
-                  index),
+                title,
+                count.toString(),
+                isSelected,
+                index,
+              ),
             );
-          }),
-    );
-  }
-
-  Obx _tabContainer(String title, String count, bool selected, int index) {
-    return Obx(() {
-      return GestureDetector(
-        onTap: () {
-          controller.switchTab(index);
-          controller.resetHorizontalScrollState();
-        },
-        child: Container(
-            padding: EdgeInsets.zero,
-            margin: EdgeInsets.zero,
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: selected
-                            ? AppColorHelper().primaryColor
-                            : Colors.transparent,
-                        width: 2))),
-            child: Row(
-              children: [
-                appText(title,
-                    color: selected
-                        ? AppColorHelper().primaryTextColor
-                        : AppColorHelper()
-                            .primaryTextColor
-                            .withValues(alpha: 0.5),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500),
-                width(6),
-                Container(
-                  width: 23,
-                  height: 23,
-                  padding: const EdgeInsets.all(2.0),
-                  decoration: BoxDecoration(
-                      color: selected
-                          ? AppColorHelper().primaryColor
-                          : AppColorHelper()
-                              .primaryTextColor
-                              .withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(4)),
-                  child: Center(
-                    child: appText(count,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: selected
-                            ? AppColorHelper().textColor
-                            : AppColorHelper().primaryTextColor),
-                  ),
-                )
-              ],
-            )),
+          },
+        ),
       );
     });
+  }
+
+  Widget _tabContainer(
+    String title,
+    String count,
+    bool selected,
+    int index,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        controller.switchTab(index);
+        controller.resetHorizontalScrollState();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color:
+                  selected ? AppColorHelper().primaryColor : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            appText(
+              title,
+              color: selected
+                  ? AppColorHelper().primaryTextColor
+                  : AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            width(6),
+            Container(
+              width: 23,
+              height: 23,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: selected
+                    ? AppColorHelper().primaryColor
+                    : AppColorHelper().primaryTextColor.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: appText(
+                count,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: selected
+                    ? AppColorHelper().textColor
+                    : AppColorHelper().primaryTextColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   SizedBox _searchBar() {

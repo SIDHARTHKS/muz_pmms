@@ -81,4 +81,22 @@ class TaskServices extends AppBaseService {
       return null;
     }
   }
+
+  Future<bool?> approveRejectToken(List<CommonRequest> request) async {
+    var response = await httpService.postService<CreateTokenResponse>(
+        endpoint: getCreateTokenApiEndpoint(),
+        headers: await getHeaders(
+          authorization: true,
+          xCorrelationId: false,
+          sid: false,
+        ),
+        data: request,
+        fromJsonT: (json) => CreateTokenResponse.fromJson(json),
+        ignoreError: false);
+    if (response != null && response.success != null) {
+      return response.success;
+    } else {
+      return false;
+    }
+  }
 }

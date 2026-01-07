@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
+import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/model/app_model.dart';
@@ -32,7 +33,7 @@ class CreateTokenController extends AppBaseController
   // toggle
   final RxBool rxToggle = false.obs;
 
-  //filter
+  //filter selection
   Rxn<FiltersResponse> rxSelectedProject = Rxn<FiltersResponse>();
   Rxn<FiltersResponse> rxSelectedRequest = Rxn<FiltersResponse>();
   Rxn<FiltersResponse> rxSelectedPriority = Rxn<FiltersResponse>();
@@ -123,22 +124,39 @@ class CreateTokenController extends AppBaseController
               attribute: "AdditionalInfo",
               value: additionaldescriptionController.text),
           CommonRequest(attribute: "Attachments", value: ""),
-          CommonRequest(attribute: "RequestID", value: "0"),
+          CommonRequest(attribute: "RequestID", value: ""),
           CommonRequest(attribute: "LoginEmpID", value: id),
           CommonRequest(
               attribute: "ProjectID",
               value: rxSelectedProject.value?.mccId ?? ""), /////doubt
-          CommonRequest(attribute: "TeamID", value: ""),
-          CommonRequest(attribute: "ModuleID", value: ""),
-          CommonRequest(attribute: "OptionID", value: ""),
-          CommonRequest(attribute: "AssigneeID", value: ""),
-          CommonRequest(attribute: "RequestTypeMccID", value: ""), //
-          CommonRequest(attribute: "RequestedByID", value: ""), //
-          CommonRequest(attribute: "PriorityMccID", value: ""), //
-          CommonRequest(attribute: "CurrentStatusMccID", value: ""), //
-          CommonRequest(attribute: "ClientRefID", value: ""), //
-          CommonRequest(attribute: "RequestOnDate", value: ""), //
-          CommonRequest(attribute: "DueDate", value: ""), //
+          CommonRequest(
+              attribute: "TeamID", value: rxSelectedTeam.value?.id ?? ""),
+          CommonRequest(
+              attribute: "ModuleID", value: rxSelectedModule.value?.id ?? ""),
+          CommonRequest(
+              attribute: "OptionID", value: rxSelectedOption.value?.id ?? ""),
+          CommonRequest(
+              attribute: "AssigneeID",
+              value: rxSelectedAsignee.value?.id ?? ""),
+          CommonRequest(
+              attribute: "RequestTypeMccID",
+              value: rxSelectedRequest.value?.mccId ?? ""),
+          CommonRequest(
+              attribute: "RequestedByID",
+              value: rxSelectedRequestedBy.value?.id ?? ""),
+          CommonRequest(
+              attribute: "PriorityMccID",
+              value: rxSelectedPriority.value?.mccId ?? ""),
+          CommonRequest(attribute: "CurrentStatusMccID", value: ""), //doubt
+          CommonRequest(
+              attribute: "ClientRefID",
+              value: clientRefIdController.text.trim()),
+          CommonRequest(
+              attribute: "RequestOnDate",
+              value: DateHelper().formatForApi(rxRequestedOn)),
+          CommonRequest(
+              attribute: "DueDate",
+              value: DateHelper().formatForApi(rxDueDate)),
         ];
         CreateTokenResponse? response =
             await _taskServices.createToken(generateTokenRequestList);
