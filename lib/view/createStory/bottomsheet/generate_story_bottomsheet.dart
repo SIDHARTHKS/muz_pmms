@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/create_story_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -7,10 +8,14 @@ import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 
 import '../../../helper/navigation.dart';
+import '../../../helper/route.dart';
+import '../../dialogues/success_dialogue.dart';
 
 class GenerateStoryBottomsheet extends StatelessWidget {
   final bool isCreate;
-  const GenerateStoryBottomsheet({this.isCreate = true, super.key});
+  final CreateStoryController _storyController =
+      Get.find<CreateStoryController>();
+  GenerateStoryBottomsheet({this.isCreate = true, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,26 @@ class GenerateStoryBottomsheet extends StatelessWidget {
                 fontWeight: FontWeight.w500),
           ),
           height(30),
-          buttonContainer(
+          buttonContainer(onPressed: () async {
+            if (_storyController.requiredDataSelected()) {
+              await _storyController.callGenerateStory().then((success) async {
+                if (success) {
+                  await showDialog(
+                    context: Get.context!,
+                    barrierDismissible: true,
+                    builder: (_) => const SuccessDialogue(
+                      title: "Story Created Successfully",
+                      subtitle1: "Your new story ",
+                      subtitle2: "TKN -782-12 ",
+                      subtitle3: "has been created successfully",
+                    ),
+                  );
+                  _storyController.rxCurrentPageIndex(0);
+                  navigateToAndRemove(homePageRoute);
+                }
+              });
+            }
+          },
               color: AppColorHelper().primaryColor,
               appText(isCreate ? createstory.tr : updatestory.tr,
                   color: AppColorHelper().textColor,
@@ -71,6 +95,7 @@ class GenerateStoryBottomsheet extends StatelessWidget {
                   fontWeight: FontWeight.w500)),
           height(12),
           buttonContainer(
+              onPressed: goBack,
               color: AppColorHelper().cardColor,
               borderColor: AppColorHelper().borderColor.withValues(alpha: 0.3),
               appText(fillRemainingFields.tr,

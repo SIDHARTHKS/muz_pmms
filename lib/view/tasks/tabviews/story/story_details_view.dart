@@ -32,9 +32,8 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
-        appBar: customAppBar(
-            "TKN-${task.tokenId ?? "--"}-${task.tokenId ?? "--"}",
-            actions: [_dotMenu()]),
+        appBar:
+            customAppBar("TKN-${task.tokenId ?? "--"}", actions: [_dotMenu()]),
         body: appContainer(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
@@ -196,7 +195,8 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                               .withValues(alpha: 0.2)),
                       _dropItem("Edit Story", () {
                         Map<String, dynamic> arg = {
-                          currentStoryKey: controller.rxStoryDetail.value
+                          currentStoryKey:
+                              controller.rxStoryDetail.value?.toJson(),
                         };
                         navigateTo(editStoryPageRoute, arguments: arg);
                       }),

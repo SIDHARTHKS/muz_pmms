@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/controller/edit_token_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
-import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 
 class DescriptionBottomSheet extends StatelessWidget {
-  final TasksController _tasksController = Get.find<TasksController>();
+  final EditTokenController _editTokenController =
+      Get.find<EditTokenController>();
 
   final String title;
   final String hintText;
   final TextEditingController? controller;
   final VoidCallback onClose;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onSave;
 
   DescriptionBottomSheet({
     super.key,
     required this.title,
     required this.hintText,
     required this.onClose,
+    required this.onSave,
     this.controller,
     this.onChanged,
   });
@@ -42,74 +44,77 @@ class DescriptionBottomSheet extends StatelessWidget {
           color: AppColorHelper().cardColor,
         ),
         height: Get.height * 0.3,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  appText(
-                    title,
-                    color: AppColorHelper().primaryTextColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                  ),
-                  Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColorHelper().primaryColor,
+        child: Obx(() {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    appText(
+                      title,
+                      color: AppColorHelper().primaryTextColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
                     ),
-                    child: iconWidget(
-                      Icons.close,
-                      color: AppColorHelper().textColor,
-                      onPressed: onClose,
+                    Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColorHelper().primaryColor,
+                      ),
+                      child: iconWidget(
+                        Icons.close,
+                        color: AppColorHelper().textColor,
+                        onPressed: onClose,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            Divider(
-              color: AppColorHelper().dividerColor.withValues(alpha: 0.3),
-              thickness: 1,
-            ),
-            height(10),
+              Divider(
+                color: AppColorHelper().dividerColor.withValues(alpha: 0.3),
+                thickness: 1,
+              ),
+              height(10),
 
-            TextField(
-              autofocus: true,
-              controller: controller,
-              decoration: _normalFieldDecoration(),
-              maxLines: 3,
-              onChanged: onChanged,
-              style: textStyle(
-                  14, AppColorHelper().primaryTextColor, FontWeight.w500),
-            ),
-            const Spacer(),
-            Obx(() {
-              return SafeArea(
-                  child: _tasksController.rxDescriptionChanged.value
-                      ? buttonContainer(onPressed: () {
-                          goBack();
-                        },
+              TextField(
+                autofocus: true,
+                controller: controller,
+                decoration: _normalFieldDecoration(),
+                maxLines: 3,
+                onChanged: onChanged,
+                style: textStyle(
+                    14, AppColorHelper().primaryTextColor, FontWeight.w500),
+              ),
+              const Spacer(),
+              SafeArea(
+                  child: _editTokenController.rxDescriptionChanged.value
+                      ? buttonContainer(
+                          onPressed: onSave,
                           color: AppColorHelper().primaryColor,
                           appText(
                             save.tr,
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500,
                           ))
-                      : buttonContainer(appText(
-                          save.tr,
-                          color: AppColorHelper().textColor,
-                          fontWeight: FontWeight.w500,
-                        )));
-            })
-          ],
-        ),
+                      : buttonContainer(
+                          color: AppColorHelper()
+                              .primaryColor
+                              .withValues(alpha: 0.5),
+                          appText(
+                            save.tr,
+                            color: AppColorHelper().textColor,
+                            fontWeight: FontWeight.w500,
+                          )))
+            ],
+          );
+        }),
       ),
     );
   }

@@ -65,8 +65,7 @@ class StoryView extends AppBaseView<TasksController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              appText(
-                                  "TKN-${task.tokenId ?? "--"}-${task.tokenId ?? "--"}",
+                              appText("TKN-${task.tokenId ?? "--"}",
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: AppColorHelper().primaryTextColor),

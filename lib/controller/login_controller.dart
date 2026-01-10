@@ -12,7 +12,6 @@ import '../helper/date_helper.dart';
 import '../helper/deviceInfo.dart';
 import '../helper/enum.dart';
 import '../model/app_model.dart';
-import '../model/dropdown_model.dart';
 import '../model/login_model.dart';
 import '../service/auth_service.dart';
 
@@ -183,7 +182,7 @@ class LoginController extends AppBaseController {
       if (response != null) {
         rxUserLoginResponse.value = response;
         await _saveLoginDataToPref();
-        await fetchTasks();
+        // await fetchTasks();
         // Clear controllers if needed
         userController.clear();
         passwordController.clear();
@@ -198,36 +197,36 @@ class LoginController extends AppBaseController {
     return false;
   }
 
-  Future<bool> fetchTasks() async {
-    try {
-      showLoader();
-      String id = myApp.preferenceHelper!.getString(employeeIdKey);
-      String now = DateHelper().formatForApi(DateTime.now());
-      var tasksRequestsList = [
-        CommonRequest(attribute: "transType", value: "LIST"),
-        CommonRequest(attribute: "transSubType", value: "MYTASK"),
-        CommonRequest(attribute: "EmployeeID", value: id),
-        CommonRequest(attribute: "dateFrom", value: ""),
-        CommonRequest(attribute: "dateTo", value: now),
-        CommonRequest(attribute: "StatusMccID", value: ""),
-        CommonRequest(attribute: "ProjectID", value: ""),
-        CommonRequest(attribute: "PriorityMccID", value: ""),
-        CommonRequest(attribute: "RequestTypeMccID", value: ""),
-      ];
-      List<TaskResponse>? response =
-          await _taskServices.getTasks(tasksRequestsList);
-      if (response != null) {
-        rxTasksResponse.value = response;
+  // Future<bool> fetchTasks() async {
+  //   try {
+  //     showLoader();
+  //     String id = myApp.preferenceHelper!.getString(employeeIdKey);
+  //     String now = DateHelper().formatForApi(DateTime.now());
+  //     var tasksRequestsList = [
+  //       CommonRequest(attribute: "transType", value: "LIST"),
+  //       CommonRequest(attribute: "transSubType", value: "MYTASK"),
+  //       CommonRequest(attribute: "EmployeeID", value: id),
+  //       CommonRequest(attribute: "dateFrom", value: ""),
+  //       CommonRequest(attribute: "dateTo", value: now),
+  //       CommonRequest(attribute: "StatusMccID", value: ""),
+  //       CommonRequest(attribute: "ProjectID", value: ""),
+  //       CommonRequest(attribute: "PriorityMccID", value: ""),
+  //       CommonRequest(attribute: "RequestTypeMccID", value: ""),
+  //     ];
+  //     List<TaskResponse>? response =
+  //         await _taskServices.getTasks(tasksRequestsList);
+  //     if (response != null) {
+  //       rxTasksResponse.value = response;
 
-        return true;
-      }
-    } catch (e) {
-      appLog('$exceptionMsg $e', logging: Logging.error);
-    } finally {
-      hideLoader();
-    }
-    return false;
-  }
+  //       return true;
+  //     }
+  //   } catch (e) {
+  //     appLog('$exceptionMsg $e', logging: Logging.error);
+  //   } finally {
+  //     hideLoader();
+  //   }
+  //   return false;
+  // }
 
   Future<void> _saveLoginDataToPref() async {
     if (myApp.preferenceHelper != null) {

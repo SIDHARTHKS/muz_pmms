@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
@@ -6,8 +7,9 @@ import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
+import 'package:pmms/view/loaders/task_loader.dart';
+import 'package:pmms/view/widget/refresh/common_refresh_indicator.dart';
 import 'package:pmms/view/widget/searchbar/custom_searchbar.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../widget/common_widget.dart';
 
 class TasksScreen extends AppBaseView<TasksController> {
@@ -18,49 +20,48 @@ class TasksScreen extends AppBaseView<TasksController> {
 
   Scaffold _widgetView() => appScaffold(
         canpop: true,
-        body: appFutureBuilder<void>(
-            () => controller.fetchInitData(),
-            (context, snapshot) => SmartRefresher(
-                controller: controller.pullController,
-                onRefresh: controller.refreshTasks,
-                child: _body()),
-            loaderWidget: fullScreenloader()),
-      );
-  GestureDetector _body() {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        FocusScope.of(Get.context!).unfocus();
-      },
-      child: appScaffold(
-        appBar: customAppBar(
-          mytask.tr,
-          onTap: () {
-            controller.setToDefault();
-            goBack();
+        body: CommonRefreshIndicator(
+          controller: controller.pullController,
+          onRefresh: () {
+            controller.refreshTasks(true);
           },
+          child: _body(),
         ),
-        body: appContainer(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            child: Obx(() {
-              return Column(
-                children: [
-                  height(15),
-                  _tabBar(),
-                  height(15),
-                  _searchBar(),
-                  controller.totalFilterCount.value != 0
-                      ? _filterDetails()
-                      : height(0),
-                  _tabView(),
-                ],
-              );
-            }),
+      );
+  Obx _body() {
+    return Obx(() {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(Get.context!).unfocus();
+        },
+        child: appScaffold(
+          appBar: customAppBar(
+            mytask.tr,
+            onTap: () {
+              controller.setToDefault();
+              goBack();
+            },
+          ),
+          body: appContainer(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                child: Column(
+                  children: [
+                    height(15),
+                    _tabBar(),
+                    height(15),
+                    _searchBar(),
+                    controller.totalFilterCount.value != 0
+                        ? _filterDetails()
+                        : height(0),
+                    _tabView(),
+                  ],
+                )),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Padding _filterDetails() {
@@ -108,7 +109,13 @@ class TasksScreen extends AppBaseView<TasksController> {
 
   Expanded _tabView() {
     return Expanded(
-        child: controller.rxPlTabScreens[controller.rxTabIndex.value]);
+        child: controller.rxIsLoading.value
+            ? Center(
+                child: CupertinoActivityIndicator(
+                radius: 11,
+                color: AppColorHelper().primaryColor,
+              ))
+            : controller.rxPlTabScreens[controller.rxTabIndex.value]);
   }
 
   Widget _tabBar() {

@@ -250,3 +250,26 @@ class CreateTokenResponse {
         "message": message,
       };
 }
+
+CreateStoryResponse createStoryResponseFromJson(String str) =>
+    CreateStoryResponse.fromJson(json.decode(str));
+
+String createStoryResponseToJson(CreateStoryResponse data) =>
+    json.encode(data.toJson());
+
+class CreateStoryResponse {
+  String? message;
+
+  CreateStoryResponse({
+    this.message,
+  });
+
+  factory CreateStoryResponse.fromJson(Map<String, dynamic> json) =>
+      CreateStoryResponse(
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "message": message,
+      };
+}

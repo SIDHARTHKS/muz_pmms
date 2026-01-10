@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/controller/edit_token_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -12,12 +12,13 @@ import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/tasks/bottomsheet/description_bottomsheet.dart';
 import 'package:pmms/view/tasks/bottomsheet/edit_bottomsheet.dart';
+import 'package:pmms/view/tasks/bottomsheet/edit_dropdown_bottomsheet.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import '../../../dialogues/rejected_dialogue.dart';
 import '../../../dialogues/success_dialogue.dart';
 import '../../../widget/common_widget.dart';
 
-class PlTaskDetailsScreen extends AppBaseView<TasksController> {
+class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
   const PlTaskDetailsScreen({super.key});
 
   @override
@@ -33,7 +34,8 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
         ),
       );
   GestureDetector _body() {
-    var task = controller.rxTaskDetail.value!;
+    var task = controller.rxSelectedToken.value!;
+    bool isApproved = task.currentStatus?.toLowerCase() == "approved";
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -72,7 +74,7 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
                               width: double
                                   .infinity, // takes full width, but height adapts to content
                               child: appText(
-                                task.description ?? "",
+                                controller.actualDescription.value,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,
                                 color: AppColorHelper().primaryTextColor,
@@ -83,18 +85,22 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
                           GestureDetector(
                             onTap: () {
                               controller.handleDescription(task);
+
                               showModalBottomSheet(
                                 isScrollControlled: true,
                                 context: Get.context!,
-                                builder: (context) {
+                                builder: (_) {
                                   return DescriptionBottomSheet(
                                     title: description.tr,
                                     hintText: "",
                                     controller:
                                         controller.descriptionController,
                                     onClose: () {
-                                      controller.descriptionController.text =
-                                          controller.actualDescription.value;
+                                      controller.handleSaveDescription(task);
+                                      goBack();
+                                    },
+                                    onSave: () {
+                                      controller.handleSaveDescription(task);
                                       goBack();
                                     },
                                     onChanged: (value) {
@@ -112,27 +118,36 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
                           ),
                         ],
                       ),
+                      height(15),
+                      divider(
+                          color: AppColorHelper()
+                              .dividerColor
+                              .withValues(alpha: 0.14)),
+                      height(20),
+                      isApproved
+                          ? _nonEditableDetails(
+                              "Project",
+                              task.projectName ?? "--",
+                            )
+                          : _editableFilterDetails(
+                              "Project",
+                              controller.rxProjectsList,
+                              controller.rxSelectedProject),
+                      _editableDropdownDetails("Team", controller.rxTeamList,
+                          controller.rxSelectedTeam),
+                      _editableDropdownDetails("Module",
+                          controller.rxModuleList, controller.rxSelectedModule),
+                      _editableDropdownDetails(
+                          "Option",
+                          controller.rxOptionsList,
+                          controller.rxSelectedOption),
+                      _nonEditableDetails(
+                        "Assignee",
+                        task.assignee ?? "--",
+                      )
                     ],
                   ),
-                  height(15),
-                  divider(
-                      color: AppColorHelper()
-                          .dividerColor
-                          .withValues(alpha: 0.14)),
-                  height(20),
-                  _editableDetails(
-                      "Project",
-                      task.projectName ?? "x",
-                      controller
-                          .projectList), ///////////////////////use id when response is available
-                  _editableDetails(
-                      "Team", task.team ?? "--", controller.teamList),
-                  _editableDetails(
-                      "Module", task.module ?? "--", controller.moduleList),
-                  _editableDetails(
-                      "Option", task.optionName ?? "--", controller.optionList),
-                  _editableDetails("Assignee", task.assignee ?? "--",
-                      controller.assigneeList),
+
                   SizedBox(
                     width: Get.width,
                     child: Column(
@@ -317,123 +332,294 @@ class PlTaskDetailsScreen extends AppBaseView<TasksController> {
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
-        child: Row(
-          children: [
-            Expanded(
-              child: buttonContainer(
-                height: 42,
-                color: AppColorHelper().cardColor,
-                borderColor:
-                    AppColorHelper().borderColor.withValues(alpha: 0.3),
-                onPressed: () {
-                  showDialog(
-                    context: Get.context!,
-                    barrierDismissible: true,
-                    builder: (_) => const RejectedDialogue(),
-                  );
-                  Future.delayed(const Duration(seconds: 1), () {
-                    if (Navigator.canPop(Get.context!)) {
-                      Navigator.of(Get.context!).pop();
-                    }
-                  });
-                },
-                appText(
-                  reject.tr,
-                  color: AppColorHelper().primaryTextColor,
-                  fontWeight: FontWeight.w500,
-                ),
+        child: controller.rxEdited.value
+            ? Row(
+                children: [
+                  Expanded(
+                    child: buttonContainer(
+                      height: 42,
+                      color:
+                          AppColorHelper().primaryColor.withValues(alpha: 0.9),
+                      borderColor:
+                          AppColorHelper().borderColor.withValues(alpha: 0.3),
+                      onPressed: () async {
+                        controller.callUpdateToken().then((success) async {
+                          if (success) {
+                            await showDialog(
+                              context: Get.context!,
+                              barrierDismissible:
+                                  false, // prevents user from closing early
+                              builder: (_) => const SuccessDialogue(
+                                title: "Token updated Successfully",
+                                subtitle1: "",
+                                subtitle2: "",
+                                subtitle3: "",
+                              ),
+                            );
+                            controller.tasksController.refreshTasks(true);
+                            controller.setEditedTask();
+                          }
+                        });
+                      },
+                      controller.rxIsLoading.value
+                          ? buttonLoader()
+                          : appText(
+                              save.tr,
+                              color: AppColorHelper().textColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                    ),
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: buttonContainer(
+                      height: 42,
+                      color: AppColorHelper().cardColor,
+                      borderColor:
+                          AppColorHelper().borderColor.withValues(alpha: 0.3),
+                      onPressed: () async {
+                        await controller.tasksController
+                            .rejectToken()
+                            .then((value) {
+                          if (value) {
+                            showDialog(
+                              context: Get.context!,
+                              barrierDismissible: true,
+                              builder: (_) => const RejectedDialogue(),
+                            );
+                            Future.delayed(const Duration(seconds: 2), () {
+                              if (Navigator.canPop(Get.context!)) {
+                                Navigator.of(Get.context!).pop();
+                              }
+                            });
+                            Future.delayed(const Duration(seconds: 2), () {
+                              if (Navigator.canPop(Get.context!)) {
+                                goBack();
+                              }
+                            });
+                          }
+                        });
+                      },
+                      appText(
+                        reject.tr,
+                        color: AppColorHelper().primaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  width(12),
+                  Expanded(
+                    child: buttonContainer(
+                      height: 42,
+                      color:
+                          AppColorHelper().primaryColor.withValues(alpha: 0.9),
+                      onPressed: () {
+                        controller.tasksController
+                            .approveToken()
+                            .then((success) {
+                          if (success) {
+                            showDialog(
+                              context: Get.context!,
+                              barrierDismissible: true,
+                              builder: (_) => const SuccessDialogue(
+                                title: "Approved \n Successfully",
+                                subtitle1: "This token request has been",
+                                subtitle2: "",
+                                subtitle3: "approved successfully.",
+                              ),
+                            );
+                            Future.delayed(const Duration(seconds: 1), () {
+                              if (Navigator.canPop(Get.context!)) {
+                                Navigator.of(Get.context!).pop();
+                              }
+                            });
+                            Future.delayed(const Duration(seconds: 1), () {
+                              if (Navigator.canPop(Get.context!)) {
+                                goBack();
+                              }
+                            });
+                          }
+                        });
+                      },
+                      appText(
+                        approve.tr,
+                        color: AppColorHelper().textColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            width(12),
-            Expanded(
-              child: buttonContainer(
-                height: 42,
-                color: AppColorHelper().primaryColor.withValues(alpha: 0.9),
-                onPressed: () {
-                  showDialog(
-                      context: Get.context!,
-                      barrierDismissible: true,
-                      builder: (_) => const SuccessDialogue(
-                            title: "Approved \n Successfully",
-                            subtitle1: "This token request has been",
-                            subtitle2: "",
-                            subtitle3: "approved successfully.",
-                          ));
-                  Future.delayed(const Duration(seconds: 1), () {
-                    if (Navigator.canPop(Get.context!)) {
-                      Navigator.of(Get.context!).pop();
-                    }
-                  });
-                },
-                appText(
-                  approve.tr,
-                  color: AppColorHelper().textColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Padding _editableDetails(
-      String title, String subtitle, List<FiltersResponse> list) {
-    FiltersResponse selected = FiltersResponse();
-    for (var i in list) {
-      if (i.mccName!.toLowerCase() == subtitle.toLowerCase()) {
-        selected = i;
-        break;
-      }
-    }
+  Padding _editableFilterDetails(
+    String title,
+    List<FiltersResponse> list,
+    Rxn<FiltersResponse> selectedRx,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: SizedBox(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Obx(() {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                appText(title,
-                    color: AppColorHelper()
-                        .primaryTextColor
-                        .withValues(alpha: 0.7),
-                    fontSize: 13),
-                appText(subtitle,
-                    color: AppColorHelper().primaryTextColor,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500)
+                appText(
+                  title,
+                  color:
+                      AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+                appText(
+                  selectedRx.value?.mccName ?? "--",
+                  color: AppColorHelper().primaryTextColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
               ],
-            ),
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: Get.context!,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: EditBottomsheet(
-                        label: title,
-                        list: list,
-                        selectedItem: selected,
-                      ),
-                    );
-                  },
+            );
+          }),
+          GestureDetector(
+            onTap: () async {
+              final oldValue = selectedRx.value;
+
+              final result = await showModalBottomSheet<FiltersResponse>(
+                isScrollControlled: true,
+                context: Get.context!,
+                builder: (_) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(Get.context!).viewInsets.bottom,
+                    ),
+                    child: EditBottomsheet(
+                      label: title,
+                      list: list,
+                      selectedItem: oldValue ?? FiltersResponse(),
+                    ),
+                  );
+                },
+              );
+
+              if (result == null) return;
+
+              final hasChanged = oldValue?.mccId != result.mccId;
+
+              if (hasChanged) {
+                selectedRx.value = result;
+                controller.rxEdited(true);
+                await controller.fetchProjectBasedDropdown(
+                  result.mccId ?? "",
+                  "",
+                  "",
+                  false,
                 );
-              },
-              child: Image.asset(
-                Assets.icons.edit.path,
-                height: 18,
-                width: 18,
-              ),
-            )
-          ],
-        ),
+              }
+            },
+            child: Image.asset(
+              Assets.icons.edit.path,
+              height: 18,
+              width: 18,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _editableDropdownDetails(
+    String title,
+    List<DropDownResponse> list,
+    Rxn<DropDownResponse> selectedRx,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Obx(() {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                appText(
+                  title,
+                  color:
+                      AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+                appText(
+                  selectedRx.value?.name ?? "--",
+                  color: AppColorHelper().primaryTextColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            );
+          }),
+          GestureDetector(
+            onTap: () async {
+              final result = await showModalBottomSheet<DropDownResponse>(
+                isScrollControlled: true,
+                context: Get.context!,
+                builder: (_) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(Get.context!).viewInsets.bottom,
+                    ),
+                    child: EditDropdownBottomsheet(
+                      label: title,
+                      list: list,
+                      selectedItem: selectedRx.value ?? DropDownResponse(),
+                    ),
+                  );
+                },
+              );
+
+              if (result != null) {
+                selectedRx.value = result;
+                controller.rxEdited(true);
+              }
+            },
+            child: Image.asset(
+              Assets.icons.edit.path,
+              height: 18,
+              width: 18,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding _nonEditableDetails(
+    String title,
+    String subtitle,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              appText(title,
+                  color:
+                      AppColorHelper().primaryTextColor.withValues(alpha: 0.7),
+                  fontSize: 13),
+              appText(subtitle,
+                  color: AppColorHelper().primaryTextColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500)
+            ],
+          ),
+        ],
       ),
     );
   }

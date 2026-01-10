@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/tasks_controller.dart';
+import 'package:pmms/controller/edit_token_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import '../../../helper/color_helper.dart';
@@ -8,12 +8,12 @@ import '../../../helper/navigation.dart';
 import '../../../helper/sizer.dart';
 import '../../widget/common_widget.dart';
 
-class EditBottomsheet extends StatefulWidget {
+class EditDropdownBottomsheet extends StatefulWidget {
   final String label;
-  final List<FiltersResponse> list;
-  final FiltersResponse selectedItem;
+  final List<DropDownResponse> list;
+  final DropDownResponse selectedItem;
 
-  const EditBottomsheet({
+  const EditDropdownBottomsheet({
     super.key,
     required this.label,
     required this.list,
@@ -21,15 +21,15 @@ class EditBottomsheet extends StatefulWidget {
   });
 
   @override
-  State<EditBottomsheet> createState() => _FilterBottomsheetState();
+  State<EditDropdownBottomsheet> createState() => _FilterBottomsheetState();
 }
 
-class _FilterBottomsheetState extends State<EditBottomsheet> {
-  final TasksController controller = Get.find<TasksController>();
+class _FilterBottomsheetState extends State<EditDropdownBottomsheet> {
+  final EditTokenController controller = Get.find<EditTokenController>();
   final appColor = AppColorHelper();
 
   // local temp map to store selected items (copied from controller)
-  late FiltersResponse selectedItem;
+  late DropDownResponse selectedItem;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _FilterBottomsheetState extends State<EditBottomsheet> {
     super.initState();
   }
 
-  void _changeSelection(FiltersResponse value) {
+  void _changeSelection(DropDownResponse value) {
     selectedItem = value;
     setState(() {});
   }
@@ -99,8 +99,8 @@ class _FilterBottomsheetState extends State<EditBottomsheet> {
               itemCount: widget.list.length,
               itemBuilder: (context, index) {
                 var item = widget.list[index];
-                bool isSelected = item.mccName!.toLowerCase() ==
-                    selectedItem.mccName!.toLowerCase();
+                bool isSelected = item.name!.toLowerCase() ==
+                    selectedItem.name!.toLowerCase();
                 return GestureDetector(
                   onTap: () => _changeSelection(item),
                   child: Container(
@@ -123,7 +123,7 @@ class _FilterBottomsheetState extends State<EditBottomsheet> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         appText(
-                          item.mccName!,
+                          item.name!,
                           color: isSelected
                               ? appColor.primaryColor
                               : appColor.primaryTextColor,

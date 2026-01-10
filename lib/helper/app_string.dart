@@ -30,6 +30,9 @@ const String typeFilterDataKey = 'typeFilterDataKey';
 const String projectFilterDataKey = 'projectFilterDataKey';
 const String priorityFilterDataKey = 'priorityFilterDataKey';
 const String requestFilterDataKey = 'requestFilterDataKey';
+const String selectedTaskKey = 'selectedTaskKey';
+const String selectedEditStoryKey = 'selectedEditStoryKey';
+const String selectedEditTokenKey = 'selectedEditTokenKey';
 
 //Arguments key
 const String companiesKey = 'companiesKey';

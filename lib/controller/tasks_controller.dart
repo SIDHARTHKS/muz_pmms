@@ -14,8 +14,6 @@ import 'package:pmms/view/tasks/tabviews/tl/tl_token_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
-import '../helper/navigation.dart';
-import '../helper/route.dart';
 import '../model/task_model.dart';
 
 class TasksController extends AppBaseController
@@ -34,11 +32,6 @@ class TasksController extends AppBaseController
   // searchbar
   TextEditingController searchController = TextEditingController();
 
-  // description edit
-  TextEditingController descriptionController = TextEditingController();
-  RxString actualDescription = "".obs;
-  RxBool rxDescriptionChanged = false.obs;
-
   // tasks
   RxList<TaskResponse> rxTasksResponse = <TaskResponse>[].obs;
   RxList<TaskResponse> rxFilteredTasksResponse = <TaskResponse>[].obs;
@@ -47,13 +40,12 @@ class TasksController extends AppBaseController
   RxList<TaskResponse> rxTokens = <TaskResponse>[].obs;
   RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
 
-  Rxn<TaskResponse> rxTaskDetail = Rxn<TaskResponse>();
+  // detail
   Rxn<TaskResponse> rxStoryDetail = Rxn<TaskResponse>();
 
   // filter
 
   RxList<FiltersResponse> rxTaskFilterTypeList = <FiltersResponse>[].obs;
-
   RxList<FiltersResponse> rxTypeFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxProjectFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxPriorityFilters = <FiltersResponse>[].obs;
@@ -68,7 +60,6 @@ class TasksController extends AppBaseController
   RxInt projectTypeFilterCount = 0.obs;
   RxInt priorityTypeFilterCount = 0.obs;
   RxInt requestTypeFilterCount = 0.obs;
-
   RxInt totalFilterCount = 0.obs;
 
   // selected task/story details
@@ -78,14 +69,10 @@ class TasksController extends AppBaseController
   final Map<int, ScrollController> horizontalScrollControllers = {};
   final Map<int, RxBool> hasHorizontalOverflow = {};
 
-  //
-
   @override
   Future<void> onInit() async {
     isInitCalled(true);
-    setDateRange();
-    _setArguments();
-    _fetchFilters();
+    fetchInitData();
     super.onInit();
   }
 
@@ -151,10 +138,6 @@ class TasksController extends AppBaseController
 
   //////////////////////////////// TASK/STORY ////////////////////////////////
 
-  void setTask(TaskResponse task) {
-    rxTaskDetail(task);
-  }
-
   void setStory(TaskResponse task) {
     rxStoryDetail(task);
   }
@@ -162,42 +145,26 @@ class TasksController extends AppBaseController
   //////////////////////////////// FETCHING/SETTING TASK ////////////////////////////////
 
   Future<void> _setArguments() async {
-    var arguments = Get.arguments;
-    var task = arguments[tasksDataKey];
-    if (arguments != null) {
-      rxTasksResponse(task);
-      rxFilteredTasksResponse(task);
-      await sortTasks();
-    } else {
-      showErrorSnackbar(
-          message: "Unable To Fetch Task Details. Please Login Again");
-      navigateToAndRemoveAll(loginPageRoute);
-    }
-  }
-
-  ////////// SORT TASK AND TOKEN //////////
-
-  Future<void> sortTasks() async {
-    rxTokens.clear();
-    rxStory.clear();
-    for (int i = 0; i < rxFilteredTasksResponse.length; i++) {
-      String type =
-          (rxFilteredTasksResponse[i].issueType ?? "").trim().toUpperCase();
-      appLog("issues : ${rxFilteredTasksResponse[i].issueType}");
-      if (type == "TOKEN") {
-        rxTokens.add(rxFilteredTasksResponse[i]);
-      } else {
-        rxStory.add(rxFilteredTasksResponse[i]);
-      }
-      appLog("data soreted");
-    }
+    // var arguments = Get.arguments;
+    // var task = arguments[tasksDataKey];
+    // if (arguments != null) {
+    //   rxTasksResponse(task);
+    //   rxFilteredTasksResponse(task);
+    //   rxDisplayedTasks(rxFilteredTasksResponse);
+    //   splitDisplayedTasks();
+    // } else {
+    //   showErrorSnackbar(
+    //       message: "Unable To Fetch Task Details. Please Login Again");
+    //   navigateToAndRemoveAll(loginPageRoute);
+    // }
   }
 
   /////////////////////// REFRESH ///////////////////////
 
-  Future<void> refreshTasks() async {
+  Future<void> refreshTasks(bool showLoader) async {
     try {
-      final success = await fetchTasks();
+      await Future.delayed(const Duration(milliseconds: 300));
+      final success = await fetchTasks(showLoader);
       if (success) {
         resetsetFilters();
         pullController.refreshCompleted();
@@ -209,9 +176,11 @@ class TasksController extends AppBaseController
     }
   }
 
-  Future<bool> fetchTasks() async {
+  Future<bool> fetchTasks(bool loader) async {
     try {
-      showLoader();
+      if (loader) {
+        showLoader();
+      }
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
       String now = DateHelper().formatForApi(DateTime.now());
       var tasksRequestsList = [
@@ -230,7 +199,7 @@ class TasksController extends AppBaseController
       if (response != null) {
         rxTasksResponse.clear();
         rxTasksResponse.value = response;
-        await sortTasks();
+        splitDisplayedTasks();
         return true;
       }
     } catch (e) {
@@ -288,7 +257,7 @@ class TasksController extends AppBaseController
       ];
       bool? response = await _taskServices.approveRejectToken(approveList);
       if (response != null && response) {
-        await refreshTasks();
+        await refreshTasks(true);
         return response;
       }
     } catch (e) {
@@ -299,7 +268,63 @@ class TasksController extends AppBaseController
     return false;
   }
 
-  //////////////////////////////// FILTERS FETCH  ////////////////////////////////
+  //////////////////////////////// REJECT TOKEN  ////////////////////////////////
+
+  Future<bool> rejectToken() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tkn = rxSelectedToken.value;
+      var approveList = [
+        CommonRequest(attribute: "transType", value: "LIST"),
+        CommonRequest(attribute: "transSubType", value: "TOKEN_REJECTION"),
+        CommonRequest(attribute: "IssueType", value: "TOKEN"),
+        CommonRequest(
+            attribute: "Description", value: tkn?.description ?? "--"),
+        CommonRequest(attribute: "AdditionalInfo", value: "--"),
+        CommonRequest(attribute: "Attachments", value: tkn?.attachment ?? ""),
+        CommonRequest(
+            attribute: "RequestID", value: tkn?.requestId.toString() ?? ""),
+        CommonRequest(attribute: "LoginEmpID", value: id),
+        CommonRequest(
+            attribute: "ProjectID", value: tkn?.projectId.toString() ?? ""),
+        CommonRequest(attribute: "TeamID", value: tkn?.teamId.toString() ?? ""),
+        CommonRequest(
+            attribute: "ModuleID", value: tkn?.moduleId.toString() ?? ""),
+        CommonRequest(
+            attribute: "OptionID", value: tkn?.optionId.toString() ?? ""),
+        CommonRequest(
+            attribute: "AssigneeID", value: tkn?.assigneeId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestTypeMccID",
+            value: tkn?.requestTypeId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestedByID", value: tkn?.requestedBy ?? ""),
+        CommonRequest(
+            attribute: "PriorityMccID",
+            value: tkn?.priorityId.toString() ?? ""),
+        CommonRequest(
+            attribute: "CurrentStatusMccID",
+            value: tkn?.currentStatusId.toString() ?? ""),
+        CommonRequest(
+            attribute: "ClientRefID", value: tkn?.clientRefId.toString() ?? ""),
+        CommonRequest(
+            attribute: "RequestOnDate",
+            value: tkn?.requestDateTime.toString() ?? ""),
+        CommonRequest(attribute: "DueDate", value: ""),
+      ];
+      bool? response = await _taskServices.approveRejectToken(approveList);
+      if (response != null && response) {
+        await refreshTasks(true);
+        return response;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
 
   //////////////////////////////// FILTERS FETCH  ////////////////////////////////
 
@@ -427,7 +452,7 @@ class TasksController extends AppBaseController
   }
 
   void setToDefault() {
-    sortTasks();
+    splitDisplayedTasks();
     searchController.clear();
   }
 
@@ -533,23 +558,6 @@ class TasksController extends AppBaseController
     }
   }
 
-  ////////////////////////////////////////  EDIT DESCRIPTION  /////////////////////////////////////////
-  void handleDescription(TaskResponse task) {
-    descriptionController.text = task.description ?? "--";
-    actualDescription(task.description ?? "--");
-  }
-
-  void verifyDescriptionEdit(String value) {
-    final current = value.trim();
-    final original = actualDescription.value.trim();
-
-    appLog("original: $original");
-    appLog("current : $current");
-
-    rxDescriptionChanged(current != original);
-    appLog("changed: $rxDescriptionChanged");
-  }
-
   ////////////////////////////////////////  TABS  /////////////////////////////////////////
 
   List rxTabLabel = [token.tr, story.tr, token.tr];
@@ -565,66 +573,10 @@ class TasksController extends AppBaseController
 
   //
 
-  List<String> tokenTypes = ['Pending', 'Approved', 'Rejected', 'In Progress'];
-
-  final List<FiltersResponse> projectList = [
-    FiltersResponse(mccId: '1', mccCode: 'GEN', mccName: 'General'),
-    FiltersResponse(mccId: '2', mccCode: 'JUELISV2', mccName: 'JuelIS V2'),
-    FiltersResponse(mccId: '3', mccCode: 'PAYROLL', mccName: 'Payroll'),
-    FiltersResponse(
-        mccId: '4', mccCode: 'MRETAILP', mccName: 'MRetail - Pulimoottil'),
-    FiltersResponse(
-        mccId: '5', mccCode: 'MRETAILS', mccName: 'MRetail - Seematti'),
-  ];
-
-  // 👥 Team List
-  final List<FiltersResponse> teamList = [
-    FiltersResponse(mccId: '1', mccCode: 'DEV', mccName: 'Development'),
-    FiltersResponse(mccId: '2', mccCode: 'QA', mccName: 'Service'),
-    FiltersResponse(mccId: '3', mccCode: 'SUP', mccName: 'Support'),
-    FiltersResponse(mccId: '4', mccCode: 'OPS', mccName: 'Operations'),
-    FiltersResponse(mccId: '5', mccCode: 'HR', mccName: 'Human Resources'),
-  ];
-
-// 🧱 Module List
-  final List<FiltersResponse> moduleList = [
-    FiltersResponse(mccId: '1', mccCode: 'LOGIN', mccName: 'Back Office'),
-    FiltersResponse(mccId: '2', mccCode: 'UI', mccName: 'UI Enhancements'),
-    FiltersResponse(mccId: '3', mccCode: 'REPORT', mccName: 'Reports'),
-    FiltersResponse(mccId: '4', mccCode: 'NOTIFY', mccName: 'Notifications'),
-    FiltersResponse(mccId: '5', mccCode: 'API', mccName: 'API Integration'),
-  ];
-
-// ⚙️ Option List
-  final List<FiltersResponse> optionList = [
-    FiltersResponse(mccId: '1', mccCode: 'BUG', mccName: 'Notification'),
-    FiltersResponse(mccId: '2', mccCode: 'MOD', mccName: 'Modification'),
-    FiltersResponse(mccId: '3', mccCode: 'SUPPORT', mccName: 'Support Request'),
-    FiltersResponse(mccId: '4', mccCode: 'FEATURE', mccName: 'New Feature'),
-    FiltersResponse(mccId: '5', mccCode: 'OTHER', mccName: 'Other'),
-  ];
-
-// 👤 Assignee List
-  final List<FiltersResponse> assigneeList = [
-    FiltersResponse(mccId: '1', mccCode: 'SID', mccName: 'Annette Black'),
-    FiltersResponse(mccId: '2', mccCode: 'ANU', mccName: 'Sidharth KS'),
-    FiltersResponse(mccId: '3', mccCode: 'RAHUL', mccName: 'Rahul Menon'),
-    FiltersResponse(mccId: '4', mccCode: 'NEHA', mccName: 'Neha Joseph'),
-    FiltersResponse(mccId: '5', mccCode: 'ARUN', mccName: 'Arun Krishnan'),
-  ];
-  List<String> priority = [
-    'High',
-    'Medium',
-    'Low',
-  ];
-
-  List<String> requestTypes = [
-    'Error',
-    'Support',
-    'Modification',
-  ];
-
   Future<bool> fetchInitData() async {
+    setDateRange();
+    await refreshTasks(true);
+    await _fetchFilters();
     return true;
   }
 }

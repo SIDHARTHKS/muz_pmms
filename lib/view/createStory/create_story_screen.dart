@@ -10,8 +10,6 @@ import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/createStory/bottomsheet/generate_story_bottomsheet.dart';
 import 'package:pmms/view/dialogues/success_dialogue.dart';
-import 'package:pmms/view/dialogues/token_generate_dialogue.dart';
-
 import '../widget/common_widget.dart';
 
 class CreateStoryScreen extends AppBaseView<CreateStoryController> {
@@ -20,11 +18,11 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
   @override
   Widget buildView() => _widgetView();
 
-  Scaffold _widgetView() => appScaffold(
-        canpop: true,
-        body: appFutureBuilder<void>(
-            () => controller.fetchInitData(), (context, snapshot) => _body(),
-            loaderWidget: fullScreenloader()),
+  Scaffold _widgetView() => appScaffold(canpop: true, body: _body()
+      // appFutureBuilder<void>(
+      //   () => controller.fetchInitData(), (context, snapshot) => _body(),
+      //   // loaderWidget: fullScreenloader()
+      // ),
       );
   GestureDetector _body() {
     return GestureDetector(
@@ -96,18 +94,26 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                         appText(createstory.tr,
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500), onPressed: () async {
-                        await showDialog(
-                          context: Get.context!,
-                          barrierDismissible: true,
-                          builder: (_) => const SuccessDialogue(
-                            title: "Story Created Successfully",
-                            subtitle1: "Your new story ",
-                            subtitle2: "TKN -782-12 ",
-                            subtitle3: "has been created successfully",
-                          ),
-                        );
-                        controller.rxCurrentPageIndex(0);
-                        navigateToAndRemove(homePageRoute);
+                        if (controller.requiredDataSelected()) {
+                          await controller
+                              .callGenerateStory()
+                              .then((success) async {
+                            if (success) {
+                              await showDialog(
+                                context: Get.context!,
+                                barrierDismissible: true,
+                                builder: (_) => const SuccessDialogue(
+                                  title: "Story Created Successfully",
+                                  subtitle1: "Your new story ",
+                                  subtitle2: "TKN -782-12 ",
+                                  subtitle3: "has been created successfully",
+                                ),
+                              );
+                              controller.rxCurrentPageIndex(0);
+                              navigateToAndRemove(homePageRoute);
+                            }
+                          });
+                        }
                       })
                     : Row(
                         children: [
@@ -120,12 +126,14 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                                   color: AppColorHelper().secondaryTextColor,
                                   fontWeight: FontWeight.w500),
                               onPressed: () async {
-                            await showModalBottomSheet(
-                                context: Get.context!,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) =>
-                                    const GenerateStoryBottomsheet());
+                            if (controller.requiredDataSelected()) {
+                              await showModalBottomSheet(
+                                  context: Get.context!,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) =>
+                                      GenerateStoryBottomsheet());
+                            }
                           }),
                           width(15),
                           buttonContainer(
@@ -134,7 +142,9 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                               appText(next.tr,
                                   color: AppColorHelper().textColor,
                                   fontWeight: FontWeight.w500), onPressed: () {
-                            controller.nextPage(true);
+                            if (controller.requiredDataSelected()) {
+                              controller.nextPage(true);
+                            }
                           }),
                         ],
                       )

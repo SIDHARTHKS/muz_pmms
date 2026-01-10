@@ -24,12 +24,7 @@ class HomeScreen extends AppBaseView<HomeController> {
   }
 
   AppBar _buildAppBar() {
-    return appBar(
-      leadingWidget: width(0),
-      titleText: home.tr,
-      showbackArrow: false,
-      leadingWidgetPressed: () {},
-    );
+    return customAppBar(home.tr, showBackArrow: false);
   }
 
   Widget _buildBody() {
@@ -58,15 +53,6 @@ class HomeScreen extends AppBaseView<HomeController> {
               }),
               height(20),
               buttonContainer(
-                  appText(
-                    createstory.tr,
-                    color: AppColorHelper().primaryColor,
-                    fontWeight: FontWeight.w500,
-                  ), onPressed: () {
-                navigateTo(createStoryPageRoute);
-              }),
-              height(20),
-              buttonContainer(
                   color: AppColorHelper().primaryColor,
                   appText(settings.tr, fontWeight: FontWeight.w500),
                   onPressed: () {
@@ -79,6 +65,16 @@ class HomeScreen extends AppBaseView<HomeController> {
                       fontWeight: FontWeight.w500), onPressed: () {
                 navigateTo(notificationsPageRoute);
               }),
+              height(20),
+              // buttonContainer(
+              //     appText(
+              //       createstory.tr,
+              //       color: AppColorHelper().primaryColor,
+              //       fontWeight: FontWeight.w500,
+              //     ), onPressed: () {
+              //   navigateTo(createStoryPageRoute);
+              // }),
+              height(20),
               appText(MyApplication().preferenceHelper!.getString(userNameKey),
                   color: AppColorHelper().primaryTextColor)
             ],

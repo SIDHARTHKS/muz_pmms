@@ -29,6 +29,9 @@ class AppBaseService {
   // token
   getCreateTokenApiEndpoint() => '/generatetoken'; //
 
+  // token
+  getCreateStoryApiEndpoint() => '/generatestory'; //
+
   // filter
   getFiltersApiEndpoint() => '/mytaskdropdown'; //
   getDropdownApiEndpoint() => '/taskdropdown'; //

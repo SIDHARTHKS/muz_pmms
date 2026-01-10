@@ -27,7 +27,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
         ),
       );
   GestureDetector _body() {
-    var task = controller.rxTaskDetail.value!;
+    var task = controller.rxSelectedToken.value!;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -195,7 +195,11 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
   GestureDetector _addStoryButton() {
     return GestureDetector(
       onTap: () {
-        navigateTo(createStoryPageRoute);
+        Map<String, dynamic> arguments = {
+          selectedTaskKey: controller.rxSelectedToken.value?.toJson(),
+        };
+
+        navigateTo(createStoryPageRoute, arguments: arguments);
       },
       child: Container(
         height: 30,

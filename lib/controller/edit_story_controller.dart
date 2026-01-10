@@ -16,14 +16,13 @@ import 'package:pmms/view/editStory/pages/edit_story_page1.dart';
 import 'package:pmms/view/editStory/pages/edit_story_page2.dart';
 import '../helper/core/base/app_base_controller.dart';
 
-class CreateStoryController extends AppBaseController
+class EditStoryController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   final TaskServices _taskServices = Get.find<TaskServices>();
   //
   final isInitCalled = false.obs;
 
   // textfield
-  final TextEditingController storyTiteController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController hoursController = TextEditingController();
   final TextEditingController minutesController = TextEditingController();
@@ -42,15 +41,13 @@ class CreateStoryController extends AppBaseController
   Rxn<DropDownResponse> rxSelectedOption = Rxn<DropDownResponse>();
 
   //dates
-  DateTime rxRequestedOn = DateTime.now();
-  DateTime rxDueDate = DateTime.now();
 
   DateTime rxRequestDate = DateTime.now();
   DateTime rxPlannedStartDate = DateTime.now();
   DateTime rxPlannedEndDate = DateTime.now();
 
   // story
-  Rxn<TaskResponse> rxCurrentTokenDetail = Rxn<TaskResponse>();
+  Rxn<TaskResponse> rxCurrentStoryDetail = Rxn<TaskResponse>();
   Rxn<CreateStoryResponse> rxGenerateStoryResponse = Rxn<CreateStoryResponse>();
 
   //filter response
@@ -65,10 +62,11 @@ class CreateStoryController extends AppBaseController
     isInitCalled(true);
     _setArguments();
     await fetchDropdownForStory(
-        (rxCurrentTokenDetail.value?.projectId ?? "").toString(),
+        (rxCurrentStoryDetail.value?.projectId ?? "").toString(),
         "",
-        (rxCurrentTokenDetail.value?.teamId ?? "").toString(),
+        (rxCurrentStoryDetail.value?.teamId ?? "").toString(),
         false);
+    setDefaultFilters();
     super.onInit();
   }
 
@@ -76,11 +74,10 @@ class CreateStoryController extends AppBaseController
   Future<void> _setArguments() async {
     final arguments = Get.arguments;
 
-    if (arguments != null && arguments[selectedTaskKey] != null) {
-      rxCurrentTokenDetail.value =
-          TaskResponse.fromJson(arguments[selectedTaskKey]);
+    if (arguments != null && arguments[currentStoryKey] != null) {
+      rxCurrentStoryDetail.value =
+          TaskResponse.fromJson(arguments[currentStoryKey]);
     }
-    setDefaultFilters();
   }
 
   ////////////////////////////////////////////////////////////////////////////// pages
@@ -112,13 +109,60 @@ class CreateStoryController extends AppBaseController
 ////////////////////////////////////////////////////////////////////////////// filter
 
   void setDefaultFilters() {
-    hoursController.text = "00";
-    minutesController.text = "00";
+    setEstimateTime(rxCurrentStoryDetail.value?.estimateTime ?? "00.00");
+    descriptionController.text = rxCurrentStoryDetail.value?.description ?? "";
+    setDropdownSelectedById(
+      selectedRx: rxSelectedAsignee,
+      source: rxAssigneeList,
+      matchId: rxCurrentStoryDetail.value?.assigneeId?.toString(),
+    );
+    setDropdownSelectedById(
+      selectedRx: rxSelectedStoryType,
+      source: rxStoryTypeList,
+      matchId: rxCurrentStoryDetail.value?.storyType?.toString(),
+    );
   }
 
-  //////////////////////////////// CREATE STORY /////////////////////////////////
+  void setDropdownSelectedById<T>({
+    required Rxn<T> selectedRx,
+    required List<T> source,
+    required String? matchId,
+  }) {
+    if (source.isEmpty) {
+      selectedRx.value = null;
+      return;
+    }
 
-  Future<bool> callGenerateStory() async {
+    selectedRx.value = source.firstWhereOrNull((item) {
+          final dynamic d = item;
+
+          String? id;
+
+          // ✅ SAFE property access
+          if (d is DropDownResponse) {
+            id = d.id;
+          } else if (d is FiltersResponse) {
+            id = d.mccId;
+          }
+
+          return id?.toString() == matchId;
+        }) ??
+        source.first;
+  }
+
+  void setEstimateTime(String estimate) {
+    final parts = estimate.split('.');
+
+    final hours = parts.isNotEmpty ? parts[0] : "0";
+    final minutes = parts.length > 1 ? parts[1] : "0";
+
+    hoursController.text = hours.padLeft(2, '0');
+    minutesController.text = minutes.padLeft(2, '0');
+  }
+
+  //////////////////////////////// EDIT STORY /////////////////////////////////
+
+  Future<bool> callEditStory() async {
     try {
       showLoader();
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
@@ -132,7 +176,7 @@ class CreateStoryController extends AppBaseController
           CommonRequest(
               attribute: "EstimateTime",
               value:
-                  "${hoursController.text.trim()}.${minutesController.text.trim()}"),
+                  "${hoursController.text.trim()}:${minutesController.text.trim()}"),
           CommonRequest(
               attribute: "RequestDate",
               value: DateHelper().formatForApi(rxRequestDate)),
@@ -157,7 +201,7 @@ class CreateStoryController extends AppBaseController
               value: (rxSelectedStoryStatus.value?.mccId ?? "").toString()),
           CommonRequest(
               attribute: "ParentRequestID",
-              value: rxCurrentTokenDetail.value?.requestId ?? ""),
+              value: rxCurrentStoryDetail.value?.requestId ?? ""),
           CommonRequest(
               attribute: "AssigneeID",
               value: (rxSelectedAsignee.value?.id ?? "").toString()),
@@ -167,7 +211,7 @@ class CreateStoryController extends AppBaseController
             await _taskServices.createStory(generateStoryRequestList);
         if (response != null) {
           rxGenerateStoryResponse.value = response;
-          clearFieldsAfterStoryCreation();
+          clearFieldsAfterStoryEdit();
           return true;
         }
       }
@@ -180,8 +224,7 @@ class CreateStoryController extends AppBaseController
   }
 
   bool requiredDataSelected() {
-    if (isNullOrEmpty(storyTiteController.text) ||
-        isNullOrEmpty(descriptionController.text) ||
+    if (isNullOrEmpty(descriptionController.text) ||
         isNullOrEmpty(hoursController.text) ||
         isNullOrEmpty(minutesController.text)) {
       showErrorSnackbar(message: "Missing Fields");
@@ -195,13 +238,10 @@ class CreateStoryController extends AppBaseController
     return value == null || value.trim().isEmpty;
   }
 
-  void clearFieldsAfterStoryCreation() {
-    storyTiteController.clear();
+  void clearFieldsAfterStoryEdit() {
     descriptionController.clear();
     hoursController.clear();
     minutesController.clear();
-    rxDueDate = DateTime.now();
-    rxRequestedOn = DateTime.now();
     rxCurrentPageIndex.value = 0;
   }
 

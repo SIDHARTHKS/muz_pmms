@@ -84,7 +84,7 @@ AppBar appBar({
         Icon(
           Icons.arrow_back_ios_new,
           size: 28,
-          color: AppColorHelper().textColor,
+          color: AppColorHelper().primaryTextColor,
         ),
   );
 
@@ -136,7 +136,7 @@ AppBar appBar({
           ),
     title: appText(titleText ?? '',
         fontSize: 22,
-        color: AppColorHelper().textColor,
+        color: AppColorHelper().primaryTextColor,
         fontWeight: FontWeight.w700),
     leadingWidth: 45,
     automaticallyImplyLeading: false,
@@ -149,25 +149,28 @@ AppBar customAppBar(
   String title, {
   VoidCallback? onTap,
   List<Widget>? actions,
+  bool showBackArrow = true,
 }) {
   return AppBar(
     backgroundColor: AppColorHelper().backgroundColor,
     automaticallyImplyLeading: false,
     surfaceTintColor: Colors.transparent,
     centerTitle: false,
-    leadingWidth: 45,
+    leadingWidth: showBackArrow ? 45 : 15,
     toolbarHeight: 45,
-    leading: GestureDetector(
-      onTap: onTap ?? goBack,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 12, top: 15),
-        child: Icon(
-          Icons.arrow_back_ios_new,
-          size: 20,
-          color: AppColorHelper().primaryTextColor,
-        ),
-      ),
-    ),
+    leading: showBackArrow
+        ? GestureDetector(
+            onTap: onTap ?? goBack,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12, top: 15),
+              child: Icon(
+                Icons.arrow_back_ios_new,
+                size: 20,
+                color: AppColorHelper().primaryTextColor,
+              ),
+            ),
+          )
+        : const SizedBox.shrink(),
     title: Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: appText(
@@ -177,7 +180,7 @@ AppBar customAppBar(
         fontWeight: FontWeight.w600,
       ),
     ),
-    actions: actions, // 👈 optional, can be null
+    actions: actions,
   );
 }
 
@@ -544,7 +547,8 @@ FutureBuilder appFutureBuilder<T>(
       successWidget, {
   Widget? loaderWidget,
 }) {
-  loaderWidget ??= fullScreenloader();
+  // loaderWidget ??= fullScreenloader();
+  loaderWidget ??= const SizedBox();
   return FutureBuilder<T>(
     future: futureFunction(),
     builder: (BuildContext context, AsyncSnapshot<T> snapshot) {

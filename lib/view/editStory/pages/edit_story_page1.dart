@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/create_story_controller.dart';
+import 'package:pmms/controller/edit_story_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -13,7 +13,7 @@ import 'package:pmms/view/widget/textfield/timefield.dart';
 
 import '../../widget/datepicker/custom_datepicker.dart';
 
-class EditStoryPage1 extends AppBaseView<CreateStoryController> {
+class EditStoryPage1 extends AppBaseView<EditStoryController> {
   const EditStoryPage1({super.key});
 
   @override
@@ -39,7 +39,7 @@ class EditStoryPage1 extends AppBaseView<CreateStoryController> {
                   label: storyType.tr,
                   widgetHeight: 52,
                   isRequired: true,
-                  items: controller.storyTypeList,
+                  items: controller.rxStoryTypeList,
                   selectedValue: controller.rxSelectedStoryType.value,
                   onChanged: (value) {
                     controller.rxSelectedStoryType.value = value;
@@ -47,16 +47,16 @@ class EditStoryPage1 extends AppBaseView<CreateStoryController> {
                   itemLabelBuilder: (item) => item.mccName ?? '',
                 ),
                 height(12),
-                CustomDropdown<FiltersResponse>(
+                CustomDropdown<DropDownResponse>(
                   label: assignee.tr,
                   widgetHeight: 52,
                   isRequired: true,
-                  items: controller.assigneeList,
+                  items: controller.rxAssigneeList,
                   selectedValue: controller.rxSelectedAsignee.value,
                   onChanged: (value) {
                     controller.rxSelectedAsignee.value = value;
                   },
-                  itemLabelBuilder: (item) => item.mccName ?? '',
+                  itemLabelBuilder: (item) => item.name ?? '',
                 ),
                 height(12),
                 _timeSelector(),

@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:pmms/binding/change_password_binding.dart';
 import 'package:pmms/binding/create_story_binding.dart';
 import 'package:pmms/binding/create_token_binding.dart';
+import 'package:pmms/binding/edit_story_binding.dart';
+import 'package:pmms/binding/edit_token_binding.dart';
 import 'package:pmms/binding/notification_binding.dart';
 import 'package:pmms/binding/settings_binding.dart';
 import 'package:pmms/binding/tasks_binding.dart';
@@ -86,7 +88,7 @@ final routes = [
   GetPage(
       name: plTaskDetailsPageRoute,
       page: () => const PlTaskDetailsScreen(),
-      // binding: const TasksBinding(),
+      binding: const EditTokenBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
   GetPage(
@@ -116,7 +118,7 @@ final routes = [
   GetPage(
       name: editStoryPageRoute,
       page: () => const EditStoryScreen(),
-      binding: const CreateStoryBinding(),
+      binding: const EditStoryBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 350)),
   GetPage(

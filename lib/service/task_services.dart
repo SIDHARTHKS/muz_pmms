@@ -99,4 +99,22 @@ class TaskServices extends AppBaseService {
       return false;
     }
   }
+
+  Future<CreateStoryResponse?> createStory(List<CommonRequest> request) async {
+    var response = await httpService.postService<CreateStoryResponse>(
+        endpoint: getCreateStoryApiEndpoint(),
+        headers: await getHeaders(
+          authorization: true,
+          xCorrelationId: false,
+          sid: false,
+        ),
+        data: request,
+        fromJsonT: (json) => CreateStoryResponse.fromJson(json),
+        ignoreError: false);
+    if (response != null && response.data != null) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
 }

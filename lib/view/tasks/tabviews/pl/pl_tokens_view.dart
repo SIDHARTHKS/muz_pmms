@@ -311,8 +311,10 @@ class PlTokensView extends AppBaseView<TasksController> {
                               .borderColor
                               .withValues(alpha: 0.30),
                           onPressed: () {
-                            controller.setTask(task);
-                            navigateTo(plTaskDetailsPageRoute);
+                            Map<String, dynamic> arg = {
+                              selectedEditTokenKey: task.toJson(),
+                            };
+                            navigateTo(plTaskDetailsPageRoute, arguments: arg);
                           },
                           controller.rxIsLoading.value
                               ? buttonLoader(

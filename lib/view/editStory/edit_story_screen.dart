@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/create_story_controller.dart';
+
+import 'package:pmms/controller/edit_story_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -12,7 +13,7 @@ import 'package:pmms/view/createStory/bottomsheet/generate_story_bottomsheet.dar
 import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 
-class EditStoryScreen extends AppBaseView<CreateStoryController> {
+class EditStoryScreen extends AppBaseView<EditStoryController> {
   const EditStoryScreen({super.key});
 
   @override
@@ -33,7 +34,7 @@ class EditStoryScreen extends AppBaseView<CreateStoryController> {
       child: appScaffold(
         resizeToAvoidBottomInset: true,
         appBar: customAppBar(
-            "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}"),
+            "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}"),
         body: appContainer(
           enableSafeArea: true,
           child: Padding(
@@ -123,8 +124,7 @@ class EditStoryScreen extends AppBaseView<CreateStoryController> {
                                 context: Get.context!,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) =>
-                                    const GenerateStoryBottomsheet(
+                                builder: (context) => GenerateStoryBottomsheet(
                                       isCreate: false,
                                     ));
                           }),

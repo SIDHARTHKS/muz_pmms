@@ -237,7 +237,7 @@ class TlTokenView extends AppBaseView<TasksController> {
                                       .withValues(alpha: 0.8),
                                   width: 0.1,
                                   onPressed: () {
-                                    controller.setTask(task);
+                                    controller.rxSelectedToken.value = task;
                                     navigateTo(tlTaskDetailsPageRoute);
                                   },
                                   appText(viewToken.tr,

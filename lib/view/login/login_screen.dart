@@ -132,12 +132,14 @@ class LoginScreen extends AppBaseView<LoginController> {
 
                       await controller.signIn().then((success) {
                         if (success) {
-                          Map<String, dynamic> arguments = {
-                            tasksDataKey: controller.rxTasksResponse
-                          };
+                          // Map<String, dynamic> arguments = {
+                          //   tasksDataKey: controller.rxTasksResponse
+                          // };
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            navigateToAndRemoveAll(homePageRoute,
-                                arguments: arguments);
+                            navigateToAndRemoveAll(
+                              homePageRoute,
+                              // arguments: arguments
+                            );
                           });
                         }
 

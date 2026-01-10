@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/create_story_controller.dart';
+import 'package:pmms/controller/edit_story_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -10,7 +10,7 @@ import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/datepicker/custom_datepicker.dart';
 import 'package:pmms/view/widget/dropdown/custom_dropdown.dart';
 
-class EditStoryPage2 extends AppBaseView<CreateStoryController> {
+class EditStoryPage2 extends AppBaseView<EditStoryController> {
   const EditStoryPage2({super.key});
 
   @override
@@ -28,28 +28,28 @@ class EditStoryPage2 extends AppBaseView<CreateStoryController> {
               child: divider(
                   color: AppColorHelper().dividerColor.withValues(alpha: 0.2)),
             ),
-            CustomDropdown<FiltersResponse>(
+            CustomDropdown<DropDownResponse>(
               label: module.tr,
               widgetHeight: 55,
               isRequired: false,
-              items: controller.moduleTypeList,
+              items: controller.rxModuleList,
               selectedValue: controller.rxSelectedModule.value,
               onChanged: (value) {
                 controller.rxSelectedModule.value = value;
               },
-              itemLabelBuilder: (item) => item.mccName ?? '',
+              itemLabelBuilder: (item) => item.name ?? '',
             ),
             height(15),
-            CustomDropdown<FiltersResponse>(
+            CustomDropdown<DropDownResponse>(
               label: option.tr,
               widgetHeight: 55,
               isRequired: false,
-              items: controller.optionTypeList,
+              items: controller.rxOptionsList,
               selectedValue: controller.rxSelectedOption.value,
               onChanged: (value) {
                 controller.rxSelectedOption.value = value;
               },
-              itemLabelBuilder: (item) => item.mccName ?? '',
+              itemLabelBuilder: (item) => item.name ?? '',
             ),
             height(18),
             CustomDatePicker(
@@ -135,10 +135,10 @@ class EditStoryPage2 extends AppBaseView<CreateStoryController> {
           _horizontalContainer(storyTitle.tr, "Sample"),
           width(10),
           _horizontalContainer(
-              type.tr, controller.rxSelectedStoryType.value!.mccName ?? ""),
+              type.tr, controller.rxSelectedStoryType.value!.mccId ?? ""),
           width(10),
           _horizontalContainer(
-              assignee.tr, controller.rxSelectedAsignee.value!.mccName ?? ""),
+              assignee.tr, controller.rxSelectedAsignee.value!.id ?? ""),
         ],
       ),
     );

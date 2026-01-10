@@ -5,7 +5,6 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
-import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/createToken/bottomsheet/generate_token_bottomsheet.dart';
 import 'package:pmms/view/dialogues/token_generate_dialogue.dart';

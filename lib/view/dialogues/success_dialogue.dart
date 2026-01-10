@@ -31,7 +31,7 @@ class _SuccessDialogueState extends State<SuccessDialogue> {
     super.initState();
 
     // Auto-dismiss after 300ms (safe and non-layout-mutating)
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) Navigator.pop(context);
     });
   }
