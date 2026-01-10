@@ -21,10 +21,14 @@ class StoryDetailsView extends AppBaseView<TasksController> {
   @override
   Widget buildView() => _widgetView();
 
-  Scaffold _widgetView() => appScaffold(canpop: true, body: _body());
+  Widget _widgetView() {
+    return appFutureBuilder<void>(() => controller.fetchStoryDetailsInitData(),
+        (context, snapshot) => _body(),
+        loaderWidget: fullScreenloader());
+  }
 
   GestureDetector _body() {
-    var task = controller.rxStoryDetail.value!;
+    var task = controller.rxFetchedStory.value!;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -196,7 +200,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                       _dropItem("Edit Story", () {
                         Map<String, dynamic> arg = {
                           currentStoryKey:
-                              controller.rxStoryDetail.value?.toJson(),
+                              controller.rxSelectedStory.value?.toJson(),
                         };
                         navigateTo(editStoryPageRoute, arguments: arg);
                       }),
@@ -269,7 +273,9 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Container _loggedDetails(TaskResponse task) {
+  Container _loggedDetails(StoryList task) {
+    var loggedTime = task.loggedTime ?? "0.0";
+    var estimateTime = task.estimateTime ?? "0.0";
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -279,9 +285,9 @@ class StoryDetailsView extends AppBaseView<TasksController> {
               color: AppColorHelper().borderColor.withValues(alpha: 0.4))),
       child: Column(
         children: [
-          _logDetails(),
+          _logDetails(loggedTime, estimateTime),
           height(15),
-          _progressBar(),
+          _progressBar(loggedTime, estimateTime),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: divider(
@@ -295,7 +301,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Column _logContainer(TaskResponse task) {
+  Column _logContainer(StoryList task) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -386,7 +392,9 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Row _progressBar() {
+  Row _progressBar(String loggedTime, String estimateTime) {
+    double logged = double.parse(loggedTime);
+    double estimated = double.parse(estimateTime);
     return Row(
       children: [
         Expanded(
@@ -395,9 +403,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: Obx(() {
-                const loggedTime = 9.5;
-                const estimatedTime = 12;
-                final ratio = (loggedTime / estimatedTime).clamp(0.0, 1.0);
+                final ratio = (logged / estimated).clamp(0.0, 1.0);
                 return LinearProgressIndicator(
                     borderRadius: BorderRadius.circular(2),
                     value: ratio,
@@ -411,7 +417,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           ),
         ),
         width(12),
-        appText("${90} %",
+        appText("${((logged / estimated) * 100)} %",
             fontSize: 13,
             fontWeight: FontWeight.w500,
             color: AppColorHelper().primaryTextColor)
@@ -419,14 +425,16 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Row _logDetails() {
+  Row _logDetails(String loggedTm, String estimateTm) {
+    var loggedTim = DateHelper().formatTimeForUi(loggedTm);
+    var estimateTim = DateHelper().formatTimeForUi(estimateTm);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            appText("9:30",
+            appText(loggedTim,
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
                 color: AppColorHelper().primaryTextColor),
@@ -444,7 +452,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            appText("12:00",
+            appText(estimateTim,
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
                 color: AppColorHelper().primaryTextColor),
@@ -459,7 +467,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Padding _datesSection(TaskResponse task) {
+  Padding _datesSection(StoryList task) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Row(
@@ -468,7 +476,8 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           _infoColums(
               requestDate.tr,
               (DateHelper.formatToShortMonthDateYear(
-                  task.requestDateTime ?? DateTime(0000)))),
+                  DateHelper().formatApiToDateTime(task.requestDateTime) ??
+                      DateTime(0000)))),
           verticalDivider(),
           _infoColums(startaDate.tr,
               (DateHelper.formatToShortMonthDateYear(DateTime(0000)))),
@@ -524,7 +533,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Container _assigneeBox(TaskResponse task) {
+  Container _assigneeBox(StoryList task) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       height: 50,
@@ -560,7 +569,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Column _descriptionBox(TaskResponse task) {
+  Column _descriptionBox(StoryList task) {
     return Column(
       children: [
         SizedBox(
@@ -577,7 +586,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  SingleChildScrollView _horizontalDetailBox(TaskResponse task) {
+  SingleChildScrollView _horizontalDetailBox(StoryList task) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -589,9 +598,11 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           width(40),
           _infoColums(option.tr, capitalizeFirstOnly(task.optionName ?? "--")),
           width(40),
-          _infoColums(plannedStartDate.tr, capitalizeFirstOnly("00/00/0000")),
+          _infoColums(plannedStartDate.tr,
+              DateHelper().formatForUi(task.plannedStartDate ?? "0000-00-00")),
           width(40),
-          _infoColums(plannedEndDate.tr, capitalizeFirstOnly("00/00/0000")),
+          _infoColums(plannedEndDate.tr,
+              DateHelper().formatForUi(task.plannedEndDate ?? "0000-00-00")),
           width(40),
         ],
       ),
@@ -614,7 +625,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Container _statusContainer(TaskResponse task) {
+  Container _statusContainer(StoryList task) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
@@ -632,7 +643,9 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Container _typeContainer(TaskResponse task) {
+  Container _typeContainer(StoryList task) {
+    final type = task.storyType?.trim();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -640,7 +653,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         borderRadius: BorderRadius.circular(3),
       ),
       child: appText(
-        "UIUX",
+        (type?.isNotEmpty == true ? type! : "--").toUpperCase(),
         color: AppColorHelper().primaryColor,
         fontWeight: FontWeight.w500,
         fontSize: 12,

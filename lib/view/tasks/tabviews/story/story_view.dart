@@ -207,8 +207,8 @@ class StoryView extends AppBaseView<TasksController> {
                                       .primaryColor
                                       .withValues(alpha: 0.8),
                                   width: 0.1,
-                                  onPressed: () {
-                                    controller.setStory(task);
+                                  onPressed: () async {
+                                    await controller.setStory(task);
                                     navigateTo(storyDetailsPageRoute);
                                   },
                                   appText(

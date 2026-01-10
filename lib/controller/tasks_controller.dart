@@ -40,9 +40,6 @@ class TasksController extends AppBaseController
   RxList<TaskResponse> rxTokens = <TaskResponse>[].obs;
   RxList<TaskResponse> rxStory = <TaskResponse>[].obs;
 
-  // detail
-  Rxn<TaskResponse> rxStoryDetail = Rxn<TaskResponse>();
-
   // filter
 
   RxList<FiltersResponse> rxTaskFilterTypeList = <FiltersResponse>[].obs;
@@ -64,6 +61,9 @@ class TasksController extends AppBaseController
 
   // selected task/story details
   Rxn<TaskResponse> rxSelectedToken = Rxn<TaskResponse>();
+  Rxn<TaskResponse> rxSelectedStory = Rxn<TaskResponse>();
+  Rxn<StoryList> rxFetchedStory = Rxn<StoryList>();
+  RxList<StoryList> rxFetchedStories = <StoryList>[].obs;
 
   // scroll controller
   final Map<int, ScrollController> horizontalScrollControllers = {};
@@ -138,8 +138,8 @@ class TasksController extends AppBaseController
 
   //////////////////////////////// TASK/STORY ////////////////////////////////
 
-  void setStory(TaskResponse task) {
-    rxStoryDetail(task);
+  Future<void> setStory(TaskResponse task) async {
+    rxSelectedStory(task);
   }
 
   //////////////////////////////// FETCHING/SETTING TASK ////////////////////////////////
@@ -317,6 +317,83 @@ class TasksController extends AppBaseController
       if (response != null && response) {
         await refreshTasks(true);
         return response;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  //////////////////////////////// STORY FETCH  ////////////////////////////////
+
+  Future<bool> fetchStory(bool loader) async {
+    try {
+      if (loader) {
+        showLoader();
+      }
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tkn = rxSelectedStory.value;
+      var approveList = [
+        CommonRequest(attribute: "Description", value: ""),
+        CommonRequest(attribute: "EstimateTime", value: ""),
+        CommonRequest(attribute: "RequestDate", value: ""),
+        CommonRequest(attribute: "PlannedStartDate", value: ""),
+        CommonRequest(attribute: "PlannedEndDate", value: ""),
+        CommonRequest(
+            attribute: "RequestID", value: tkn?.requestId.toString() ?? "0"),
+        CommonRequest(attribute: "StoryTypeMccID", value: ""),
+        CommonRequest(attribute: "ModuleID", value: ""),
+        CommonRequest(attribute: "OptionID", value: ""),
+        CommonRequest(attribute: "CurrentStatusMccID", value: ""),
+        CommonRequest(attribute: "ParentRequestID", value: "0"),
+        CommonRequest(attribute: "AssigneeID", value: ""),
+        CommonRequest(attribute: "LoginEmpID", value: id),
+      ];
+      List<StoryResponse>? response = await _taskServices.getStory(approveList);
+      if (response != null &&
+          response.isNotEmpty &&
+          response.first.storyList != null &&
+          response.first.storyList!.isNotEmpty) {
+        rxFetchedStory.value = response.first.storyList!.first;
+        return true;
+      }
+    } catch (e) {
+      appLog('$exceptionMsg $e', logging: Logging.error);
+    } finally {
+      hideLoader();
+    }
+    return false;
+  }
+
+  Future<bool> fetchStories() async {
+    try {
+      showLoader();
+      String id = myApp.preferenceHelper!.getString(employeeIdKey);
+      var tkn = rxSelectedStory.value;
+      var approveList = [
+        CommonRequest(attribute: "Description", value: ""),
+        CommonRequest(attribute: "EstimateTime", value: ""),
+        CommonRequest(attribute: "RequestDate", value: ""),
+        CommonRequest(attribute: "PlannedStartDate", value: ""),
+        CommonRequest(attribute: "PlannedEndDate", value: ""),
+        CommonRequest(
+            attribute: "RequestID", value: tkn?.requestId.toString() ?? "0"),
+        CommonRequest(attribute: "StoryTypeMccID", value: ""),
+        CommonRequest(attribute: "ModuleID", value: ""),
+        CommonRequest(attribute: "OptionID", value: ""),
+        CommonRequest(attribute: "CurrentStatusMccID", value: ""),
+        CommonRequest(
+            attribute: "ParentRequestID",
+            value: tkn?.parentRequestId.toString() ?? ""),
+        CommonRequest(attribute: "AssigneeID", value: ""),
+        CommonRequest(attribute: "LoginEmpID", value: id),
+      ];
+      List<StoryResponse>? response = await _taskServices.getStory(approveList);
+      if (response != null && response.isNotEmpty) {
+        rxFetchedStories.assignAll(response.first.storyList!);
+        return true;
       }
     } catch (e) {
       appLog('$exceptionMsg $e', logging: Logging.error);
@@ -577,6 +654,11 @@ class TasksController extends AppBaseController
     setDateRange();
     await refreshTasks(true);
     await _fetchFilters();
+    return true;
+  }
+
+  Future<bool> fetchStoryDetailsInitData() async {
+    await fetchStory(false);
     return true;
   }
 }

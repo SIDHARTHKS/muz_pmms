@@ -273,3 +273,230 @@ class CreateStoryResponse {
         "message": message,
       };
 }
+
+//
+
+List<StoryResponse> storyResponseFromJson(String str) =>
+    List<StoryResponse>.from(
+        json.decode(str).map((x) => StoryResponse.fromJson(x)));
+
+String storyResponseToJson(List<StoryResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class StoryResponse {
+  List<StoryList>? storyList;
+
+  StoryResponse({
+    this.storyList,
+  });
+
+  factory StoryResponse.fromJson(Map<String, dynamic> json) => StoryResponse(
+        storyList: json["storyList"] == null
+            ? []
+            : List<StoryList>.from(
+                json["storyList"]!.map((x) => StoryList.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "storyList": storyList == null
+            ? []
+            : List<dynamic>.from(storyList!.map((x) => x.toJson())),
+      };
+}
+
+class StoryList {
+  String? role;
+  String? tokenId;
+  String? endDate;
+  String? projectImage;
+  String? description;
+  String? loggedTime;
+  int? assigneeId;
+  int? currentStatusId;
+  String? plannedEndDate;
+  String? attachment;
+  List<WorkLog>? workLog;
+  int? teamId;
+  int? optionId;
+  String? iadStatus;
+  int? projectId;
+  String? requestType;
+  String? estimateTime;
+  String? currentStatus;
+  int? requestTypeId;
+  String? requestDateTime;
+  String? module;
+  String? iadAssigneeEmpId;
+  String? team;
+  String? priority;
+  int? priorityId;
+  String? issueType;
+  String? countOfStory;
+  String? parentRequestId;
+  String? plannedStartDate;
+  String? createdBy;
+  String? requestId;
+  String? assignee;
+  String? projectName;
+  String? optionName;
+  String? storyType;
+  int? moduleId;
+  String? startDate;
+
+  StoryList({
+    this.role,
+    this.tokenId,
+    this.endDate,
+    this.projectImage,
+    this.description,
+    this.loggedTime,
+    this.assigneeId,
+    this.currentStatusId,
+    this.plannedEndDate,
+    this.attachment,
+    this.workLog,
+    this.teamId,
+    this.optionId,
+    this.iadStatus,
+    this.projectId,
+    this.requestType,
+    this.estimateTime,
+    this.currentStatus,
+    this.requestTypeId,
+    this.requestDateTime,
+    this.module,
+    this.iadAssigneeEmpId,
+    this.team,
+    this.priority,
+    this.priorityId,
+    this.issueType,
+    this.countOfStory,
+    this.parentRequestId,
+    this.plannedStartDate,
+    this.createdBy,
+    this.requestId,
+    this.assignee,
+    this.projectName,
+    this.optionName,
+    this.storyType,
+    this.moduleId,
+    this.startDate,
+  });
+
+  factory StoryList.fromJson(Map<String, dynamic> json) => StoryList(
+        role: json["role"],
+        tokenId: json["tokenID"],
+        endDate: json["endDate"],
+        projectImage: json["projectImage"],
+        description: json["description"],
+        loggedTime: json["loggedTime"],
+        assigneeId: json["assigneeID"],
+        currentStatusId: json["currentStatusID"],
+        plannedEndDate: json["plannedEndDate"],
+        attachment: json["attachment"],
+        workLog: json["workLog"] == null
+            ? []
+            : List<WorkLog>.from(
+                json["workLog"]!.map((x) => WorkLog.fromJson(x))),
+        teamId: json["teamID"],
+        optionId: json["optionID"],
+        iadStatus: json["iadStatus"],
+        projectId: json["projectID"],
+        requestType: json["requestType"],
+        estimateTime: json["estimateTime"],
+        currentStatus: json["currentStatus"],
+        requestTypeId: json["requestTypeID"],
+        requestDateTime: json["requestDateTime"],
+        module: json["module"],
+        iadAssigneeEmpId: json["iadAssigneeEmpID"],
+        team: json["team"],
+        priority: json["priority"],
+        priorityId: json["priorityID"],
+        issueType: json["issueType"],
+        countOfStory: json["countOfStory"],
+        parentRequestId: json["parentRequestID"],
+        plannedStartDate: json["plannedStartDate"],
+        createdBy: json["createdBy"],
+        requestId: json["requestID"],
+        assignee: json["assignee"],
+        projectName: json["projectName"],
+        optionName: json["optionName"],
+        storyType: json["storyType"],
+        moduleId: json["moduleID"],
+        startDate: json["startDate"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "role": role,
+        "tokenID": tokenId,
+        "endDate": endDate,
+        "projectImage": projectImage,
+        "description": description,
+        "loggedTime": loggedTime,
+        "assigneeID": assigneeId,
+        "currentStatusID": currentStatusId,
+        "plannedEndDate": plannedEndDate,
+        "attachment": attachment,
+        "workLog": workLog == null
+            ? []
+            : List<dynamic>.from(workLog!.map((x) => x.toJson())),
+        "teamID": teamId,
+        "optionID": optionId,
+        "iadStatus": iadStatus,
+        "projectID": projectId,
+        "requestType": requestType,
+        "estimateTime": estimateTime,
+        "currentStatus": currentStatus,
+        "requestTypeID": requestTypeId,
+        "requestDateTime": requestDateTime,
+        "module": module,
+        "iadAssigneeEmpID": iadAssigneeEmpId,
+        "team": team,
+        "priority": priority,
+        "priorityID": priorityId,
+        "issueType": issueType,
+        "countOfStory": countOfStory,
+        "parentRequestID": parentRequestId,
+        "plannedStartDate": plannedStartDate,
+        "createdBy": createdBy,
+        "requestID": requestId,
+        "assignee": assignee,
+        "projectName": projectName,
+        "optionName": optionName,
+        "storyType": storyType,
+        "moduleID": moduleId,
+        "startDate": startDate,
+      };
+}
+
+class WorkLog {
+  String? requestId;
+  String? loggedDescription;
+  String? loggedEmpName;
+  String? loggedDate;
+  String? loggedTime;
+
+  WorkLog({
+    this.requestId,
+    this.loggedDescription,
+    this.loggedEmpName,
+    this.loggedDate,
+    this.loggedTime,
+  });
+
+  factory WorkLog.fromJson(Map<String, dynamic> json) => WorkLog(
+        requestId: json["requestID"],
+        loggedDescription: json["loggedDescription"],
+        loggedEmpName: json["loggedEmpName"],
+        loggedDate: json["loggedDate"],
+        loggedTime: json["loggedTime"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "requestID": requestId,
+        "loggedDescription": loggedDescription,
+        "loggedEmpName": loggedEmpName,
+        "loggedDate": loggedDate,
+        "loggedTime": loggedTime,
+      };
+}

@@ -29,7 +29,8 @@ class AppBaseService {
   // token
   getCreateTokenApiEndpoint() => '/generatetoken'; //
 
-  // token
+  // story
+  getStoryDetailsApiEndpoint() => '/storyinToken'; //
   getCreateStoryApiEndpoint() => '/generatestory'; //
 
   // filter

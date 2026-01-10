@@ -135,4 +135,37 @@ class DateHelper {
     String d = date.day.toString().padLeft(2, '0');
     return "$y-$m-$d";
   }
+
+  String formatForUi(String date) {
+    try {
+      final parsedDate = DateTime.parse(date); // expects yyyy-MM-dd
+      return "${parsedDate.day.toString().padLeft(2, '0')}/"
+          "${parsedDate.month.toString().padLeft(2, '0')}/"
+          "${parsedDate.year}";
+    } catch (_) {
+      return "--/--/----"; // fallback for invalid input
+    }
+  }
+
+  DateTime? formatApiToDateTime(String? date) {
+    if (date == null || date.trim().isEmpty) return null;
+
+    try {
+      return DateTime.parse(date); // expects yyyy-MM-dd
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String formatTimeForUi(String value) {
+    if (value.isEmpty) return "00:00";
+
+    final parts = value.split('.');
+
+    final hours = parts.isNotEmpty ? parts[0].padLeft(2, '0') : "00";
+    final minutes =
+        parts.length > 1 ? parts[1].padRight(2, '0').substring(0, 2) : "00";
+
+    return "$hours:$minutes";
+  }
 }

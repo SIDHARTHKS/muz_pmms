@@ -117,4 +117,24 @@ class TaskServices extends AppBaseService {
       return null;
     }
   }
+
+  Future<List<StoryResponse>?> getStory(List<CommonRequest> request) async {
+    var response = await httpService.postService<List<StoryResponse>>(
+        endpoint: getStoryDetailsApiEndpoint(),
+        headers: await getHeaders(
+          authorization: true,
+          xCorrelationId: false,
+          sid: false,
+        ),
+        data: request,
+        fromJsonT: (json) => List<StoryResponse>.from(
+              json.map((x) => StoryResponse.fromJson(x)),
+            ),
+        ignoreError: false);
+    if (response != null && response.data != null) {
+      return response.data;
+    } else {
+      return null;
+    }
+  }
 }

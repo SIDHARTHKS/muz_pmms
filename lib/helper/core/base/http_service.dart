@@ -248,6 +248,11 @@ class HttpService extends GetxService {
           logging: Logging.error);
       showErrorSnackbar(
           message: 'Unable to refresh token. Please log in again.');
+      myApplication.preferenceHelper!.remove(loginNameKey);
+      myApplication.preferenceHelper!.remove(loginPasswordKey);
+      if (myApplication.preferenceHelper!.getBool(rememberMeKey)) {
+        myApplication.preferenceHelper!.setBool(rememberMeKey, false);
+      }
       navigateToAndRemoveAll(loginPageRoute);
     }
     return null;
@@ -311,6 +316,11 @@ class HttpService extends GetxService {
       case 401:
         toastMessage(failedAuthenticationMsg.tr);
         Future.delayed(const Duration(milliseconds: 500), () {
+          myApplication.preferenceHelper!.remove(loginNameKey);
+          myApplication.preferenceHelper!.remove(loginPasswordKey);
+          if (myApplication.preferenceHelper!.getBool(rememberMeKey)) {
+            myApplication.preferenceHelper!.setBool(rememberMeKey, false);
+          }
           navigateToAndRemoveAll(loginPageRoute);
         });
         throw Exception("$unauthorized: ${response.body}");
