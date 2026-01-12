@@ -387,6 +387,7 @@ class TasksController extends AppBaseController
       if (loader) {
         showLoader();
       }
+      await Future.delayed(const Duration(seconds: 2));
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
       var tkn = rxSelectedToken.value;
       var approveList = [

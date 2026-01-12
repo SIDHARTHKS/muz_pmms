@@ -11,6 +11,7 @@ import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
+import '../../../loaders/tl_token_detail_loader.dart';
 import '../../../widget/common_widget.dart';
 
 class TlTaskDetailScreen extends AppBaseView<TasksController> {
@@ -22,11 +23,11 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
   Scaffold _widgetView() => appScaffold(
         canpop: true,
         body: appFutureBuilder<void>(
-          () => controller.fetchTokenDetailsInitData(),
-          (context, snapshot) => Obx(() {
-            return _body();
-          }),
-        ),
+            () => controller.fetchTokenDetailsInitData(),
+            (context, snapshot) => Obx(() {
+                  return _body();
+                }),
+            loaderWidget: const TlTokenDetailLoader()),
       );
   GestureDetector _body() {
     var task = controller.rxSelectedToken.value!;
@@ -537,7 +538,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                   ),
                   children: [
                     TextSpan(
-                      text: "Client Ref ID : ",
+                      text: clientRefID.tr,
                       style: textStyle(
                         12,
                         AppColorHelper()

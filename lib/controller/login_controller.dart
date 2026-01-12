@@ -54,7 +54,8 @@ class LoginController extends AppBaseController {
   RxString enteredOtp = ''.obs;
   //
 
-  RxBool rxRememberMe = true.obs;
+  RxBool rxRememberMe = false
+      .obs; //////////////////////////////////////////////////////////////////////////////edit
   RxBool rxhidePassword = true.obs;
 
   //response
