@@ -91,6 +91,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/success.png
   AssetGenImage get success => const AssetGenImage('assets/icons/success.png');
 
+  /// File path: assets/icons/typeIcon.png
+  AssetGenImage get typeIcon =>
+      const AssetGenImage('assets/icons/typeIcon.png');
+
+  /// File path: assets/icons/userIcon.png
+  AssetGenImage get userIcon =>
+      const AssetGenImage('assets/icons/userIcon.png');
+
   /// File path: assets/icons/warning.png
   AssetGenImage get warning => const AssetGenImage('assets/icons/warning.png');
 
@@ -112,6 +120,8 @@ class $AssetsIconsGen {
         rejected,
         search,
         success,
+        typeIcon,
+        userIcon,
         warning
       ];
 }

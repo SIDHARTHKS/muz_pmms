@@ -22,12 +22,15 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
   Scaffold _widgetView() => appScaffold(
         canpop: true,
         body: appFutureBuilder<void>(
-          () => controller.fetchInitData(),
-          (context, snapshot) => _body(),
+          () => controller.fetchTokenDetailsInitData(),
+          (context, snapshot) => Obx(() {
+            return _body();
+          }),
         ),
       );
   GestureDetector _body() {
     var task = controller.rxSelectedToken.value!;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -48,8 +51,9 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                   _primaryDetailsBox(task),
                   _tokenBox(task),
                   _storyTab(),
-                  _noStoryBox(),
-                  // _storyBox()
+                  controller.rxFetchedStories.isEmpty
+                      ? _noStoryBox()
+                      : _storyBox(),
                 ],
               ),
             ),
@@ -60,13 +64,16 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
   }
 
   SizedBox _storyBox() {
+    final stories =
+        controller.getStoriesByIndex(controller.rxStoryFilterIndex.value);
     return SizedBox(
       child: Column(
         children: [
+          ///////////////////////// filter part //////////////////////////////
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Container(
-              height: 40,
+              height: 35,
               width: Get.width,
               decoration: BoxDecoration(
                 color: AppColorHelper().cardColor,
@@ -74,68 +81,298 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Row(
-                  children: [
-                    _filterButton("All", "12"),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Container(
-                        height: 20,
-                        width: 1,
-                        color: AppColorHelper()
-                            .primaryTextColor
-                            .withValues(alpha: 0.2),
+                child: SizedBox(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: _allButton(-1, all.tr,
+                            controller.rxFetchedStories.length.toString()),
                       ),
-                    ),
-                    SizedBox(
-                      height: 35,
-                      width: Get.width * 0.65,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: controller.rxTaskFilterTypeList.length -
-                            1, // skip first
-                        itemBuilder: (context, index) {
-                          var item = controller
-                              .rxTaskFilterTypeList[index + 1]; // shift index
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: _filterButton(item.mccName ?? "", "4"),
-                          );
-                        },
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Container(
+                          height: 20,
+                          width: 1,
+                          color: AppColorHelper()
+                              .primaryTextColor
+                              .withValues(alpha: 0.2),
+                        ),
                       ),
-                    ),
-                  ],
+                      Flexible(
+                        flex: 10,
+                        child: SizedBox(
+                          height: 35,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: controller.rxStoryFilterTypeList.length,
+                            itemBuilder: (context, index) {
+                              var item =
+                                  controller.rxStoryFilterTypeList[index];
+                              bool isSelected =
+                                  index == controller.rxStoryFilterIndex.value;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: _filterButton(
+                                    index,
+                                    item.mccName ?? "",
+                                    controller.getStoryCountByIndex(index),
+                                    isSelected),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
+          ///////////////////////// LitView part //////////////////////////////
+
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: stories.length,
+              itemBuilder: (context, index) {
+                var story = stories[index];
+                return _storiesList(story);
+              })
         ],
       ),
     );
   }
 
-  GestureDetector _filterButton(String type, String count) {
+  GestureDetector _storiesList(StoryList story) {
     return GestureDetector(
       onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 15),
+        decoration: BoxDecoration(
+          color: AppColorHelper().cardColor,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: AppColorHelper().borderColor.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Header row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                appText(
+                  "TKN-${story.tokenId ?? "--"}",
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: AppColorHelper().primaryTextColor,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                      decoration: BoxDecoration(
+                          color: getStatusColor(story.currentStatus ?? "--")
+                              .withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(
+                              color: getStatusTextColor(
+                                  story.currentStatus ?? "--"))),
+                      child: appText(
+                        capitalizeFirstOnly(story.currentStatus ?? "--"),
+                        color: getStatusTextColor(story.currentStatus ?? "--"),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    width(10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColorHelper()
+                            .primaryColor
+                            .withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            height(12),
+            Divider(
+              color: AppColorHelper().borderColor.withValues(alpha: 0.2),
+            ),
+            height(12),
+            appText(story.description ?? "--",
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: AppColorHelper().primaryTextColor,
+                overflow: TextOverflow.ellipsis),
+
+            height(8),
+
+            /// Assignee + role
+            Row(
+              children: [
+                Image.asset(
+                  Assets.icons.userIcon.path,
+                  scale: 4,
+                ),
+                width(6),
+                appText(story.assignee ?? "",
+                    fontSize: 13,
+                    color: AppColorHelper().primaryTextColor,
+                    fontWeight: FontWeight.w400),
+                width(16),
+                Image.asset(
+                  Assets.icons.typeIcon.path,
+                  scale: 4,
+                ),
+                width(6),
+                appText(story.storyType ?? "",
+                    fontSize: 13,
+                    color: AppColorHelper().primaryTextColor,
+                    fontWeight: FontWeight.w400),
+              ],
+            ),
+            height(16),
+
+            /// Log box
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 20),
+              decoration: BoxDecoration(
+                color: AppColorHelper().backgroundColor.withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: AppColorHelper()
+                            .primaryTextColor
+                            .withValues(alpha: 0.7),
+                        fontSize: 14,
+                      ),
+                      children: [
+                        TextSpan(text: "${loggedTime.tr} : "),
+                        TextSpan(
+                          text: story.loggedTime,
+                          style: TextStyle(
+                            color: AppColorHelper().primaryTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: AppColorHelper()
+                            .primaryTextColor
+                            .withValues(alpha: 0.7),
+                        fontSize: 14,
+                      ),
+                      children: [
+                        TextSpan(text: "${estimateTime.tr} : "),
+                        TextSpan(
+                          text: story.estimateTime,
+                          style: TextStyle(
+                            color: AppColorHelper().primaryTextColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _allButton(int index, String type, String count) {
+    bool isActive = index == controller.rxStoryFilterIndex.value;
+
+    return GestureDetector(
+      onTap: () => controller.toggleStoryFilter(index),
       child: Row(
         children: [
           appText(type,
               fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               color: AppColorHelper().primaryTextColor),
-          width(6),
+          width(8),
           Container(
-            height: 20,
-            width: 20,
+            height: 18,
+            width: 18,
             decoration: BoxDecoration(
                 color: AppColorHelper().primaryColor.withValues(alpha: 0.1),
+                border: Border.all(color: AppColorHelper().transparentColor),
                 borderRadius: BorderRadius.circular(5)),
             child: Center(
               child: appText(count,
-                  fontSize: 12,
+                  fontSize: 10,
                   fontWeight: FontWeight.w500,
                   color: AppColorHelper().primaryTextColor),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  GestureDetector _filterButton(
+      int index, String type, String count, bool isActive) {
+    Color activeClr = getStatusTextColor(type);
+    return GestureDetector(
+      onTap: () => controller.toggleStoryFilter(index),
+      child: Row(
+        children: [
+          appText(type.capitalizeFirst ?? "",
+              fontSize: 12,
+              fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
+              color: isActive
+                  ? activeClr
+                  : AppColorHelper().primaryTextColor.withValues(alpha: 0.7)),
+          width(6),
+          Container(
+            height: 18,
+            width: 18,
+            decoration: BoxDecoration(
+                color: isActive
+                    ? activeClr.withValues(alpha: 0.2)
+                    : AppColorHelper().primaryColor.withValues(alpha: 0.1),
+                border: Border.all(
+                    color: isActive
+                        ? activeClr
+                        : AppColorHelper().transparentColor),
+                borderRadius: BorderRadius.circular(5)),
+            child: Center(
+              child: appText(count,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: isActive
+                      ? activeClr
+                      : AppColorHelper()
+                          .primaryTextColor
+                          .withValues(alpha: 0.6)),
             ),
           )
         ],
@@ -178,16 +415,21 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
             color: AppColorHelper().primaryTextColor,
             fontWeight: FontWeight.w600,
             fontSize: 14),
-        Row(
-          children: [
-            // _addStoryButton(),
-            width(10),
-            Image.asset(
-              Assets.icons.filter.path,
-              scale: 4,
-            ),
-          ],
-        )
+        controller.rxFetchedStories.isEmpty
+            ? Image.asset(
+                Assets.icons.filter.path,
+                scale: 4,
+              )
+            : Row(
+                children: [
+                  _addStoryButton(),
+                  width(10),
+                  Image.asset(
+                    Assets.icons.filter.path,
+                    scale: 4,
+                  ),
+                ],
+              )
       ],
     );
   }
@@ -295,7 +537,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                   ),
                   children: [
                     TextSpan(
-                      text: "Client Ref ID: ",
+                      text: "Client Ref ID : ",
                       style: textStyle(
                         12,
                         AppColorHelper()
@@ -305,7 +547,7 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                       ),
                     ),
                     TextSpan(
-                      text: task.clientRefId,
+                      text: task.clientRefId ?? "--",
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,

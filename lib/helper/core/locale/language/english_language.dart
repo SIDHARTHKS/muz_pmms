@@ -197,4 +197,5 @@ Map<String, String> enUS = {
   loggedTime: 'Logged Time',
   estimatedTime: 'Estimated Time',
   viewWorkLog: 'View Work Log',
+  all: 'All',
 };

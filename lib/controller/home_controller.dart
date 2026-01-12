@@ -28,16 +28,16 @@ class HomeController extends AppBaseController
   }
 
   Future<void> _setArguments() async {
-    var arguments = Get.arguments;
-    var task = arguments[tasksDataKey];
-    if (arguments != null) {
-      rxTasksResponse(task);
-    } else {
-      showErrorSnackbar(
-          message: "Unable To Fetch Task Details. Please Login Again");
-      navigateToAndRemoveAll(loginPageRoute);
-    }
-    appLog("userid =${rxUserId.value}");
+    // var arguments = Get.arguments;
+    // var task = arguments[tasksDataKey];
+    // if (arguments != null) {
+    //   rxTasksResponse(task);
+    // } else {
+    //   showErrorSnackbar(
+    //       message: "Unable To Fetch Task Details. Please Login Again");
+    //   navigateToAndRemoveAll(loginPageRoute);
+    // }
+    // appLog("userid =${rxUserId.value}");
   }
 
   // Future<bool> fetchNotifications() async {

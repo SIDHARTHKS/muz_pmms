@@ -294,6 +294,8 @@ const String loggedTime = 'LoggedTime';
 const String estimatedTime = 'EstimatedTime';
 const String viewWorkLog = 'viewWorkLog';
 
+const String all = 'All';
+
 // TYPES
 
 const String typeProject = 'PROJECT';

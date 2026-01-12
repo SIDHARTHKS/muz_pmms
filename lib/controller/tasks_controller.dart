@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,7 @@ class TasksController extends AppBaseController
 
   // filter
 
-  RxList<FiltersResponse> rxTaskFilterTypeList = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxStoryFilterTypeList = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxTypeFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxProjectFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxPriorityFilters = <FiltersResponse>[].obs;
@@ -65,10 +66,20 @@ class TasksController extends AppBaseController
   Rxn<TaskResponse> rxSelectedStory = Rxn<TaskResponse>();
   Rxn<StoryList> rxFetchedStory = Rxn<StoryList>();
   RxList<StoryList> rxFetchedStories = <StoryList>[].obs;
+  // filter storytypes
+
+  RxList<StoryList> rxTodoStories = <StoryList>[].obs;
+  RxList<StoryList> rxCompletedStories = <StoryList>[].obs;
+  RxList<StoryList> rxInProgressStories = <StoryList>[].obs;
+  RxList<StoryList> rxRejectedStories = <StoryList>[].obs;
+  RxList<StoryList> rxHoldStories = <StoryList>[].obs;
 
   // scroll controller
   final Map<int, ScrollController> horizontalScrollControllers = {};
   final Map<int, RxBool> hasHorizontalOverflow = {};
+
+  // Filter Index
+  RxInt rxStoryFilterIndex = (-1).obs;
 
   @override
   Future<void> onInit() async {
@@ -334,7 +345,7 @@ class TasksController extends AppBaseController
       if (loader) {
         showLoader();
       }
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 300));
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
       var tkn = rxSelectedStory.value;
       var approveList = [
@@ -371,11 +382,13 @@ class TasksController extends AppBaseController
     return false;
   }
 
-  Future<bool> fetchStories() async {
+  Future<bool> fetchStories(bool loader) async {
     try {
-      showLoader();
+      if (loader) {
+        showLoader();
+      }
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
-      var tkn = rxSelectedStory.value;
+      var tkn = rxSelectedToken.value;
       var approveList = [
         CommonRequest(attribute: "Description", value: ""),
         CommonRequest(attribute: "EstimateTime", value: ""),
@@ -390,13 +403,14 @@ class TasksController extends AppBaseController
         CommonRequest(attribute: "CurrentStatusMccID", value: ""),
         CommonRequest(
             attribute: "ParentRequestID",
-            value: tkn?.parentRequestId.toString() ?? ""),
+            value: tkn?.parentRequestId.toString() ?? "0"),
         CommonRequest(attribute: "AssigneeID", value: ""),
         CommonRequest(attribute: "LoginEmpID", value: id),
       ];
       List<StoryResponse>? response = await _taskServices.getStory(approveList);
       if (response != null && response.isNotEmpty) {
         rxFetchedStories.assignAll(response.first.storyList!);
+        await filterStories();
         return true;
       }
     } catch (e) {
@@ -406,8 +420,103 @@ class TasksController extends AppBaseController
     }
     return false;
   }
+  ////////////////////////////////TOKEN FILTERS FETCH  ////////////////////////////////
 
-  //////////////////////////////// FILTERS FETCH  ////////////////////////////////
+  void toggleStoryFilter(int index) {
+    rxStoryFilterIndex.value = index;
+  }
+
+  Future<void> filterStories() async {
+    final all = rxFetchedStories;
+
+    // Clear first
+    rxTodoStories.clear();
+    rxInProgressStories.clear();
+    rxCompletedStories.clear();
+    rxRejectedStories.clear();
+    rxHoldStories.clear();
+
+    if (rxStoryFilterTypeList.isEmpty) return;
+
+    rxTodoStories.value = all
+        .where((e) => _matchId(
+              e.currentStatusId,
+              rxStoryFilterTypeList[0].mccId,
+            ))
+        .toList();
+
+    rxInProgressStories.value = all
+        .where((e) => _matchId(
+              e.currentStatusId,
+              rxStoryFilterTypeList[1].mccId,
+            ))
+        .toList();
+
+    rxCompletedStories.value = all
+        .where((e) => _matchId(
+              e.currentStatusId,
+              rxStoryFilterTypeList[2].mccId,
+            ))
+        .toList();
+
+    rxRejectedStories.value = all
+        .where((e) => _matchId(
+              e.currentStatusId,
+              rxStoryFilterTypeList[3].mccId,
+            ))
+        .toList();
+
+    rxHoldStories.value = all
+        .where((e) => _matchId(
+              e.currentStatusId,
+              rxStoryFilterTypeList[4].mccId,
+            ))
+        .toList();
+  }
+
+  bool _matchId(dynamic a, dynamic b) {
+    return a != null && b != null && a.toString() == b.toString();
+  }
+
+  List<StoryList> getStoriesByIndex(int index) {
+    switch (index) {
+      case -1:
+        return rxFetchedStories;
+      case 0:
+        return rxTodoStories;
+      case 1:
+        return rxInProgressStories;
+      case 2:
+        return rxCompletedStories;
+      case 3:
+        return rxRejectedStories;
+      case 4:
+        return rxHoldStories;
+      default:
+        return rxFetchedStories;
+    }
+  }
+
+  String getStoryCountByIndex(int index) {
+    switch (index) {
+      case -1:
+        return rxFetchedStories.length.toString();
+      case 0:
+        return rxTodoStories.length.toString();
+      case 1:
+        return rxInProgressStories.length.toString();
+      case 2:
+        return rxCompletedStories.length.toString();
+      case 3:
+        return rxRejectedStories.length.toString();
+      case 4:
+        return rxHoldStories.length.toString();
+      default:
+        return "0";
+    }
+  }
+
+  ////////////////////////////////TOKEN FILTERS FETCH  ////////////////////////////////
 
   Future<void> _fetchFilters() async {
     await handleFilter(
@@ -663,6 +772,13 @@ class TasksController extends AppBaseController
 
   Future<bool> fetchStoryDetailsInitData() async {
     await fetchStory(false);
+    return true;
+  }
+
+  Future<bool> fetchTokenDetailsInitData() async {
+    await fetchFilterData("STORY_STATUS", rxStoryFilterTypeList, false);
+    await fetchStories(false);
+
     return true;
   }
 }
