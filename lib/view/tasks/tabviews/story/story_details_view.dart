@@ -13,6 +13,7 @@ import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../loaders/story_details_loader.dart';
 import '../../../widget/common_widget.dart';
 
 class StoryDetailsView extends AppBaseView<TasksController> {
@@ -22,9 +23,12 @@ class StoryDetailsView extends AppBaseView<TasksController> {
   Widget buildView() => _widgetView();
 
   Widget _widgetView() {
-    return appFutureBuilder<void>(() => controller.fetchStoryDetailsInitData(),
-        (context, snapshot) => _body(),
-        loaderWidget: fullScreenloader());
+    return appFutureBuilder<void>(
+        () => controller.fetchStoryDetailsInitData(),
+        (context, snapshot) => Obx(() {
+              return _body();
+            }),
+        loaderWidget: const StoryDetailsLoader());
   }
 
   GestureDetector _body() {
@@ -69,97 +73,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                   height(15),
                   task.attachment != " " ? _attatchmentsSection() : height(0),
                   height(15),
-                  Row(
-                    children: [
-                      Container(
-                        height: 31,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: AppColorHelper().transparentColor,
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: AppColorHelper()
-                                .borderColor
-                                .withValues(alpha: 0.5),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 15,
-                              width: 15,
-                              decoration: BoxDecoration(
-                                color: AppColorHelper()
-                                    .primaryColor
-                                    .withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  Assets.icons.linkIcon.path,
-                                  scale: 5,
-                                ),
-                              ),
-                            ),
-                            width(10),
-
-                            /// 👇 APPLY MAX WIDTH ONLY TO THE LINK
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 100),
-                              child: appLink(
-                                "https://www.figma.com/design/kXcAF2WNsrCXhaMG5ZB9iH/PMMS-Mobile-App---Dev-Prototype?node-id=754-6655&t=NtfX1Qifpk754FSN-0",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      /////////////
-                      width(10),
-                      Container(
-                        height: 31,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: AppColorHelper().transparentColor,
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: AppColorHelper()
-                                .borderColor
-                                .withValues(alpha: 0.5),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 15,
-                              width: 15,
-                              decoration: BoxDecoration(
-                                color: AppColorHelper()
-                                    .primaryColor
-                                    .withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  Assets.icons.linkIcon.path,
-                                  scale: 5,
-                                ),
-                              ),
-                            ),
-                            width(10),
-
-                            /// 👇 APPLY MAX WIDTH ONLY TO THE LINK
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 100),
-                              child: appLink(
-                                "https://www.figma.com/design/kXcAF2WNsrCXhaMG5ZB9iH/PMMS-Mobile-App---Dev-Prototype?node-id=754-6655&t=NtfX1Qifpk754FSN-0",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  _linksSection(),
                   height(15),
                   _loggedDetails(task)
                 ],
@@ -168,6 +82,92 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           ),
         ),
       ),
+    );
+  }
+
+  Row _linksSection() {
+    return Row(
+      children: [
+        Container(
+          height: 31,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: AppColorHelper().transparentColor,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: AppColorHelper().borderColor.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 15,
+                width: 15,
+                decoration: BoxDecoration(
+                  color: AppColorHelper().primaryColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    Assets.icons.linkIcon.path,
+                    scale: 5,
+                  ),
+                ),
+              ),
+              width(10),
+
+              /// 👇 APPLY MAX WIDTH ONLY TO THE LINK
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 100),
+                child: appLink(
+                  "https://www.figma.com/design/kXcAF2WNsrCXhaMG5ZB9iH/PMMS-Mobile-App---Dev-Prototype?node-id=754-6655&t=NtfX1Qifpk754FSN-0",
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        /////////////
+        width(10),
+        Container(
+          height: 31,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: AppColorHelper().transparentColor,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: AppColorHelper().borderColor.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 15,
+                width: 15,
+                decoration: BoxDecoration(
+                  color: AppColorHelper().primaryColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    Assets.icons.linkIcon.path,
+                    scale: 5,
+                  ),
+                ),
+              ),
+              width(10),
+
+              /// 👇 APPLY MAX WIDTH ONLY TO THE LINK
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 100),
+                child: appLink(
+                  "https://www.figma.com/design/kXcAF2WNsrCXhaMG5ZB9iH/PMMS-Mobile-App---Dev-Prototype?node-id=754-6655&t=NtfX1Qifpk754FSN-0",
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -273,16 +273,21 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Container _loggedDetails(StoryList task) {
-    var loggedTime = task.loggedTime ?? "0.0";
-    var estimateTime = task.estimateTime ?? "0.0";
+  Widget _loggedDetails(StoryList task) {
+    final logs = task.workLog ?? [];
+
+    final loggedTime = task.loggedTime ?? "0.0";
+    final estimateTime = task.estimateTime ?? "0.0";
+
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-          color: AppColorHelper().transparentColor,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-              color: AppColorHelper().borderColor.withValues(alpha: 0.4))),
+        color: AppColorHelper().transparentColor,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: AppColorHelper().borderColor.withValues(alpha: 0.4),
+        ),
+      ),
       child: Column(
         children: [
           _logDetails(loggedTime, estimateTime),
@@ -291,17 +296,36 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: divider(
-                color: AppColorHelper().dividerColor.withValues(alpha: 0.1)),
+              color: AppColorHelper().dividerColor.withValues(alpha: 0.1),
+            ),
           ),
           _logText(),
           height(20),
-          _logContainer(task)
+
+          /// ✅ EMPTY STATE HANDLING
+          if (logs.isEmpty)
+            appText(
+              "No work logs available",
+              fontSize: 13,
+              color: AppColorHelper().primaryTextColor.withValues(alpha: 0.6),
+            )
+          else
+
+            /// ✅ FIXED LISTVIEW
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: logs.length,
+              itemBuilder: (context, index) {
+                return _logContainer(logs[index]);
+              },
+            ),
         ],
       ),
     );
   }
 
-  Column _logContainer(StoryList task) {
+  Column _logContainer(WorkLog logDetails) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -309,12 +333,12 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: "${task.assignee} - ",
+                text: "${logDetails.loggedEmpName} - ",
                 style: textStyle(
                     14, AppColorHelper().primaryTextColor, FontWeight.w500),
               ),
               TextSpan(
-                text: 'Logged work on 21 Nov 2025, 05:30 pm',
+                text: 'Logged work on ${logDetails.loggedDate}',
                 style: textStyle(
                     14,
                     AppColorHelper().primaryTextColor.withValues(alpha: 0.5),
@@ -336,7 +360,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                     FontWeight.w500),
               ),
               TextSpan(
-                text: '07:30 h',
+                text: '${logDetails.loggedTime} h',
                 style: textStyle(
                     14, AppColorHelper().primaryTextColor, FontWeight.w500),
               )
@@ -345,8 +369,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
         ),
         height(6),
         ///////////////
-        appText(
-            "Payment method clutter if all options appear at once without grouping.",
+        appText(logDetails.loggedDescription ?? "",
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: AppColorHelper().primaryTextColor),
@@ -417,7 +440,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           ),
         ),
         width(12),
-        appText("${((logged / estimated) * 100)} %",
+        appText("${((logged / estimated) * 100).round()} %",
             fontSize: 13,
             fontWeight: FontWeight.w500,
             color: AppColorHelper().primaryTextColor)
@@ -479,11 +502,17 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                   DateHelper().formatApiToDateTime(task.requestDateTime) ??
                       DateTime(0000)))),
           verticalDivider(),
-          _infoColums(startaDate.tr,
-              (DateHelper.formatToShortMonthDateYear(DateTime(0000)))),
+          _infoColums(
+              startaDate.tr,
+              (DateHelper.formatToShortMonthDateYear(
+                  DateHelper().formatApiToDateTime(task.startDate) ??
+                      DateTime(0000)))),
           verticalDivider(),
-          _infoColums(endDate.tr,
-              (DateHelper.formatToShortMonthDateYear(DateTime(0000)))),
+          _infoColums(
+              endDate.tr,
+              (DateHelper.formatToShortMonthDateYear(
+                  DateHelper().formatApiToDateTime(task.endDate) ??
+                      DateTime(0000)))),
         ],
       ),
     );

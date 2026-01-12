@@ -329,6 +329,15 @@ class HttpService extends GetxService {
       case 404:
         throw Exception("$notFound: ${response.body}");
       case 500:
+        toastMessage(failedAuthenticationMsg.tr);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          myApplication.preferenceHelper!.remove(loginNameKey);
+          myApplication.preferenceHelper!.remove(loginPasswordKey);
+          if (myApplication.preferenceHelper!.getBool(rememberMeKey)) {
+            myApplication.preferenceHelper!.setBool(rememberMeKey, false);
+          }
+          navigateToAndRemoveAll(loginPageRoute);
+        });
         throw Exception("$serverError: ${response.body}");
       default:
         throw Exception("$unknownError: ${response.body}");

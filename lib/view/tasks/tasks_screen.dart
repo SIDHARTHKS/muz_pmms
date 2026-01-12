@@ -7,7 +7,6 @@ import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/sizer.dart';
-import 'package:pmms/view/loaders/task_loader.dart';
 import 'package:pmms/view/widget/refresh/common_refresh_indicator.dart';
 import 'package:pmms/view/widget/searchbar/custom_searchbar.dart';
 import '../widget/common_widget.dart';

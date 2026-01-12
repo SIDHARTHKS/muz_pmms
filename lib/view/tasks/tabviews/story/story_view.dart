@@ -169,7 +169,7 @@ class StoryView extends AppBaseView<TasksController> {
                                               .withValues(alpha: 0.6),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 13),
-                                      appText("0.00",
+                                      appText(task.loggedTime.toString(),
                                           color:
                                               AppColorHelper().primaryTextColor,
                                           fontWeight: FontWeight.w600,
@@ -184,7 +184,7 @@ class StoryView extends AppBaseView<TasksController> {
                                               .withValues(alpha: 0.6),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 13),
-                                      appText("0.00",
+                                      appText(task.estimateTime.toString(),
                                           color:
                                               AppColorHelper().primaryTextColor,
                                           fontWeight: FontWeight.w600,

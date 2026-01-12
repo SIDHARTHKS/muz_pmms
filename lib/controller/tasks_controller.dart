@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/enum.dart';
+import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/service/task_services.dart';
@@ -333,6 +334,7 @@ class TasksController extends AppBaseController
       if (loader) {
         showLoader();
       }
+      await Future.delayed(const Duration(seconds: 2));
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
       var tkn = rxSelectedStory.value;
       var approveList = [
@@ -358,6 +360,8 @@ class TasksController extends AppBaseController
           response.first.storyList!.isNotEmpty) {
         rxFetchedStory.value = response.first.storyList!.first;
         return true;
+      } else {
+        goBack();
       }
     } catch (e) {
       appLog('$exceptionMsg $e', logging: Logging.error);
