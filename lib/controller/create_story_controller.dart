@@ -180,8 +180,7 @@ class CreateStoryController extends AppBaseController
   }
 
   bool requiredDataSelected() {
-    if (isNullOrEmpty(storyTiteController.text) ||
-        isNullOrEmpty(descriptionController.text) ||
+    if (isNullOrEmpty(descriptionController.text) ||
         isNullOrEmpty(hoursController.text) ||
         isNullOrEmpty(minutesController.text)) {
       showErrorSnackbar(message: "Missing Fields");

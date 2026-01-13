@@ -44,10 +44,7 @@ class _FilterBottomsheetState extends State<EditDropdownBottomsheet> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate dynamic height
-    // Each list item ≈ 52px + header + button space
-    double estimatedHeight = (widget.list.length * 70) +
-        220; // adjust 160 if needed for header/buttons
+    double estimatedHeight = (widget.list.length * 70) + 150;
     double maxHeight = Get.height * 0.7;
     double sheetHeight =
         estimatedHeight > maxHeight ? maxHeight : estimatedHeight;

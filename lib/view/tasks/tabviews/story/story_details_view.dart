@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
@@ -13,10 +12,11 @@ import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../controller/story_details_controller.dart';
 import '../../../loaders/story_details_loader.dart';
 import '../../../widget/common_widget.dart';
 
-class StoryDetailsView extends AppBaseView<TasksController> {
+class StoryDetailsView extends AppBaseView<StoryDetailsController> {
   const StoryDetailsView({super.key});
 
   @override
@@ -71,9 +71,17 @@ class StoryDetailsView extends AppBaseView<TasksController> {
                   _assigneeBox(task),
                   _datesSection(task),
                   height(15),
-                  task.attachment != " " ? _attatchmentsSection() : height(0),
-                  height(15),
-                  _linksSection(),
+                  task.attachment != " "
+                      ? SizedBox(
+                          child: Column(
+                            children: [
+                              _attatchmentsSection(),
+                              height(15),
+                              _linksSection(),
+                            ],
+                          ),
+                        )
+                      : height(0),
                   height(15),
                   _loggedDetails(task)
                 ],
@@ -301,8 +309,6 @@ class StoryDetailsView extends AppBaseView<TasksController> {
           ),
           _logText(),
           height(20),
-
-          /// ✅ EMPTY STATE HANDLING
           if (logs.isEmpty)
             appText(
               "No work logs available",
@@ -310,14 +316,13 @@ class StoryDetailsView extends AppBaseView<TasksController> {
               color: AppColorHelper().primaryTextColor.withValues(alpha: 0.6),
             )
           else
-
-            /// ✅ FIXED LISTVIEW
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: logs.length,
               itemBuilder: (context, index) {
-                return _logContainer(logs[index]);
+                bool isLast = index == logs.length - 1;
+                return _logContainer(logs[index], isLast);
               },
             ),
         ],
@@ -325,7 +330,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     );
   }
 
-  Column _logContainer(WorkLog logDetails) {
+  Column _logContainer(WorkLog logDetails, bool isLast) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -373,7 +378,10 @@ class StoryDetailsView extends AppBaseView<TasksController> {
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: AppColorHelper().primaryTextColor),
-        divider(color: AppColorHelper().dividerColor.withValues(alpha: 0.2))
+        isLast
+            ? width(0)
+            : divider(
+                color: AppColorHelper().dividerColor.withValues(alpha: 0.2))
       ],
     );
   }
@@ -390,7 +398,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
               viewWorkLog.tr,
               color: AppColorHelper().primaryTextColor,
               fontWeight: FontWeight.w400,
-              fontSize: 11,
+              fontSize: 13,
             ),
 
             // Divider you can move freely
@@ -568,7 +576,7 @@ class StoryDetailsView extends AppBaseView<TasksController> {
       height: 50,
       decoration: BoxDecoration(
           color: AppColorHelper().cardColor,
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(
               color: AppColorHelper().borderColor.withValues(alpha: 0.5))),
       child: Row(
@@ -658,8 +666,8 @@ class StoryDetailsView extends AppBaseView<TasksController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
-          color:
-              getStatusColor(task.currentStatus ?? "--").withValues(alpha: 0.4),
+          color: getStatusColor(task.currentStatus ?? "--")
+              .withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(3),
           border: Border.all(
               color: getStatusTextColor(task.currentStatus ?? "--"))),

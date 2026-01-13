@@ -22,86 +22,93 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
     return SizedBox(
       width: Get.width,
       child: Obx(() {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            height(16),
-            appText(letsstartwiththebasics.tr,
-                color: AppColorHelper().primaryTextColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 20),
-            height(5),
-            appText(
-                height: 1.6,
-                createTokenDialogue.tr,
-                color: AppColorHelper().primaryTextColor,
-                fontWeight: FontWeight.w400,
-                fontSize: 13),
-            height(4),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: divider(
-                  color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
-            ),
-            CustomDropdown<FiltersResponse>(
-              label: project.tr,
-              widgetHeight: 52,
-              isRequired: true,
-              items: controller.rxProjectsList,
-              selectedValue: controller.rxSelectedProject.value,
-              onChanged: (value) async {
-                controller.rxSelectedProject.value = value;
-                await controller.fetchProjectBasedDropdown(
-                    controller.rxSelectedProject.value?.mccId ?? '',
-                    "",
-                    "",
-                    true);
-              },
-              itemLabelBuilder: (item) => item.mccName ?? '',
-            ),
-            height(10),
-            CustomRadioButton<FiltersResponse>(
-              label: requestType.tr,
-              widgetHeight: 35,
-              widgetWidth: (Get.width / 3) - 20,
-              isRequired: true,
-              items: controller.rxRequestList,
-              selectedValue: controller.rxSelectedRequest.value,
-              onChanged: (value) {
-                controller.rxSelectedRequest.value = value;
-              },
-              itemLabelBuilder: (item) =>
-                  capitalizeFirstOnly(item.mccName ?? ''),
-              itemIdBuilder: (item) => item.mccId,
-              bgColor: AppColorHelper().primaryColor.withValues(alpha: 0.2),
-              textColor: AppColorHelper().primaryColor,
-            ),
-            height(10),
-            _descritpionField(),
-            height(10),
-            _moreDescriptionField(),
-            height(16),
-            CustomRadioButton<FiltersResponse>(
-              label: priority.tr,
-              widgetHeight: 35,
-              isRequired: true,
-              items: controller.rxPriorityList,
-              selectedValue: controller.rxSelectedPriority.value,
-              onChanged: (value) {
-                controller.rxSelectedPriority.value = value;
-              },
-              itemLabelBuilder: (item) => item.mccName ?? '',
-              itemIdBuilder: (item) => item.mccId,
-              bgColor: _getPriorityColor(
-                      controller.rxSelectedPriority.value?.mccName ?? "High")
-                  .withValues(alpha: 0.2),
-              textColor: _getPriorityTextColor(
-                  controller.rxSelectedPriority.value?.mccName ?? "High"),
-              borderColor: AppColorHelper().transparentColor,
-              widgetWidth: 90,
-            ),
-          ],
+        return SingleChildScrollView(
+          controller: controller.scrollController,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(Get.context!).viewInsets.bottom + 20,
+          ),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              height(16),
+              appText(letsstartwiththebasics.tr,
+                  color: AppColorHelper().primaryTextColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20),
+              height(5),
+              appText(
+                  height: 1.6,
+                  createTokenDialogue.tr,
+                  color: AppColorHelper().primaryTextColor,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 13),
+              height(4),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: divider(
+                    color: AppColorHelper().borderColor.withValues(alpha: 0.5)),
+              ),
+              CustomDropdown<FiltersResponse>(
+                label: project.tr,
+                widgetHeight: 52,
+                isRequired: true,
+                items: controller.rxProjectsList,
+                selectedValue: controller.rxSelectedProject.value,
+                onChanged: (value) async {
+                  controller.rxSelectedProject.value = value;
+                  await controller.fetchProjectBasedDropdown(
+                      controller.rxSelectedProject.value?.mccId ?? '',
+                      "",
+                      "",
+                      true);
+                },
+                itemLabelBuilder: (item) => item.mccName ?? '',
+              ),
+              height(10),
+              CustomRadioButton<FiltersResponse>(
+                label: requestType.tr,
+                widgetHeight: 35,
+                widgetWidth: (Get.width / 3) - 20,
+                isRequired: true,
+                items: controller.rxRequestList,
+                selectedValue: controller.rxSelectedRequest.value,
+                onChanged: (value) {
+                  controller.rxSelectedRequest.value = value;
+                },
+                itemLabelBuilder: (item) =>
+                    capitalizeFirstOnly(item.mccName ?? ''),
+                itemIdBuilder: (item) => item.mccId,
+                bgColor: AppColorHelper().primaryColor.withValues(alpha: 0.2),
+                textColor: AppColorHelper().primaryColor,
+              ),
+              height(10),
+              _descritpionField(),
+              height(10),
+              _moreDescriptionField(),
+              height(16),
+              CustomRadioButton<FiltersResponse>(
+                label: priority.tr,
+                widgetHeight: 35,
+                isRequired: true,
+                items: controller.rxPriorityList,
+                selectedValue: controller.rxSelectedPriority.value,
+                onChanged: (value) {
+                  controller.rxSelectedPriority.value = value;
+                },
+                itemLabelBuilder: (item) => item.mccName ?? '',
+                itemIdBuilder: (item) => item.mccId,
+                bgColor: _getPriorityColor(
+                        controller.rxSelectedPriority.value?.mccName ?? "High")
+                    .withValues(alpha: 0.2),
+                textColor: _getPriorityTextColor(
+                    controller.rxSelectedPriority.value?.mccName ?? "High"),
+                borderColor: AppColorHelper().transparentColor,
+                widgetWidth: 90,
+              ),
+            ],
+          ),
         );
       }),
     );

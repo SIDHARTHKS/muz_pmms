@@ -23,6 +23,7 @@ import 'package:pmms/view/tasks/tabviews/tl/tl_task_detail_screen.dart';
 import '../binding/home_binding.dart';
 import '../binding/login_binding.dart';
 import '../binding/splash_binding.dart';
+import '../binding/view_story_binding.dart';
 import '../view/home/home_screen.dart';
 import '../view/login/login_screen.dart';
 
@@ -100,7 +101,7 @@ final routes = [
   GetPage(
       name: storyDetailsPageRoute,
       page: () => const StoryDetailsView(),
-      // binding: const TasksBinding(),
+      binding: const ViewStoryBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 200)),
   GetPage(

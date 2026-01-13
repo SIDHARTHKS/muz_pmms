@@ -75,7 +75,7 @@ class StoryView extends AppBaseView<TasksController> {
                                 decoration: BoxDecoration(
                                     color: getStatusColor(
                                             task.currentStatus ?? "--")
-                                        .withValues(alpha: 0.4),
+                                        .withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(3),
                                     border: Border.all(
                                         color: getStatusTextColor(
@@ -137,10 +137,23 @@ class StoryView extends AppBaseView<TasksController> {
                                 ),
                               ),
                               Obx(() {
+                                ScrollController thiController = controller
+                                    .getHorizontalScrollController(index);
                                 return controller.hasOverflow(index).value
-                                    ? Image.asset(
-                                        Assets.icons.overflowRight.path,
-                                        scale: 4,
+                                    ? InkWell(
+                                        onTap: () {
+                                          thiController.animateTo(
+                                            thiController
+                                                .position.maxScrollExtent,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                          );
+                                        },
+                                        child: Image.asset(
+                                          Assets.icons.overflowRight.path,
+                                          scale: 4,
+                                        ),
                                       )
                                     : const SizedBox();
                               }),
@@ -208,8 +221,12 @@ class StoryView extends AppBaseView<TasksController> {
                                       .withValues(alpha: 0.8),
                                   width: 0.1,
                                   onPressed: () async {
-                                    await controller.setStory(task);
-                                    navigateTo(storyDetailsPageRoute);
+                                    Map<String, dynamic> arg = {
+                                      selectedViewStoryKey: task.toJson(),
+                                    };
+
+                                    navigateTo(storyDetailsPageRoute,
+                                        arguments: arg);
                                   },
                                   appText(
                                     viewThisStory.tr,

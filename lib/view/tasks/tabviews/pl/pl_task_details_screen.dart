@@ -237,6 +237,7 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
   }
 
   Row _avatarSection(TaskResponse task) {
+    bool hasId = task.clientRefId != "";
     return Row(
       children: [
         CircleAvatar(
@@ -293,34 +294,36 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
                 ),
               ),
               height(4),
-              RichText(
-                text: TextSpan(
-                  style: textStyle(
-                    14,
-                    AppColorHelper().primaryTextColor,
-                    FontWeight.w700,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: "Client Ref ID: ",
-                      style: textStyle(
-                        12,
-                        AppColorHelper()
-                            .primaryTextColor
-                            .withValues(alpha: 0.5),
-                        FontWeight.w400,
+              hasId
+                  ? RichText(
+                      text: TextSpan(
+                        style: textStyle(
+                          14,
+                          AppColorHelper().primaryTextColor,
+                          FontWeight.w700,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "Client Ref ID: ",
+                            style: textStyle(
+                              12,
+                              AppColorHelper()
+                                  .primaryTextColor
+                                  .withValues(alpha: 0.5),
+                              FontWeight.w400,
+                            ),
+                          ),
+                          TextSpan(
+                            text: task.clientRefId,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    TextSpan(
-                      text: task.clientRefId,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                    )
+                  : width(0),
             ],
           ),
         ),
@@ -331,7 +334,8 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
   SafeArea _bottomButtons() {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
+        padding:
+            const EdgeInsets.only(bottom: 10, left: 15, right: 15, top: 15),
         child: controller.rxEdited.value
             ? Row(
                 children: [

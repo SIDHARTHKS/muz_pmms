@@ -43,9 +43,9 @@ class DescriptionBottomSheet extends StatelessWidget {
           ),
           color: AppColorHelper().cardColor,
         ),
-        height: Get.height * 0.3,
         child: Obx(() {
           return Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header
@@ -92,26 +92,32 @@ class DescriptionBottomSheet extends StatelessWidget {
                 style: textStyle(
                     14, AppColorHelper().primaryTextColor, FontWeight.w500),
               ),
-              const Spacer(),
+              height(15),
               SafeArea(
                   child: _editTokenController.rxDescriptionChanged.value
-                      ? buttonContainer(
-                          onPressed: onSave,
-                          color: AppColorHelper().primaryColor,
-                          appText(
-                            save.tr,
-                            color: AppColorHelper().textColor,
-                            fontWeight: FontWeight.w500,
-                          ))
-                      : buttonContainer(
-                          color: AppColorHelper()
-                              .primaryColor
-                              .withValues(alpha: 0.5),
-                          appText(
-                            save.tr,
-                            color: AppColorHelper().textColor,
-                            fontWeight: FontWeight.w500,
-                          )))
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: buttonContainer(
+                              onPressed: onSave,
+                              color: AppColorHelper().primaryColor,
+                              appText(
+                                save.tr,
+                                color: AppColorHelper().textColor,
+                                fontWeight: FontWeight.w500,
+                              )),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: buttonContainer(
+                              color: AppColorHelper()
+                                  .primaryColor
+                                  .withValues(alpha: 0.5),
+                              appText(
+                                save.tr,
+                                color: AppColorHelper().textColor,
+                                fontWeight: FontWeight.w500,
+                              )),
+                        ))
             ],
           );
         }),

@@ -49,8 +49,8 @@ class CreateStoryPage1 extends AppBaseView<CreateStoryController> {
                       color:
                           AppColorHelper().borderColor.withValues(alpha: 0.5)),
                 ),
-                _storyTitleField(),
-                height(12),
+                // _storyTitleField(),
+                // height(12),
                 _descritpionField(),
                 height(12),
                 CustomDropdown<FiltersResponse>(

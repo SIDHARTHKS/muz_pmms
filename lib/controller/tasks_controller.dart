@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/enum.dart';
-import 'package:pmms/helper/navigation.dart';
+
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/service/task_services.dart';
@@ -63,8 +61,7 @@ class TasksController extends AppBaseController
 
   // selected task/story details
   Rxn<TaskResponse> rxSelectedToken = Rxn<TaskResponse>();
-  Rxn<TaskResponse> rxSelectedStory = Rxn<TaskResponse>();
-  Rxn<StoryList> rxFetchedStory = Rxn<StoryList>();
+
   RxList<StoryList> rxFetchedStories = <StoryList>[].obs;
   // filter storytypes
 
@@ -146,12 +143,6 @@ class TasksController extends AppBaseController
       start: DateTime.now(), // today
       end: DateTime.now().add(const Duration(days: 7)), // 7 days from today
     );
-  }
-
-  //////////////////////////////// TASK/STORY ////////////////////////////////
-
-  Future<void> setStory(TaskResponse task) async {
-    rxSelectedStory(task);
   }
 
   //////////////////////////////// FETCHING/SETTING TASK ////////////////////////////////
@@ -340,54 +331,11 @@ class TasksController extends AppBaseController
 
   //////////////////////////////// STORY FETCH  ////////////////////////////////
 
-  Future<bool> fetchStory(bool loader) async {
-    try {
-      if (loader) {
-        showLoader();
-      }
-      await Future.delayed(const Duration(milliseconds: 300));
-      String id = myApp.preferenceHelper!.getString(employeeIdKey);
-      var tkn = rxSelectedStory.value;
-      var approveList = [
-        CommonRequest(attribute: "Description", value: ""),
-        CommonRequest(attribute: "EstimateTime", value: ""),
-        CommonRequest(attribute: "RequestDate", value: ""),
-        CommonRequest(attribute: "PlannedStartDate", value: ""),
-        CommonRequest(attribute: "PlannedEndDate", value: ""),
-        CommonRequest(
-            attribute: "RequestID", value: tkn?.requestId.toString() ?? "0"),
-        CommonRequest(attribute: "StoryTypeMccID", value: ""),
-        CommonRequest(attribute: "ModuleID", value: ""),
-        CommonRequest(attribute: "OptionID", value: ""),
-        CommonRequest(attribute: "CurrentStatusMccID", value: ""),
-        CommonRequest(attribute: "ParentRequestID", value: "0"),
-        CommonRequest(attribute: "AssigneeID", value: ""),
-        CommonRequest(attribute: "LoginEmpID", value: id),
-      ];
-      List<StoryResponse>? response = await _taskServices.getStory(approveList);
-      if (response != null &&
-          response.isNotEmpty &&
-          response.first.storyList != null &&
-          response.first.storyList!.isNotEmpty) {
-        rxFetchedStory.value = response.first.storyList!.first;
-        return true;
-      } else {
-        goBack();
-      }
-    } catch (e) {
-      appLog('$exceptionMsg $e', logging: Logging.error);
-    } finally {
-      hideLoader();
-    }
-    return false;
-  }
-
   Future<bool> fetchStories(bool loader) async {
     try {
       if (loader) {
         showLoader();
       }
-      await Future.delayed(const Duration(seconds: 2));
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
       var tkn = rxSelectedToken.value;
       var approveList = [
@@ -768,11 +716,6 @@ class TasksController extends AppBaseController
     setDateRange();
     await refreshTasks(true);
     await _fetchFilters();
-    return true;
-  }
-
-  Future<bool> fetchStoryDetailsInitData() async {
-    await fetchStory(false);
     return true;
   }
 

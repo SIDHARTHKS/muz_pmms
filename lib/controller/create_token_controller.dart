@@ -60,6 +60,8 @@ class CreateTokenController extends AppBaseController
   RxList<DropDownResponse> rxAssigneeList = <DropDownResponse>[].obs;
   RxList<DropDownResponse> rxRequestedByList = <DropDownResponse>[].obs;
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   Future<void> onInit() async {
     isInitCalled(true);

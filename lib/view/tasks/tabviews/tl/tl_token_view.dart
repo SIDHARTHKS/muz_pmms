@@ -214,10 +214,23 @@ class TlTokenView extends AppBaseView<TasksController> {
                                 ),
                               ),
                               Obx(() {
+                                ScrollController thiController = controller
+                                    .getHorizontalScrollController(index);
                                 return controller.hasOverflow(index).value
-                                    ? Image.asset(
-                                        Assets.icons.overflowRight.path,
-                                        scale: 4,
+                                    ? InkWell(
+                                        onTap: () {
+                                          thiController.animateTo(
+                                            thiController
+                                                .position.maxScrollExtent,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            curve: Curves.easeOut,
+                                          );
+                                        },
+                                        child: Image.asset(
+                                          Assets.icons.overflowRight.path,
+                                          scale: 4,
+                                        ),
                                       )
                                     : const SizedBox();
                               }),

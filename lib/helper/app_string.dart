@@ -33,6 +33,7 @@ const String requestFilterDataKey = 'requestFilterDataKey';
 const String selectedTaskKey = 'selectedTaskKey';
 const String selectedEditStoryKey = 'selectedEditStoryKey';
 const String selectedEditTokenKey = 'selectedEditTokenKey';
+const String selectedViewStoryKey = 'selectedViewStoryKey';
 
 //Arguments key
 const String companiesKey = 'companiesKey';
