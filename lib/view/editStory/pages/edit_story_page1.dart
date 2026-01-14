@@ -41,8 +41,9 @@ class EditStoryPage1 extends AppBaseView<EditStoryController> {
                   isRequired: true,
                   items: controller.rxStoryTypeList,
                   selectedValue: controller.rxSelectedStoryType.value,
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     controller.rxSelectedStoryType.value = value;
+                    await controller.fetchAssignee();
                   },
                   itemLabelBuilder: (item) => item.mccName ?? '',
                 ),
@@ -65,9 +66,9 @@ class EditStoryPage1 extends AppBaseView<EditStoryController> {
                   widgetHeight: 55,
                   label: ogStartDate.tr,
                   isRequired: false,
-                  selectedDate: controller.rxPlannedStartDate,
+                  selectedDate: controller.rxPlannedStartDate.value,
                   onDateChanged: (date) {
-                    controller.rxPlannedStartDate = date!;
+                    controller.rxPlannedStartDate.value = date!;
                   },
                 ),
                 height(18),
@@ -75,9 +76,9 @@ class EditStoryPage1 extends AppBaseView<EditStoryController> {
                   widgetHeight: 55,
                   label: ogEndDate.tr,
                   isRequired: false,
-                  selectedDate: controller.rxPlannedEndDate,
+                  selectedDate: controller.rxPlannedEndDate.value,
                   onDateChanged: (date) {
-                    controller.rxPlannedEndDate = date!;
+                    controller.rxPlannedEndDate.value = date!;
                   },
                 ),
               ],

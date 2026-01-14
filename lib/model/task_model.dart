@@ -236,21 +236,21 @@ class TaskResponse {
       };
 }
 
-CreateTokenResponse createTokenResponseFromJson(String str) =>
-    CreateTokenResponse.fromJson(json.decode(str));
+CommonReseponse createTokenResponseFromJson(String str) =>
+    CommonReseponse.fromJson(json.decode(str));
 
-String createTokenResponseToJson(CreateTokenResponse data) =>
+String createTokenResponseToJson(CommonReseponse data) =>
     json.encode(data.toJson());
 
-class CreateTokenResponse {
+class CommonReseponse {
   String? message;
 
-  CreateTokenResponse({
+  CommonReseponse({
     this.message,
   });
 
-  factory CreateTokenResponse.fromJson(Map<String, dynamic> json) =>
-      CreateTokenResponse(
+  factory CommonReseponse.fromJson(Map<String, dynamic> json) =>
+      CommonReseponse(
         message: json["message"],
       );
 

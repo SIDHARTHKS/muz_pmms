@@ -6,16 +6,17 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
-
 import '../../../helper/navigation.dart';
-import '../../../helper/route.dart';
 import '../../dialogues/success_dialogue.dart';
 
 class GenerateStoryBottomsheet extends StatelessWidget {
   final bool isCreate;
-  final CreateStoryController _storyController =
-      Get.find<CreateStoryController>();
-  GenerateStoryBottomsheet({this.isCreate = true, super.key});
+  final Future<void> Function() onConfirm;
+  const GenerateStoryBottomsheet({
+    super.key,
+    required this.onConfirm,
+    this.isCreate = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,24 +70,7 @@ class GenerateStoryBottomsheet extends StatelessWidget {
           ),
           height(30),
           buttonContainer(onPressed: () async {
-            if (_storyController.requiredDataSelected()) {
-              await _storyController.callGenerateStory().then((success) async {
-                if (success) {
-                  await showDialog(
-                    context: Get.context!,
-                    barrierDismissible: true,
-                    builder: (_) => const SuccessDialogue(
-                      title: "Story Created Successfully",
-                      subtitle1: "Your new story ",
-                      subtitle2: "TKN -782-12 ",
-                      subtitle3: "has been created successfully",
-                    ),
-                  );
-                  _storyController.rxCurrentPageIndex(0);
-                  navigateToAndRemove(homePageRoute);
-                }
-              });
-            }
+            onConfirm();
           },
               color: AppColorHelper().primaryColor,
               appText(isCreate ? createstory.tr : updatestory.tr,

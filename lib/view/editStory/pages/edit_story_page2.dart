@@ -34,8 +34,9 @@ class EditStoryPage2 extends AppBaseView<EditStoryController> {
               isRequired: false,
               items: controller.rxModuleList,
               selectedValue: controller.rxSelectedModule.value,
-              onChanged: (value) {
+              onChanged: (value) async {
                 controller.rxSelectedModule.value = value;
+                await controller.fetchOption();
               },
               itemLabelBuilder: (item) => item.name ?? '',
             ),
@@ -56,9 +57,9 @@ class EditStoryPage2 extends AppBaseView<EditStoryController> {
               widgetHeight: 55,
               label: requestDate.tr,
               isRequired: false,
-              selectedDate: controller.rxRequestDate,
+              selectedDate: controller.rxRequestDate.value,
               onDateChanged: (date) {
-                controller.rxRequestDate = date!;
+                controller.rxRequestDate.value = date!;
               },
             ),
             height(18),
@@ -66,9 +67,9 @@ class EditStoryPage2 extends AppBaseView<EditStoryController> {
               widgetHeight: 55,
               label: plannedStartDate.tr,
               isRequired: false,
-              selectedDate: controller.rxPlannedStartDate,
+              selectedDate: controller.rxPlannedStartDate.value,
               onDateChanged: (date) {
-                controller.rxPlannedStartDate = date!;
+                controller.rxPlannedStartDate.value = date!;
               },
             ),
             height(18),
@@ -76,9 +77,9 @@ class EditStoryPage2 extends AppBaseView<EditStoryController> {
               widgetHeight: 55,
               label: plannedEndDate.tr,
               isRequired: false,
-              selectedDate: controller.rxPlannedEndDate,
+              selectedDate: controller.rxPlannedEndDate.value,
               onDateChanged: (date) {
-                controller.rxPlannedEndDate = date!;
+                controller.rxPlannedEndDate.value = date!;
               },
             ),
             height(18),

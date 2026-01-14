@@ -59,8 +59,9 @@ class CreateStoryPage1 extends AppBaseView<CreateStoryController> {
                   isRequired: true,
                   items: controller.rxStoryTypeList,
                   selectedValue: controller.rxSelectedStoryType.value,
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     controller.rxSelectedStoryType.value = value;
+                    await controller.fetchAssignee();
                   },
                   itemLabelBuilder: (item) => item.mccName ?? '',
                 ),

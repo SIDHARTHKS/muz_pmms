@@ -162,6 +162,10 @@ class CreateStoryController extends AppBaseController
               attribute: "AssigneeID",
               value: (rxSelectedAsignee.value?.id ?? "").toString()),
           CommonRequest(attribute: "LoginEmpID", value: id),
+          CommonRequest(attribute: "OrginalStratDate", value: ""),
+          CommonRequest(attribute: "OrginalEndDate", value: ""),
+          CommonRequest(attribute: "Attachments", value: ""),
+          CommonRequest(attribute: "Links", value: ""),
         ];
         CreateStoryResponse? response =
             await _taskServices.createStory(generateStoryRequestList);
@@ -210,14 +214,26 @@ class CreateStoryController extends AppBaseController
       String teamID, bool loaderEnabled) async {
     await fetchFilters(
         "STORY_TYPE", rxStoryTypeList, rxSelectedStoryType, loaderEnabled);
+    await fetchAssignee();
     await fetchFilters("STORY_STATUS", rxStoryStatusList, rxSelectedStoryStatus,
         loaderEnabled);
-    await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
-        rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
     await fetchDropdowns(projectId, moduelID, teamID, "MODULE", rxModuleList,
-        rxSelectedModule, "TOKEN", loaderEnabled);
+        rxSelectedModule, "TOKEN", "", loaderEnabled);
     await fetchDropdowns(projectId, moduelID, teamID, "OPTION", rxOptionsList,
-        rxSelectedOption, "TOKEN", loaderEnabled);
+        rxSelectedOption, "TOKEN", "", loaderEnabled);
+  }
+
+  Future<void> fetchAssignee() async {
+    await fetchDropdowns(
+        (rxCurrentTokenDetail.value?.projectId ?? "").toString(),
+        "",
+        (rxCurrentTokenDetail.value?.teamId ?? "").toString(),
+        "ASSIGNEE",
+        rxAssigneeList,
+        rxSelectedAsignee,
+        "STORY",
+        rxSelectedStoryType.value?.mccId ?? "0",
+        false);
   }
 
   Future<bool> fetchDropdowns(
@@ -228,6 +244,7 @@ class CreateStoryController extends AppBaseController
       RxList updateList,
       Rxn selectedList,
       String issueType,
+      String storyType,
       bool loaderEnabled) async {
     try {
       if (loaderEnabled) {
@@ -248,7 +265,7 @@ class CreateStoryController extends AppBaseController
         CommonRequest(attribute: "ModuleID", value: ""),
         CommonRequest(attribute: "TeamID", value: teamId),
         CommonRequest(attribute: "EmployeeID", value: id),
-        CommonRequest(attribute: "StoryTypeMccID", value: ""),
+        CommonRequest(attribute: "StoryTypeMccID", value: storyType),
         CommonRequest(attribute: "IssueType", value: issueType),
       ];
       List<DropDownResponse>? response =

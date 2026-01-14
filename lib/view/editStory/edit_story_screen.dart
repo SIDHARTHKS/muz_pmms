@@ -95,19 +95,30 @@ class EditStoryScreen extends AppBaseView<EditStoryController> {
                         appText(update.tr,
                             color: AppColorHelper().textColor,
                             fontWeight: FontWeight.w500), onPressed: () async {
-                        await showDialog(
-                          context: Get.context!,
-                          barrierDismissible: true,
-                          builder: (_) => SuccessDialogue(
-                            title: "Story Updated Successfully",
-                            subtitle1: "Your story",
-                            subtitle2:
-                                "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"} ",
-                            subtitle3: "has been updated successfully",
-                          ),
+                        await controller.callEditStory().then(
+                          (success) async {
+                            if (success) {
+                              await showDialog(
+                                context: Get.context!,
+                                barrierDismissible: true,
+                                builder: (_) => SuccessDialogue(
+                                  title: "Story Updated Successfully",
+                                  subtitle1: "Your story",
+                                  subtitle2:
+                                      "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}",
+                                  subtitle3: "has been updated successfully",
+                                ),
+                              );
+                              // await controller.tasksController
+                              //     .refreshTasks(false);
+                              await controller.storyDetailsController
+                                  .fetchStoryAfterReuturn(
+                                      controller.rxCurrentStoryDetail.value!,
+                                      false);
+                              goBack();
+                            }
+                          },
                         );
-                        controller.rxCurrentPageIndex(0);
-                        navigateToAndRemove(homePageRoute);
                       })
                     : Row(
                         children: [
@@ -125,6 +136,39 @@ class EditStoryScreen extends AppBaseView<EditStoryController> {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => GenerateStoryBottomsheet(
+                                      onConfirm: () async {
+                                        controller.callEditStory().then(
+                                          (success) async {
+                                            if (success) {
+                                              await showDialog(
+                                                context: Get.context!,
+                                                barrierDismissible: true,
+                                                builder: (_) => SuccessDialogue(
+                                                  title:
+                                                      "Story Updated Successfully",
+                                                  subtitle1: "Your story",
+                                                  subtitle2:
+                                                      "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}",
+                                                  subtitle3:
+                                                      "has been updated successfully",
+                                                ),
+                                              );
+                                              // await controller.tasksController
+                                              //     .refreshTasks(false);
+                                              await controller
+                                                  .storyDetailsController
+                                                  .fetchStoryAfterReuturn(
+                                                      controller
+                                                          .rxCurrentStoryDetail
+                                                          .value!,
+                                                      false);
+
+                                              goBack();
+                                            }
+                                            goBack();
+                                          },
+                                        );
+                                      },
                                       isCreate: false,
                                     ));
                           }),

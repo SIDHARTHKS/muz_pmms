@@ -64,8 +64,8 @@ class TaskServices extends AppBaseService {
     }
   }
 
-  Future<CreateTokenResponse?> createToken(List<CommonRequest> request) async {
-    var response = await httpService.postService<CreateTokenResponse>(
+  Future<CommonReseponse?> createToken(List<CommonRequest> request) async {
+    var response = await httpService.postService<CommonReseponse>(
         endpoint: getCreateTokenApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
@@ -73,7 +73,7 @@ class TaskServices extends AppBaseService {
           sid: false,
         ),
         data: request,
-        fromJsonT: (json) => CreateTokenResponse.fromJson(json),
+        fromJsonT: (json) => CommonReseponse.fromJson(json),
         ignoreError: false);
     if (response != null && response.data != null) {
       return response.data;
@@ -83,7 +83,7 @@ class TaskServices extends AppBaseService {
   }
 
   Future<bool?> approveRejectToken(List<CommonRequest> request) async {
-    var response = await httpService.postService<CreateTokenResponse>(
+    var response = await httpService.postService<CommonReseponse>(
         endpoint: getCreateTokenApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
@@ -91,7 +91,7 @@ class TaskServices extends AppBaseService {
           sid: false,
         ),
         data: request,
-        fromJsonT: (json) => CreateTokenResponse.fromJson(json),
+        fromJsonT: (json) => CommonReseponse.fromJson(json),
         ignoreError: false);
     if (response != null && response.success != null) {
       return response.success;
@@ -133,6 +133,24 @@ class TaskServices extends AppBaseService {
         ignoreError: false);
     if (response != null && response.data != null) {
       return response.data;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool?> holdStory(List<CommonRequest> request) async {
+    var response = await httpService.postService<CommonReseponse>(
+        endpoint: getHoldStoryApiEndpoint(),
+        headers: await getHeaders(
+          authorization: true,
+          xCorrelationId: false,
+          sid: false,
+        ),
+        data: request,
+        fromJsonT: (json) => CommonReseponse.fromJson(json),
+        ignoreError: false);
+    if (response != null && response.success != null) {
+      return response.success;
     } else {
       return null;
     }

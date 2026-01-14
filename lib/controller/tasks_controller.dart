@@ -87,9 +87,16 @@ class TasksController extends AppBaseController
 
   @override
   void onClose() {
+    // Dispose horizontal scroll controllers
     for (final controller in horizontalScrollControllers.values) {
       controller.dispose();
     }
+    horizontalScrollControllers.clear();
+    hasHorizontalOverflow.clear();
+
+    // Dispose refresh controller ONCE
+    pullController.dispose();
+
     super.onClose();
   }
 

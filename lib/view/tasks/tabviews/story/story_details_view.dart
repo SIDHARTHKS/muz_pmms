@@ -13,6 +13,7 @@ import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../controller/story_details_controller.dart';
+import '../../../dialogues/success_dialogue.dart';
 import '../../../loaders/story_details_loader.dart';
 import '../../../widget/common_widget.dart';
 
@@ -200,7 +201,24 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _dropItem("Hold Story", () {}),
+                      _dropItem("Hold Story", () async {
+                        goBack(); //for closing menu
+                        bool success = await controller.holdStory(false);
+                        if (success) {
+                          await showDialog(
+                            context: Get.context!,
+                            barrierDismissible: true,
+                            builder: (_) => const SuccessDialogue(
+                              title: "Story status updated to Hold",
+                              subtitle1: "",
+                              subtitle2: "",
+                              subtitle3: "",
+                            ),
+                          );
+                          controller.tasksController.fetchInitData();
+                          goBack(); // for returning to task page
+                        }
+                      }),
                       divider(
                           color: AppColorHelper()
                               .dividerColor
@@ -208,7 +226,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                       _dropItem("Edit Story", () {
                         Map<String, dynamic> arg = {
                           currentStoryKey:
-                              controller.rxSelectedStory.value?.toJson(),
+                              controller.rxFetchedStory.value?.toJson(),
                         };
                         navigateTo(editStoryPageRoute, arguments: arg);
                       }),
@@ -216,7 +234,24 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                           color: AppColorHelper()
                               .dividerColor
                               .withValues(alpha: 0.2)),
-                      _dropItem("Reject Story", () {}),
+                      _dropItem("Reject Story", () async {
+                        goBack(); //for closing menu
+                        bool success = await controller.rejectStory(false);
+                        if (success) {
+                          await showDialog(
+                            context: Get.context!,
+                            barrierDismissible: true,
+                            builder: (_) => const SuccessDialogue(
+                              title: "Story Rejected Successfully",
+                              subtitle1: "",
+                              subtitle2: "",
+                              subtitle3: "",
+                            ),
+                          );
+                          controller.tasksController.fetchInitData();
+                          goBack(); // for returning to task page
+                        }
+                      }),
                     ],
                   ),
                 ),
@@ -424,8 +459,14 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
   }
 
   Row _progressBar(String loggedTime, String estimateTime) {
-    double logged = double.parse(loggedTime);
-    double estimated = double.parse(estimateTime);
+    double logged = double.tryParse(loggedTime) ?? 0.0;
+    double estimated = double.tryParse(estimateTime) ?? 0.0;
+
+    int percentage = 0;
+
+    if (estimated > 0) {
+      percentage = ((logged / estimated) * 100).round();
+    }
     return Row(
       children: [
         Expanded(
@@ -448,7 +489,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
           ),
         ),
         width(12),
-        appText("${((logged / estimated) * 100).round()} %",
+        appText("$percentage %",
             fontSize: 13,
             fontWeight: FontWeight.w500,
             color: AppColorHelper().primaryTextColor)

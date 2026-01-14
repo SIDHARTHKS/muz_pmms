@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/story_details_controller.dart';
+import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
@@ -19,6 +21,9 @@ import '../helper/core/base/app_base_controller.dart';
 class EditStoryController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   final TaskServices _taskServices = Get.find<TaskServices>();
+  late TasksController tasksController = Get.find<TasksController>();
+  late StoryDetailsController storyDetailsController =
+      Get.find<StoryDetailsController>();
   //
   final isInitCalled = false.obs;
 
@@ -34,6 +39,7 @@ class EditStoryController extends AppBaseController
   final RxBool rxToggle = false.obs;
 
   //filter
+
   Rxn<FiltersResponse> rxSelectedStoryType = Rxn<FiltersResponse>();
   Rxn<FiltersResponse> rxSelectedStoryStatus = Rxn<FiltersResponse>();
   Rxn<DropDownResponse> rxSelectedAsignee = Rxn<DropDownResponse>();
@@ -42,12 +48,14 @@ class EditStoryController extends AppBaseController
 
   //dates
 
-  DateTime rxRequestDate = DateTime.now();
-  DateTime rxPlannedStartDate = DateTime.now();
-  DateTime rxPlannedEndDate = DateTime.now();
+  Rx<DateTime> rxRequestDate = DateTime.now().obs;
+  Rx<DateTime> rxOriginalStartDate = DateTime.now().obs;
+  Rx<DateTime> rxOriginalEndDate = DateTime.now().obs;
+  Rx<DateTime> rxPlannedStartDate = DateTime.now().obs;
+  Rx<DateTime> rxPlannedEndDate = DateTime.now().obs;
 
   // story
-  Rxn<TaskResponse> rxCurrentStoryDetail = Rxn<TaskResponse>();
+  Rxn<StoryList> rxCurrentStoryDetail = Rxn<StoryList>();
   Rxn<CreateStoryResponse> rxGenerateStoryResponse = Rxn<CreateStoryResponse>();
 
   //filter response
@@ -61,12 +69,12 @@ class EditStoryController extends AppBaseController
   Future<void> onInit() async {
     isInitCalled(true);
     _setArguments();
+    setDefaultFilters();
     await fetchDropdownForStory(
         (rxCurrentStoryDetail.value?.projectId ?? "").toString(),
-        "",
+        (rxCurrentStoryDetail.value?.moduleId ?? "").toString(),
         (rxCurrentStoryDetail.value?.teamId ?? "").toString(),
         false);
-    setDefaultFilters();
     super.onInit();
   }
 
@@ -76,7 +84,7 @@ class EditStoryController extends AppBaseController
 
     if (arguments != null && arguments[currentStoryKey] != null) {
       rxCurrentStoryDetail.value =
-          TaskResponse.fromJson(arguments[currentStoryKey]);
+          StoryList.fromJson(arguments[currentStoryKey]);
     }
   }
 
@@ -111,16 +119,12 @@ class EditStoryController extends AppBaseController
   void setDefaultFilters() {
     setEstimateTime(rxCurrentStoryDetail.value?.estimateTime ?? "00.00");
     descriptionController.text = rxCurrentStoryDetail.value?.description ?? "";
-    setDropdownSelectedById(
-      selectedRx: rxSelectedAsignee,
-      source: rxAssigneeList,
-      matchId: rxCurrentStoryDetail.value?.assigneeId?.toString(),
-    );
-    setDropdownSelectedById(
-      selectedRx: rxSelectedStoryType,
-      source: rxStoryTypeList,
-      matchId: rxCurrentStoryDetail.value?.storyType?.toString(),
-    );
+    setDateFromString(
+        rxCurrentStoryDetail.value?.plannedStartDate ?? "", rxPlannedStartDate);
+    setDateFromString(
+        rxCurrentStoryDetail.value?.plannedEndDate ?? "", rxPlannedEndDate);
+    setDateFromString(
+        rxCurrentStoryDetail.value?.requestDateTime ?? "", rxRequestDate);
   }
 
   void setDropdownSelectedById<T>({
@@ -150,6 +154,21 @@ class EditStoryController extends AppBaseController
         source.first;
   }
 
+  void setDateFromString(
+    String dateStr,
+    Rx<DateTime> target,
+  ) {
+    if (dateStr.isEmpty || dateStr.startsWith("0000")) {
+      target.value = DateTime.now();
+      return;
+    }
+
+    final parsed = DateTime.tryParse(dateStr);
+    if (parsed != null) {
+      target.value = parsed;
+    }
+  }
+
   void setEstimateTime(String estimate) {
     final parts = estimate.split('.');
 
@@ -166,27 +185,27 @@ class EditStoryController extends AppBaseController
     try {
       showLoader();
       String id = myApp.preferenceHelper!.getString(employeeIdKey);
-
+      var story = rxCurrentStoryDetail.value;
       if (requiredDataSelected()) {
         var generateStoryRequestList = [
           CommonRequest(attribute: "transType", value: "INSERT"),
-          CommonRequest(attribute: "transSubType", value: "INSERT"),
+          CommonRequest(attribute: "transSubType", value: "EDIT"),
           CommonRequest(
               attribute: "Description", value: descriptionController.text),
           CommonRequest(
               attribute: "EstimateTime",
               value:
-                  "${hoursController.text.trim()}:${minutesController.text.trim()}"),
+                  "${hoursController.text.trim()}.${minutesController.text.trim()}"),
           CommonRequest(
               attribute: "RequestDate",
-              value: DateHelper().formatForApi(rxRequestDate)),
+              value: DateHelper().formatForApi(rxRequestDate.value)),
           CommonRequest(
               attribute: "PlannedStartDate",
-              value: DateHelper().formatForApi(rxPlannedStartDate)),
+              value: DateHelper().formatForApi(rxPlannedStartDate.value)),
           CommonRequest(
               attribute: "PlannedEndDate",
-              value: DateHelper().formatForApi(rxPlannedEndDate)),
-          CommonRequest(attribute: "RequestID", value: "0"),
+              value: DateHelper().formatForApi(rxPlannedEndDate.value)),
+          CommonRequest(attribute: "RequestID", value: story?.requestId ?? "0"),
           CommonRequest(
               attribute: "StoryTypeMccID",
               value: (rxSelectedStoryType.value?.mccId ?? "").toString()),
@@ -206,6 +225,15 @@ class EditStoryController extends AppBaseController
               attribute: "AssigneeID",
               value: (rxSelectedAsignee.value?.id ?? "").toString()),
           CommonRequest(attribute: "LoginEmpID", value: id),
+          CommonRequest(
+              attribute: "OrginalStratDate",
+              value: DateHelper().formatForApi(rxOriginalStartDate.value)),
+          CommonRequest(
+              attribute: "OrginalEndDate",
+              value: DateHelper().formatForApi(rxOriginalEndDate.value)),
+          CommonRequest(
+              attribute: "Attachments", value: story?.attachment ?? ""),
+          CommonRequest(attribute: "Links", value: story?.attachment ?? ""),
         ];
         CreateStoryResponse? response =
             await _taskServices.createStory(generateStoryRequestList);
@@ -251,15 +279,70 @@ class EditStoryController extends AppBaseController
       String teamID, bool loaderEnabled) async {
     await fetchFilters(
         "STORY_TYPE", rxStoryTypeList, rxSelectedStoryType, loaderEnabled);
+    final matchedStoryType = rxStoryTypeList.firstWhereOrNull(
+      (e) =>
+          (e.mccName ?? "").toLowerCase() ==
+          (rxCurrentStoryDetail.value?.storyType ?? "").toLowerCase(),
+    );
+    if (matchedStoryType != null) {
+      setDropdownSelectedById(
+        selectedRx: rxSelectedStoryType,
+        source: rxStoryTypeList,
+        matchId: matchedStoryType.mccId?.toString(),
+      );
+    }
+    await fetchAssignee();
+    setDropdownSelectedById(
+      selectedRx: rxSelectedAsignee,
+      source: rxAssigneeList,
+      matchId: rxCurrentStoryDetail.value?.assigneeId?.toString(),
+    );
     await fetchFilters("STORY_STATUS", rxStoryStatusList, rxSelectedStoryStatus,
         loaderEnabled);
-    await fetchDropdowns(projectId, moduelID, teamID, "ASSIGNEE",
-        rxAssigneeList, rxSelectedAsignee, "TOKEN", loaderEnabled);
-    await fetchDropdowns(projectId, moduelID, teamID, "MODULE", rxModuleList,
-        rxSelectedModule, "TOKEN", loaderEnabled);
-    await fetchDropdowns(projectId, moduelID, teamID, "OPTION", rxOptionsList,
-        rxSelectedOption, "TOKEN", loaderEnabled);
+    await fetchModule();
+    await fetchOption();
   }
+
+  Future<void> fetchAssignee() async {
+    await fetchDropdowns(
+        (rxCurrentStoryDetail.value?.projectId ?? "").toString(),
+        "",
+        (rxCurrentStoryDetail.value?.teamId ?? "").toString(),
+        "ASSIGNEE",
+        rxAssigneeList,
+        rxSelectedAsignee,
+        "STORY",
+        rxSelectedStoryType.value?.mccId ?? "0",
+        false);
+  }
+
+  Future<void> fetchModule() async {
+    await fetchDropdowns(
+        (rxCurrentStoryDetail.value?.projectId ?? "").toString(),
+        "",
+        (rxCurrentStoryDetail.value?.teamId ?? "").toString(),
+        "MODULE",
+        rxModuleList,
+        rxSelectedModule,
+        "TOKEN",
+        rxSelectedStoryType.value?.mccId ?? "0",
+        false);
+  }
+
+  Future<void> fetchOption() async {
+    await fetchDropdowns(
+        (rxCurrentStoryDetail.value?.projectId ?? "").toString(),
+        (rxCurrentStoryDetail.value?.moduleId ?? "").toString(),
+        (rxCurrentStoryDetail.value?.teamId ?? "").toString(),
+        "OPTION",
+        rxOptionsList,
+        rxSelectedOption,
+        "TOKEN",
+        rxSelectedStoryType.value?.mccId ?? "0",
+        false);
+  }
+
+  ////////////////////////////////////////////// FILTER AND DROPDOWN API CALL   /////////////////////////////////////////////
 
   Future<bool> fetchDropdowns(
       String projectId,
@@ -269,6 +352,7 @@ class EditStoryController extends AppBaseController
       RxList updateList,
       Rxn selectedList,
       String issueType,
+      String storyType,
       bool loaderEnabled) async {
     try {
       if (loaderEnabled) {
@@ -289,7 +373,7 @@ class EditStoryController extends AppBaseController
         CommonRequest(attribute: "ModuleID", value: ""),
         CommonRequest(attribute: "TeamID", value: teamId),
         CommonRequest(attribute: "EmployeeID", value: id),
-        CommonRequest(attribute: "StoryTypeMccID", value: ""),
+        CommonRequest(attribute: "StoryTypeMccID", value: storyType),
         CommonRequest(attribute: "IssueType", value: issueType),
       ];
       List<DropDownResponse>? response =

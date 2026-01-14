@@ -110,7 +110,7 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                                 ),
                               );
                               controller.rxCurrentPageIndex(0);
-                              navigateToAndRemove(homePageRoute);
+                              goBack();
                             }
                           });
                         }
@@ -132,7 +132,36 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
                                   builder: (context) =>
-                                      GenerateStoryBottomsheet());
+                                      GenerateStoryBottomsheet(
+                                        onConfirm: () async {
+                                          if (controller
+                                              .requiredDataSelected()) {
+                                            await controller
+                                                .callGenerateStory()
+                                                .then((success) async {
+                                              if (success) {
+                                                await showDialog(
+                                                  context: Get.context!,
+                                                  barrierDismissible: true,
+                                                  builder: (_) =>
+                                                      const SuccessDialogue(
+                                                    title:
+                                                        "Story Created Successfully",
+                                                    subtitle1:
+                                                        "Your new story ",
+                                                    subtitle2: "TKN -782-12 ",
+                                                    subtitle3:
+                                                        "has been created successfully",
+                                                  ),
+                                                );
+                                                controller
+                                                    .rxCurrentPageIndex(0);
+                                                goBack();
+                                              }
+                                            });
+                                          }
+                                        },
+                                      ));
                             }
                           }),
                           width(15),

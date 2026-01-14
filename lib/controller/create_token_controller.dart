@@ -49,7 +49,7 @@ class CreateTokenController extends AppBaseController
   DateTime rxDueDate = DateTime.now();
 
   // responses
-  Rxn<CreateTokenResponse> rxGenerateTokenResponse = Rxn<CreateTokenResponse>();
+  Rxn<CommonReseponse> rxGenerateTokenResponse = Rxn<CommonReseponse>();
   RxList<FiltersResponse> rxProjectsList = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxPriorityList = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxRequestList = <FiltersResponse>[].obs;
@@ -162,7 +162,7 @@ class CreateTokenController extends AppBaseController
               attribute: "DueDate",
               value: DateHelper().formatForApi(rxDueDate)),
         ];
-        CreateTokenResponse? response =
+        CommonReseponse? response =
             await _taskServices.createToken(generateTokenRequestList);
         if (response != null) {
           rxGenerateTokenResponse.value = response;

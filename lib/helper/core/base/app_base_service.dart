@@ -32,6 +32,7 @@ class AppBaseService {
   // story
   getStoryDetailsApiEndpoint() => '/storyinToken'; //
   getCreateStoryApiEndpoint() => '/generatestory'; //
+  getHoldStoryApiEndpoint() => '/generatestory'; //
 
   // filter
   getFiltersApiEndpoint() => '/mytaskdropdown'; //
