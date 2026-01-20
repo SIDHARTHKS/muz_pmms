@@ -5,9 +5,11 @@ import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/date_helper.dart';
+import 'package:pmms/helper/enum.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
+import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
@@ -73,10 +75,63 @@ class PlTokensView extends AppBaseView<TasksController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                appText(capitalizeFirstOnly(task.requestType ?? "--"),
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    color: AppColorHelper().primaryTextColor),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    appText(capitalizeFirstOnly(task.requestType ?? "--"),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: AppColorHelper().primaryTextColor),
+                    (controller.userRole(task.role ?? "tl") == RoleType.tl)
+                        ? Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: getStatusColor(
+                                      task.currentStatus ?? "--"),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                                child: appText(
+                                  capitalizeFirstOnly(
+                                      task.currentStatus ?? "--"),
+                                  color: AppColorHelper().textColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              // width(10),
+                              // RichText(
+                              //     text: TextSpan(children: [
+                              //   TextSpan(
+                              //       text: "5",
+                              //       style: textStyle(
+                              //           16,
+                              //           AppColorHelper().primaryTextColor,
+                              //           FontWeight.w600)),
+                              //   TextSpan(
+                              //       text: "/",
+                              //       style: textStyle(
+                              //           16,
+                              //           AppColorHelper()
+                              //               .primaryTextColor
+                              //               .withValues(alpha: 0.7),
+                              //           FontWeight.w600)),
+                              //   TextSpan(
+                              //       text: "12",
+                              //       style: textStyle(
+                              //           16,
+                              //           AppColorHelper()
+                              //               .primaryTextColor
+                              //               .withValues(alpha: 0.7),
+                              //           FontWeight.w600))
+                              // ]))
+                            ],
+                          )
+                        : width(0),
+                  ],
+                ),
                 height(12),
                 Row(
                   children: [
@@ -254,90 +309,112 @@ class PlTokensView extends AppBaseView<TasksController> {
                   ],
                 ),
                 height(18),
-                Obx(() {
-                  return SizedBox(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: buttonContainer(
-                            height: 42,
-                            color: AppColorHelper()
-                                .primaryColorLight
-                                .withValues(alpha: 0.9),
-                            borderColor: AppColorHelper()
-                                .primaryColor
-                                .withValues(alpha: 0.8),
-                            width: 0.1,
-                            onPressed: () {
-                              controller.rxSelectedToken.value = task;
-                              controller.approveToken().then((success) {
-                                if (success) {
-                                  showDialog(
-                                    context: Get.context!,
-                                    barrierDismissible: true,
-                                    builder: (_) => const SuccessDialogue(
-                                      title: "Approved \n Successfully",
-                                      subtitle1: "This token request has been",
-                                      subtitle2: "",
-                                      subtitle3: "approved successfully.",
-                                    ),
-                                  );
-                                  Future.delayed(const Duration(seconds: 1),
-                                      () {
-                                    if (Navigator.canPop(Get.context!)) {
-                                      Navigator.of(Get.context!).pop();
-                                    }
-                                  });
-                                }
-                              });
-                            },
-                            controller.rxIsLoading.value
-                                ? buttonLoader(
-                                    color: AppColorHelper().secondaryTextColor,
-                                  )
-                                : appText(
-                                    approve.tr,
-                                    color: AppColorHelper().secondaryTextColor,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                          ),
-                        ),
-                        width(12),
-                        Expanded(
-                          child: buttonContainer(
-                            height: 42,
-                            color: AppColorHelper()
-                                .backgroundColor
-                                .withValues(alpha: 0.9),
-                            borderColor: AppColorHelper()
-                                .borderColor
-                                .withValues(alpha: 0.30),
-                            onPressed: () {
-                              Map<String, dynamic> arg = {
-                                selectedEditTokenKey: task.toJson(),
-                              };
-                              navigateTo(plTaskDetailsPageRoute,
-                                  arguments: arg);
-                            },
-                            controller.rxIsLoading.value
-                                ? buttonLoader(
-                                    color: AppColorHelper().primaryTextColor,
-                                  )
-                                : appText(
-                                    viewToken.tr,
-                                    color: AppColorHelper().primaryTextColor,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                (controller.userRole(task.role ?? "tl") == RoleType.pl)
+                    ? _plButtons(task)
+                    : _tlButton(task),
               ],
             ),
           );
         });
+  }
+
+  Row _tlButton(TaskResponse task) {
+    return Row(
+      children: [
+        Expanded(
+          child: buttonContainer(
+            height: 42,
+            color: AppColorHelper().primaryColorLight.withValues(alpha: 0.9),
+            borderColor: AppColorHelper().primaryColor.withValues(alpha: 0.8),
+            width: 0.1,
+            onPressed: () {
+              controller.rxSelectedToken.value = task;
+              navigateTo(tlTaskDetailsPageRoute);
+            },
+            appText(viewToken.tr,
+                color: AppColorHelper().secondaryTextColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 13),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Obx _plButtons(TaskResponse task) {
+    return Obx(() {
+      return SizedBox(
+        child: Row(
+          children: [
+            Expanded(
+              child: buttonContainer(
+                height: 42,
+                color:
+                    AppColorHelper().primaryColorLight.withValues(alpha: 0.9),
+                borderColor:
+                    AppColorHelper().primaryColor.withValues(alpha: 0.8),
+                width: 0.1,
+                onPressed: () {
+                  controller.rxSelectedToken.value = task;
+                  controller.approveToken().then((success) {
+                    if (success) {
+                      showDialog(
+                        context: Get.context!,
+                        barrierDismissible: true,
+                        builder: (_) => const SuccessDialogue(
+                          title: "Approved \n Successfully",
+                          subtitle1: "This token request has been",
+                          subtitle2: "",
+                          subtitle3: "approved successfully.",
+                        ),
+                      );
+                      Future.delayed(const Duration(seconds: 1), () {
+                        if (Navigator.canPop(Get.context!)) {
+                          Navigator.of(Get.context!).pop();
+                        }
+                      });
+                    }
+                  });
+                },
+                controller.rxIsLoading.value
+                    ? buttonLoader(
+                        color: AppColorHelper().secondaryTextColor,
+                      )
+                    : appText(
+                        approve.tr,
+                        color: AppColorHelper().secondaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+              ),
+            ),
+            width(12),
+            Expanded(
+              child: buttonContainer(
+                height: 42,
+                color: AppColorHelper().backgroundColor.withValues(alpha: 0.9),
+                borderColor:
+                    AppColorHelper().borderColor.withValues(alpha: 0.30),
+                onPressed: () {
+                  Map<String, dynamic> arg = {
+                    selectedEditTokenKey: task.toJson(),
+                  };
+                  navigateTo(plTaskDetailsPageRoute, arguments: arg);
+                },
+                controller.rxIsLoading.value
+                    ? buttonLoader(
+                        color: AppColorHelper().primaryTextColor,
+                      )
+                    : appText(
+                        viewToken.tr,
+                        color: AppColorHelper().primaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Column _infoColums(String type, String name) {

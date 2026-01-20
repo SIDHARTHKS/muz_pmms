@@ -34,6 +34,7 @@ const String selectedTaskKey = 'selectedTaskKey';
 const String selectedEditStoryKey = 'selectedEditStoryKey';
 const String selectedEditTokenKey = 'selectedEditTokenKey';
 const String selectedViewStoryKey = 'selectedViewStoryKey';
+const String selectedViewStoryListKey = 'selectedViewStoryListKey';
 
 //Arguments key
 const String companiesKey = 'companiesKey';
@@ -269,6 +270,11 @@ const String shortDescription = 'ShortDescription';
 const String storyType = 'StoryType';
 const String estimateTime = 'EstimateTime';
 const String requestDate = 'Request Date';
+
+const String editStory = 'editStory';
+const String holdStory = 'holdStory';
+const String rejectStory = 'rejectStory';
+
 const String plannedStartDate = 'Planned Start Date';
 const String plannedEndDate = 'Planned End Date';
 const String ogStartDate = 'Original Start Date';
@@ -276,6 +282,22 @@ const String ogEndDate = 'Original End Date';
 const String generateStoryNow = 'wouldyouliketogeneratethestorynnow?';
 const String updateStoryNow = 'wouldyouliketoupdatethestorynnow?';
 const String createdBy = 'createdBy';
+const String storyCreatedSuccessfully = "StoryCreatedSuccessfully";
+const String yourNewToken = "Yournewstory ";
+const String hasBeencreatedSuccessfully = "hasbeencreatedsuccessfully";
+const String tokenHasBeenUpdatedSuccessfully = "TokenUpdatedSuccessfully";
+const String storyHasBeenUpdatedSuccessfully = "StoryUpdatedSuccessfully";
+const String storyHasBeenUpdatedToHold = "StoryUpdatedToHold";
+const String yourStory = "Yourstory";
+const String hasBeenUpdatedSuccessfully = "hasbeenupdatedsuccessfully";
+
+const String dateRange = 'DateRange';
+const String filterTokens = 'FilterTokens';
+const String clearAllFilters = 'ClearAllFilters';
+const String applyAllFilters = 'ApplyFilters';
+const String filtersApplied = 'FiltersApplied';
+
+const String searchTokensProjects = 'Searchtokens,projects,modules';
 
 const String requestedBy = 'requestedBy';
 const String clientRefId = 'clientRefId';
@@ -294,8 +316,14 @@ const String endDate = 'endDate';
 const String loggedTime = 'LoggedTime';
 const String estimatedTime = 'EstimatedTime';
 const String viewWorkLog = 'viewWorkLog';
+const String noWorkLogsAvailable = 'noWorkLogsAvailable';
+const String loggedWorkOn = 'loggedWorkOn';
 
 const String all = 'All';
+
+// snackbar
+const String couldNotGenerateToken = "couldNotGenerateToken";
+const String couldNotGenerateStory = "couldNotGenerateStory";
 
 // TYPES
 

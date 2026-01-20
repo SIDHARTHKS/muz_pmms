@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/create_token_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
-import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 
 import '../../../helper/navigation.dart';
-import '../../dialogues/token_generate_dialogue.dart';
 
 class GenerateTokenBottomsheet extends StatelessWidget {
-  final CreateTokenController _tokenController =
-      Get.find<CreateTokenController>();
-  GenerateTokenBottomsheet({super.key});
+  final VoidCallback ontap;
+
+  const GenerateTokenBottomsheet({super.key, required this.ontap});
 
   @override
   Widget build(BuildContext context) {
@@ -67,30 +64,8 @@ class GenerateTokenBottomsheet extends StatelessWidget {
                 fontWeight: FontWeight.w500),
           ),
           height(30),
-          buttonContainer(onPressed: () async {
-            await _tokenController.callGenerateToken().then((success) {
-              if (success) {
-                var tokenId =
-                    _tokenController.rxGenerateTokenResponse.value?.message ??
-                        "--";
-                showDialog(
-                  context: Get.context!,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    Future.delayed(const Duration(seconds: 2), () {
-                      goBack();
-                    });
-                    return TokenGenerateDialogue(id: "TKN-$tokenId");
-                  },
-                );
-
-                _tokenController.rxCurrentPageIndex(0);
-              }
-              Future.delayed(const Duration(seconds: 2), () {
-                navigateToAndRemove(homePageRoute);
-              });
-            });
-          },
+          buttonContainer(
+              onPressed: ontap,
               color: AppColorHelper().primaryColor,
               appText(generateToken.tr,
                   color: AppColorHelper().textColor,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
@@ -10,6 +11,7 @@ import 'package:pmms/view/createToken/bottomsheet/generate_token_bottomsheet.dar
 import 'package:pmms/view/dialogues/token_generate_dialogue.dart';
 import 'package:pmms/view/widget/progress_loader.dart';
 import '../../controller/create_token_controller.dart';
+import '../../helper/route.dart' show homePageRoute;
 import '../widget/common_widget.dart';
 
 class CreateTokenScreen extends AppBaseView<CreateTokenController> {
@@ -31,6 +33,7 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
         FocusScope.of(Get.context!).unfocus();
       },
       child: appScaffold(
+        resizeToAvoidBottomInset: true,
         appBar: customAppBar(createtoken.tr),
         body: appContainer(
           enableSafeArea: true,
@@ -109,13 +112,22 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                                 builder: (context) {
                                   Future.delayed(const Duration(seconds: 2),
                                       () {
-                                    goBack();
+                                    controller.tasksController
+                                        .refreshTasks(false);
                                   });
                                   return TokenGenerateDialogue(
                                       id: "TKN-$tokenId");
                                 },
                               );
+
                               controller.rxCurrentPageIndex(0);
+                              Future.delayed(const Duration(seconds: 2), () {
+                                navigateToAndRemove(homePageRoute);
+                              });
+                            } else {
+                              goBack();
+                              showErrorSnackbar(
+                                  message: couldNotGenerateToken.tr);
                             }
                           });
                         }
@@ -137,7 +149,47 @@ class CreateTokenScreen extends AppBaseView<CreateTokenController> {
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
                                   builder: (context) =>
-                                      GenerateTokenBottomsheet());
+                                      GenerateTokenBottomsheet(
+                                        ontap: () async {
+                                          await controller
+                                              .callGenerateToken()
+                                              .then((success) {
+                                            if (success) {
+                                              goBack();
+                                              var tokenId = controller
+                                                      .rxGenerateTokenResponse
+                                                      .value
+                                                      ?.message ??
+                                                  "--";
+                                              showDialog(
+                                                context: Get.context!,
+                                                barrierDismissible: false,
+                                                builder: (context) {
+                                                  Future.delayed(
+                                                      const Duration(
+                                                          seconds: 1), () {
+                                                    goBack();
+                                                  });
+                                                  return TokenGenerateDialogue(
+                                                      id: "TKN-$tokenId");
+                                                },
+                                              );
+                                              Future.delayed(
+                                                  const Duration(seconds: 2),
+                                                  () {
+                                                navigateToAndRemove(
+                                                    homePageRoute);
+                                              });
+                                              controller.rxCurrentPageIndex(0);
+                                            } else {
+                                              goBack();
+                                              showErrorSnackbar(
+                                                  message:
+                                                      couldNotGenerateToken.tr);
+                                            }
+                                          });
+                                        },
+                                      ));
                             }
                           }),
                           width(15),

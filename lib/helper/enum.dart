@@ -15,3 +15,5 @@ enum Language { english, malayalam }
 enum HttpMethodType { get, post }
 
 enum FilterType { all, todo, inprogress, hold, completed }
+
+enum RoleType { pl, tl }

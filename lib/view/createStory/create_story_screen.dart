@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/create_story_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/app_message.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
-import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/createStory/bottomsheet/generate_story_bottomsheet.dart';
 import 'package:pmms/view/dialogues/success_dialogue.dart';
@@ -99,18 +99,24 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                               .callGenerateStory()
                               .then((success) async {
                             if (success) {
+                              var tokenId = controller
+                                      .rxGenerateStoryResponse.value?.message ??
+                                  "--";
                               await showDialog(
                                 context: Get.context!,
                                 barrierDismissible: true,
-                                builder: (_) => const SuccessDialogue(
-                                  title: "Story Created Successfully",
-                                  subtitle1: "Your new story ",
-                                  subtitle2: "TKN -782-12 ",
-                                  subtitle3: "has been created successfully",
+                                builder: (_) => SuccessDialogue(
+                                  title: storyCreatedSuccessfully.tr,
+                                  subtitle1: yourNewToken.tr,
+                                  subtitle2: "TKN-$tokenId",
+                                  subtitle3: hasBeencreatedSuccessfully.tr,
                                 ),
                               );
                               controller.rxCurrentPageIndex(0);
                               goBack();
+                            } else {
+                              showErrorSnackbar(
+                                  message: couldNotGenerateStory.tr);
                             }
                           });
                         }
@@ -139,24 +145,36 @@ class CreateStoryScreen extends AppBaseView<CreateStoryController> {
                                             await controller
                                                 .callGenerateStory()
                                                 .then((success) async {
+                                              goBack();
                                               if (success) {
+                                                var tokenId = controller
+                                                        .rxGenerateStoryResponse
+                                                        .value
+                                                        ?.message ??
+                                                    "--";
                                                 await showDialog(
                                                   context: Get.context!,
                                                   barrierDismissible: true,
                                                   builder: (_) =>
-                                                      const SuccessDialogue(
+                                                      SuccessDialogue(
                                                     title:
-                                                        "Story Created Successfully",
-                                                    subtitle1:
-                                                        "Your new story ",
-                                                    subtitle2: "TKN -782-12 ",
+                                                        storyCreatedSuccessfully
+                                                            .tr,
+                                                    subtitle1: yourNewToken.tr,
+                                                    subtitle2: "TKN-$tokenId",
                                                     subtitle3:
-                                                        "has been created successfully",
+                                                        hasBeencreatedSuccessfully
+                                                            .tr,
                                                   ),
                                                 );
                                                 controller
                                                     .rxCurrentPageIndex(0);
                                                 goBack();
+                                              } else {
+                                                showErrorSnackbar(
+                                                    message:
+                                                        couldNotGenerateStory
+                                                            .tr);
                                               }
                                             });
                                           }

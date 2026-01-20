@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pmms/controller/create_story_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/helper/sizer.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import '../../../helper/navigation.dart';
-import '../../dialogues/success_dialogue.dart';
 
 class GenerateStoryBottomsheet extends StatelessWidget {
   final bool isCreate;

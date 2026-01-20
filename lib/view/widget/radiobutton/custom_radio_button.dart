@@ -74,12 +74,14 @@ class CustomRadioButton<T> extends StatelessWidget {
               final Color activeColor = bgColor ?? appColor.primaryColor;
               final Color inactiveColor = appColor.cardColor;
 
+              bool isMiddle = index == 1;
+
               return Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: buttonContainer(
                   paddingVertical: 2,
                   onPressed: () => onChanged(item),
-                  width: widgetWidth ?? 117,
+                  width: widgetWidth ?? (isMiddle ? 130 : 115),
                   borderColor: isSelected
                       ? (borderColor ?? appColor.primaryColor)
                       : appColor.borderColor.withValues(alpha: 0.5),

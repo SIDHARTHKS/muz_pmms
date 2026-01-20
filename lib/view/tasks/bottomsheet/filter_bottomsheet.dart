@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/view/widget/datepicker/custom_daterangepicker.dart';
@@ -144,7 +145,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                appText("Filter Tokens",
+                appText(filterTokens.tr,
                     color: appColor.primaryTextColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 17),
@@ -177,7 +178,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: appText(
-                      "Date Range",
+                      dateRange.tr,
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                       color: AppColorHelper()
@@ -266,7 +267,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                           color: appColor.cardColor,
                           borderColor: AppColorHelper().borderColor,
                           appText(
-                            "Clear All Filters",
+                            clearAllFilters.tr,
                             fontWeight: FontWeight.w500,
                             color: AppColorHelper().primaryTextColor,
                           ),
@@ -282,7 +283,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                         child: buttonContainer(
                           color: appColor.primaryColor,
                           appText(
-                            "Apply Filters",
+                            applyAllFilters.tr,
                             fontWeight: FontWeight.w500,
                             color: AppColorHelper().textColor,
                           ),

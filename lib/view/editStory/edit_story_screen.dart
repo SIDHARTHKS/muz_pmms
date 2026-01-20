@@ -102,11 +102,11 @@ class EditStoryScreen extends AppBaseView<EditStoryController> {
                                 context: Get.context!,
                                 barrierDismissible: true,
                                 builder: (_) => SuccessDialogue(
-                                  title: "Story Updated Successfully",
-                                  subtitle1: "Your story",
+                                  title: storyHasBeenUpdatedSuccessfully.tr,
+                                  subtitle1: yourStory.tr,
                                   subtitle2:
                                       "TKN-${controller.rxCurrentStoryDetail.value?.tokenId ?? "-"}",
-                                  subtitle3: "has been updated successfully",
+                                  subtitle3: hasBeenUpdatedSuccessfully.tr,
                                 ),
                               );
                               // await controller.tasksController

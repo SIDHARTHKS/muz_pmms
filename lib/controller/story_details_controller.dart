@@ -32,17 +32,66 @@ class StoryDetailsController extends AppBaseController
 
   //////////////////////////////// FETCHING/SETTING TASK ////////////////////////////////
 
+  // Future<void> _setArguments() async {
+  //   var arguments = Get.arguments;
+  //   var data = arguments[selectedViewStoryKey];
+
+  //   if (arguments != null) {
+  //     TaskResponse story = TaskResponse.fromJson(data);
+  //     rxSelectedStory.value = story;
+  //     await fetchStory(false);
+  //   } else {
+  //     showErrorSnackbar(
+  //         message: "Unable To Fetch Task Details. Please Login Again");
+  //     goBack();
+  //   }
+  // }
+
   Future<void> _setArguments() async {
-    var arguments = Get.arguments;
-    var data = arguments[selectedViewStoryKey];
-    if (arguments != null) {
-      TaskResponse story = TaskResponse.fromJson(data);
-      rxSelectedStory.value = story;
-    } else {
-      showErrorSnackbar(
-          message: "Unable To Fetch Task Details. Please Login Again");
-      goBack();
+    final arguments = Get.arguments;
+
+    if (arguments == null) {
+      _handleInvalidArgs();
+      return;
     }
+    // CASE 1: Nav from Stories List
+    if (arguments.containsKey(selectedViewStoryKey)) {
+      final data = arguments[selectedViewStoryKey];
+
+      if (data == null) {
+        _handleInvalidArgs();
+        return;
+      }
+
+      final TaskResponse story = TaskResponse.fromJson(data);
+      rxSelectedStory.value = story;
+
+      await fetchStory(false);
+      return;
+    }
+
+    // CASE 2: Nav from Stories in Tokens
+    if (arguments.containsKey(selectedViewStoryListKey)) {
+      final data = arguments[selectedViewStoryListKey];
+
+      if (data == null) {
+        _handleInvalidArgs();
+        return;
+      }
+
+      final StoryList story = StoryList.fromJson(data);
+      rxFetchedStory.value = story;
+      return;
+    }
+
+    _handleInvalidArgs();
+  }
+
+  void _handleInvalidArgs() {
+    showErrorSnackbar(
+      message: "Unable to fetch story details. Please try again.",
+    );
+    goBack();
   }
 
   //////////////////////////////// STORY FETCH  ////////////////////////////////
@@ -254,7 +303,7 @@ class StoryDetailsController extends AppBaseController
 
   Future<bool> fetchStoryDetailsInitData() async {
     await _setArguments();
-    await fetchStory(false);
+
     return true;
   }
 }

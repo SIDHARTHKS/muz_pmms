@@ -201,15 +201,15 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _dropItem("Hold Story", () async {
+                      _dropItem(holdStory.tr, () async {
                         goBack(); //for closing menu
                         bool success = await controller.holdStory(false);
                         if (success) {
                           await showDialog(
                             context: Get.context!,
                             barrierDismissible: true,
-                            builder: (_) => const SuccessDialogue(
-                              title: "Story status updated to Hold",
+                            builder: (_) => SuccessDialogue(
+                              title: storyHasBeenUpdatedToHold.tr,
                               subtitle1: "",
                               subtitle2: "",
                               subtitle3: "",
@@ -223,7 +223,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                           color: AppColorHelper()
                               .dividerColor
                               .withValues(alpha: 0.2)),
-                      _dropItem("Edit Story", () {
+                      _dropItem(editStory.tr, () {
                         Map<String, dynamic> arg = {
                           currentStoryKey:
                               controller.rxFetchedStory.value?.toJson(),
@@ -234,7 +234,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                           color: AppColorHelper()
                               .dividerColor
                               .withValues(alpha: 0.2)),
-                      _dropItem("Reject Story", () async {
+                      _dropItem(rejectStory.tr, () async {
                         goBack(); //for closing menu
                         bool success = await controller.rejectStory(false);
                         if (success) {
@@ -346,7 +346,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
           height(20),
           if (logs.isEmpty)
             appText(
-              "No work logs available",
+              noWorkLogsAvailable.tr,
               fontSize: 13,
               color: AppColorHelper().primaryTextColor.withValues(alpha: 0.6),
             )
@@ -378,7 +378,7 @@ class StoryDetailsView extends AppBaseView<StoryDetailsController> {
                     14, AppColorHelper().primaryTextColor, FontWeight.w500),
               ),
               TextSpan(
-                text: 'Logged work on ${logDetails.loggedDate}',
+                text: '${loggedWorkOn.tr} ${logDetails.loggedDate}',
                 style: textStyle(
                     14,
                     AppColorHelper().primaryTextColor.withValues(alpha: 0.5),

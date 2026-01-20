@@ -264,7 +264,7 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
                   ),
                   children: [
                     TextSpan(
-                      text: "Requested by ",
+                      text: requestBy.tr,
                       style: textStyle(
                         12,
                         AppColorHelper()
@@ -304,7 +304,7 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
                         ),
                         children: [
                           TextSpan(
-                            text: "Client Ref ID: ",
+                            text: "${clientRefID.tr}:",
                             style: textStyle(
                               12,
                               AppColorHelper()
@@ -353,8 +353,8 @@ class PlTaskDetailsScreen extends AppBaseView<EditTokenController> {
                               context: Get.context!,
                               barrierDismissible:
                                   false, // prevents user from closing early
-                              builder: (_) => const SuccessDialogue(
-                                title: "Token updated Successfully",
+                              builder: (_) => SuccessDialogue(
+                                title: tokenHasBeenUpdatedSuccessfully.tr,
                                 subtitle1: "",
                                 subtitle2: "",
                                 subtitle3: "",

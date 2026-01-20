@@ -159,6 +159,24 @@ Map<String, String> enUS = {
   passwordresetSuccessfully: 'Password updated Successfully',
   passwordresetSuccessfullyDialogue:
       'Your password has been updated successfully. Please log in with your new credentials.',
+
+  storyCreatedSuccessfully: "Story Created Successfully",
+  yourNewToken: "Your new story ",
+  hasBeencreatedSuccessfully: "has been created successfully",
+  tokenHasBeenUpdatedSuccessfully: "Token Updated Successfully",
+  storyHasBeenUpdatedSuccessfully: "Story Updated Successfully",
+  storyHasBeenUpdatedToHold: "Story Has Been Updated To Hold",
+
+  yourStory: "Your story",
+  hasBeenUpdatedSuccessfully: "has been updated successfully",
+  dateRange: 'Date Range',
+  filterTokens: 'Filter Tokens',
+  clearAllFilters: 'Clear All Filters',
+  applyAllFilters: 'Apply Filters',
+  filtersApplied: 'Filters Applied',
+
+  searchTokensProjects: 'Searchtokens, projects, modules',
+
   changePass: 'Change Password',
   darkTheme: 'Dark Theme',
   notification: 'Notification',
@@ -177,6 +195,10 @@ Map<String, String> enUS = {
   storyType: 'Story Type',
   estimateTime: 'Estimate Time',
   requestDate: 'Request Date',
+  editStory: 'Edit Story',
+  holdStory: 'Hold Story',
+  rejectStory: 'Reject Story',
+
   plannedStartDate: 'Planned Start Date',
   plannedEndDate: 'Planned End Date',
   ogStartDate: 'Original Start Date',
@@ -197,5 +219,10 @@ Map<String, String> enUS = {
   loggedTime: 'Logged Time',
   estimatedTime: 'Estimated Time',
   viewWorkLog: 'View Work Log',
+  noWorkLogsAvailable: 'No Work Logs Available',
+  loggedWorkOn: 'Logged Work On',
   all: 'All',
+  // snackbar
+  couldNotGenerateToken: "Could Not Generate Token",
+  couldNotGenerateStory: "Could Not Generate Story",
 };

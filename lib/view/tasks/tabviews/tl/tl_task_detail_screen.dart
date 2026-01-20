@@ -192,18 +192,27 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                       ),
                     ),
                     width(10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColorHelper()
-                            .primaryColor
-                            .withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 15,
+                    GestureDetector(
+                      onTap: () {
+                        Map<String, dynamic> arg = {
+                          selectedViewStoryListKey: story.toJson(),
+                        };
+
+                        navigateTo(storyDetailsPageRoute, arguments: arg);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColorHelper()
+                              .primaryColor
+                              .withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 15,
+                        ),
                       ),
                     ),
                   ],
@@ -529,34 +538,36 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                 ),
               ),
               height(4),
-              RichText(
-                text: TextSpan(
-                  style: textStyle(
-                    14,
-                    AppColorHelper().primaryTextColor,
-                    FontWeight.w700,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: clientRefID.tr,
-                      style: textStyle(
-                        12,
-                        AppColorHelper()
-                            .primaryTextColor
-                            .withValues(alpha: 0.5),
-                        FontWeight.w400,
+              task.clientRefId != ""
+                  ? RichText(
+                      text: TextSpan(
+                        style: textStyle(
+                          14,
+                          AppColorHelper().primaryTextColor,
+                          FontWeight.w700,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: clientRefID.tr,
+                            style: textStyle(
+                              12,
+                              AppColorHelper()
+                                  .primaryTextColor
+                                  .withValues(alpha: 0.5),
+                              FontWeight.w400,
+                            ),
+                          ),
+                          TextSpan(
+                            text: task.clientRefId ?? "--",
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    TextSpan(
-                      text: task.clientRefId ?? "--",
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                    )
+                  : width(0),
             ],
           ),
         ),

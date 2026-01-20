@@ -706,15 +706,31 @@ class TasksController extends AppBaseController
 
   ////////////////////////////////////////  TABS  /////////////////////////////////////////
 
-  List rxTabLabel = [token.tr, story.tr, token.tr];
-  List rxPlTabScreens = [
+  List rxTabLabel = [token.tr, story.tr];
+  // List rxPlTabScreens = [
+  //   const PlTokensView(),
+  //   const StoryView(),
+  //   const TlTokenView()
+  // ];
+
+  List rxTabScreens = [
     const PlTokensView(),
     const StoryView(),
-    const TlTokenView()
   ];
 
   void switchTab(int index) {
     rxTabIndex(index);
+  }
+
+  RoleType userRole(String? role) {
+    switch (role?.toUpperCase()) {
+      case 'TL':
+        return RoleType.tl;
+      case 'PM':
+        return RoleType.pl;
+      default:
+        return RoleType.tl;
+    }
   }
 
   //

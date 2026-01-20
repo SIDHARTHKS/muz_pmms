@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pmms/controller/tasks_controller.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/navigation.dart';
@@ -18,6 +19,7 @@ import '../helper/enum.dart';
 class CreateTokenController extends AppBaseController
     with GetSingleTickerProviderStateMixin {
   final TaskServices _taskServices = Get.find<TaskServices>();
+  late TasksController tasksController = Get.find<TasksController>();
   //
   final isInitCalled = false.obs;
 

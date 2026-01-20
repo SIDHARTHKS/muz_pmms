@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pmms/gen/assets.gen.dart';
+import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/color_helper.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
@@ -57,7 +59,7 @@ class TokenGenerateDialogue extends StatelessWidget {
                     // highlight the token
                   ),
                   children: [
-                    const TextSpan(text: "Your new token "),
+                    TextSpan(text: yournewtoken.tr),
                     TextSpan(
                       text: "$id \n",
                       style: textStyle(

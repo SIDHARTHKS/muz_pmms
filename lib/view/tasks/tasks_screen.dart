@@ -76,7 +76,7 @@ class TasksScreen extends AppBaseView<TasksController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            appText("${controller.totalFilterCount} Filters Applied",
+            appText("${controller.totalFilterCount} ${filtersApplied.tr}",
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
                 color: AppColorHelper().primaryTextColor),
@@ -114,7 +114,7 @@ class TasksScreen extends AppBaseView<TasksController> {
                 radius: 11,
                 color: AppColorHelper().primaryColor,
               ))
-            : controller.rxPlTabScreens[controller.rxTabIndex.value]);
+            : controller.rxTabScreens[controller.rxTabIndex.value]);
   }
 
   Widget _tabBar() {
@@ -221,7 +221,7 @@ class TasksScreen extends AppBaseView<TasksController> {
           controller.onSearchChanged(value);
         },
         controller: controller.searchController,
-        hintText: "Search tokens, projects, modules",
+        hintText: searchTokensProjects.tr,
       ),
     );
   }

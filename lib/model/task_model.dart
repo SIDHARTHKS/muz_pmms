@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:pmms/helper/enum.dart';
+
 class TaskModel {
   final String title; // Title for the task (missing in image)
   final String requestedBy;

@@ -133,7 +133,7 @@ class EditStoryPage2 extends AppBaseView<EditStoryController> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _horizontalContainer(storyTitle.tr, "Sample"),
+          // _horizontalContainer(storyTitle.tr, ),
           width(10),
           _horizontalContainer(
               type.tr, controller.rxSelectedStoryType.value!.mccId ?? ""),

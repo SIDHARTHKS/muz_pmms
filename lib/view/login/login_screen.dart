@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pmms/view/login/bottomsheet/forget_password_bottomsheet.dart';
-import 'package:pmms/view/widget/text/app_text.dart';
 import '../../controller/login_controller.dart';
 import '../../gen/assets.gen.dart';
 import '../../helper/app_string.dart';

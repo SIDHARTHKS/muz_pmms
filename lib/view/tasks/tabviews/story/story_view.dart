@@ -176,7 +176,7 @@ class StoryView extends AppBaseView<TasksController> {
                                 children: [
                                   Row(
                                     children: [
-                                      appText("Logged Time : ",
+                                      appText("${loggedTime.tr} : ",
                                           color: AppColorHelper()
                                               .primaryTextColor
                                               .withValues(alpha: 0.6),
@@ -191,7 +191,7 @@ class StoryView extends AppBaseView<TasksController> {
                                   ),
                                   Row(
                                     children: [
-                                      appText("Estimated Time : ",
+                                      appText("${estimatedTime.tr} : ",
                                           color: AppColorHelper()
                                               .primaryTextColor
                                               .withValues(alpha: 0.6),

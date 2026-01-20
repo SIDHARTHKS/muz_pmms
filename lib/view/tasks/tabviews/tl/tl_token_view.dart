@@ -8,6 +8,7 @@ import 'package:pmms/helper/core/base/app_base_view.dart';
 import 'package:pmms/helper/navigation.dart';
 import 'package:pmms/helper/route.dart';
 import 'package:pmms/helper/sizer.dart';
+import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
 
@@ -237,31 +238,7 @@ class TlTokenView extends AppBaseView<TasksController> {
                             ],
                           ),
                           height(18),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: buttonContainer(
-                                  height: 42,
-                                  color: AppColorHelper()
-                                      .primaryColorLight
-                                      .withValues(alpha: 0.9),
-                                  borderColor: AppColorHelper()
-                                      .primaryColor
-                                      .withValues(alpha: 0.8),
-                                  width: 0.1,
-                                  onPressed: () {
-                                    controller.rxSelectedToken.value = task;
-                                    navigateTo(tlTaskDetailsPageRoute);
-                                  },
-                                  appText(viewToken.tr,
-                                      color:
-                                          AppColorHelper().secondaryTextColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 13),
-                                ),
-                              ),
-                            ],
-                          ),
+                          _handleTlButton(task),
                         ],
                       ),
                     );
@@ -270,6 +247,29 @@ class TlTokenView extends AppBaseView<TasksController> {
           ],
         ),
       ),
+    );
+  }
+
+  Row _handleTlButton(TaskResponse task) {
+    return Row(
+      children: [
+        Expanded(
+          child: buttonContainer(
+            height: 42,
+            color: AppColorHelper().primaryColorLight.withValues(alpha: 0.9),
+            borderColor: AppColorHelper().primaryColor.withValues(alpha: 0.8),
+            width: 0.1,
+            onPressed: () {
+              controller.rxSelectedToken.value = task;
+              navigateTo(tlTaskDetailsPageRoute);
+            },
+            appText(viewToken.tr,
+                color: AppColorHelper().secondaryTextColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 13),
+          ),
+        ),
+      ],
     );
   }
 

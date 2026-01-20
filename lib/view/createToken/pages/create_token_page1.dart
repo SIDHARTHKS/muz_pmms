@@ -70,7 +70,7 @@ class CreateTokenPage1 extends AppBaseView<CreateTokenController> {
               CustomRadioButton<FiltersResponse>(
                 label: requestType.tr,
                 widgetHeight: 35,
-                widgetWidth: (Get.width / 3) - 20,
+                // widgetWidth: (Get.width / 3) - 20,
                 isRequired: true,
                 items: controller.rxRequestList,
                 selectedValue: controller.rxSelectedRequest.value,
