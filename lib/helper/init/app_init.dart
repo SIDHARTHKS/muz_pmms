@@ -14,7 +14,7 @@ class AppInit {
     WidgetsFlutterBinding.ensureInitialized();
 
     await _initSingletonClasses();
-    // await _setUpFcm();
+    await _setUpFcm();
     _setDeviceType();
     _setUpScreenOrrientation();
   }
@@ -39,11 +39,10 @@ class AppInit {
   }
 
   Future<void> _setUpFcm() async {
-    // await Firebase.initializeApp(
-    //   options: DefaultFirebaseOptions.currentPlatform,
-    // );
-    // await NotificationService.instance.initialize();
+    // await Firebase.initializeApp();
+    // await FirebaseMessagingService().initialize();
   }
+
   // Future<void> _setUpFcm1() async {
   //   await Firebase.initializeApp(
   //     options: DefaultFirebaseOptions.currentPlatform,

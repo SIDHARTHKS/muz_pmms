@@ -259,6 +259,10 @@ class LoginController extends AppBaseController {
 
       //remember me
       myApp.preferenceHelper!.setBool(rememberMeKey, rxRememberMe.value);
+
+      // sid
+      myApp.preferenceHelper!
+          .setString(sidKey, rxLoginResponse.value?.sid ?? "");
     }
   }
 

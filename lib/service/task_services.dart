@@ -10,8 +10,8 @@ class TaskServices extends AppBaseService {
         endpoint: getTasksApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => List<TaskResponse>.from(
@@ -30,8 +30,8 @@ class TaskServices extends AppBaseService {
         endpoint: getFiltersApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => List<FiltersResponse>.from(
@@ -50,8 +50,8 @@ class TaskServices extends AppBaseService {
         endpoint: getDropdownApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => List<DropDownResponse>.from(
@@ -69,8 +69,8 @@ class TaskServices extends AppBaseService {
         endpoint: getCreateTokenApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => CommonReseponse.fromJson(json),
@@ -87,8 +87,8 @@ class TaskServices extends AppBaseService {
         endpoint: getCreateTokenApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => CommonReseponse.fromJson(json),
@@ -105,8 +105,8 @@ class TaskServices extends AppBaseService {
         endpoint: getCreateStoryApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => CreateStoryResponse.fromJson(json),
@@ -123,8 +123,8 @@ class TaskServices extends AppBaseService {
         endpoint: getStoryDetailsApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => List<StoryResponse>.from(
@@ -143,8 +143,8 @@ class TaskServices extends AppBaseService {
         endpoint: getHoldStoryApiEndpoint(),
         headers: await getHeaders(
           authorization: true,
-          xCorrelationId: false,
-          sid: false,
+          xCorrelationId: true,
+          sid: true,
         ),
         data: request,
         fromJsonT: (json) => CommonReseponse.fromJson(json),
