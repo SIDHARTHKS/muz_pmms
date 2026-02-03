@@ -106,10 +106,9 @@ class TlTaskDetailScreen extends AppBaseView<TasksController> {
                           height: 35,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: controller.rxStoryFilterTypeList.length,
+                            itemCount: controller.rxStoryStatusFilter.length,
                             itemBuilder: (context, index) {
-                              var item =
-                                  controller.rxStoryFilterTypeList[index];
+                              var item = controller.rxStoryStatusFilter[index];
                               bool isSelected =
                                   index == controller.rxStoryFilterIndex.value;
                               return Padding(

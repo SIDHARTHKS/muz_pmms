@@ -41,207 +41,245 @@ class StoryView extends AppBaseView<TasksController> {
           children: [
             height(10),
             Obx(() {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.rxStory.length,
-                  itemBuilder: (context, index) {
-                    final task = controller.rxStory[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 18, horizontal: 18),
-                      decoration: BoxDecoration(
-                        color: AppColorHelper().cardColor,
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                            color: AppColorHelper()
-                                .borderColor
-                                .withValues(alpha: 0.4)),
+              return controller.rxStory.isEmpty
+                  ? SizedBox(
+                      height: Get.height * 0.6, // ✅ gives space
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              Assets.images.noResults.path,
+                              scale: 4,
+                            ),
+                            height(10),
+                            appText(
+                              noResults.tr,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColorHelper().primaryTextColor,
+                            ),
+                            height(10),
+                            SizedBox(
+                              width: 250,
+                              child: appText(
+                                noResultsDialogue.tr,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                textAlign: TextAlign.center,
+                                color: AppColorHelper().primaryTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controller.rxStory.length,
+                      itemBuilder: (context, index) {
+                        final task = controller.rxStory[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 18, horizontal: 18),
+                          decoration: BoxDecoration(
+                            color: AppColorHelper().cardColor,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: AppColorHelper()
+                                    .borderColor
+                                    .withValues(alpha: 0.4)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              appText("TKN-${task.tokenId ?? "--"}",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColorHelper().primaryTextColor),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 2),
-                                decoration: BoxDecoration(
-                                    color: getStatusColor(
-                                            task.currentStatus ?? "--")
-                                        .withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(3),
-                                    border: Border.all(
-                                        color: getStatusTextColor(
-                                            task.currentStatus ?? "--"))),
-                                child: appText(
-                                  capitalizeFirstOnly(
-                                      task.currentStatus ?? "--"),
-                                  color: getStatusTextColor(
-                                      task.currentStatus ?? "--"),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          height(10),
-                          appText(capitalizeFirstOnly(task.description ?? "--"),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: AppColorHelper().primaryTextColor),
-                          height(6),
-                          Container(
-                            height: 2,
-                            width: Get.width,
-                            color: AppColorHelper()
-                                .borderColor
-                                .withValues(alpha: 0.3),
-                          ),
-                          height(16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  controller: controller
-                                      .getHorizontalScrollController(index),
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      _infoColums(
-                                        project.tr,
-                                        capitalizeFirstOnly(
-                                            task.projectName ?? "--"),
-                                      ),
-                                      width(40),
-                                      _infoColums(
-                                        module.tr,
-                                        capitalizeFirstOnly(
-                                            task.module ?? "--"),
-                                      ),
-                                      width(40),
-                                      _infoColums(
-                                        assignee.tr,
-                                        capitalizeFirstOnly(
-                                            task.assignee ?? "--"),
-                                      ),
-                                      width(40),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Obx(() {
-                                ScrollController thiController = controller
-                                    .getHorizontalScrollController(index);
-                                return controller.hasOverflow(index).value
-                                    ? InkWell(
-                                        onTap: () {
-                                          thiController.animateTo(
-                                            thiController
-                                                .position.maxScrollExtent,
-                                            duration: const Duration(
-                                                milliseconds: 300),
-                                            curve: Curves.easeOut,
-                                          );
-                                        },
-                                        child: Image.asset(
-                                          Assets.icons.overflowRight.path,
-                                          scale: 4,
-                                        ),
-                                      )
-                                    : const SizedBox();
-                              }),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15.0),
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: AppColorHelper()
-                                      .primaryColor
-                                      .withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(4)),
-                              child: Row(
+                              Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      appText("${loggedTime.tr} : ",
-                                          color: AppColorHelper()
-                                              .primaryTextColor
-                                              .withValues(alpha: 0.6),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 13),
-                                      appText(task.loggedTime.toString(),
-                                          color:
-                                              AppColorHelper().primaryTextColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14),
-                                    ],
+                                  appText("TKN-${task.tokenId ?? "--"}",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColorHelper().primaryTextColor),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 2),
+                                    decoration: BoxDecoration(
+                                        color: getStatusColor(
+                                                task.currentStatus ?? "--")
+                                            .withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(3),
+                                        border: Border.all(
+                                            color: getStatusTextColor(
+                                                task.currentStatus ?? "--"))),
+                                    child: appText(
+                                      capitalizeFirstOnly(
+                                          task.currentStatus ?? "--"),
+                                      color: getStatusTextColor(
+                                          task.currentStatus ?? "--"),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                  Row(
-                                    children: [
-                                      appText("${estimatedTime.tr} : ",
-                                          color: AppColorHelper()
-                                              .primaryTextColor
-                                              .withValues(alpha: 0.6),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 13),
-                                      appText(task.estimateTime.toString(),
-                                          color:
-                                              AppColorHelper().primaryTextColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14),
-                                    ],
-                                  )
                                 ],
                               ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: buttonContainer(
-                                  height: 42,
-                                  color: AppColorHelper()
-                                      .primaryColorLight
-                                      .withValues(alpha: 0.9),
-                                  borderColor: AppColorHelper()
-                                      .primaryColor
-                                      .withValues(alpha: 0.8),
-                                  width: 0.1,
-                                  onPressed: () async {
-                                    Map<String, dynamic> arg = {
-                                      selectedViewStoryKey: task.toJson(),
-                                    };
-
-                                    navigateTo(storyDetailsPageRoute,
-                                        arguments: arg);
-                                  },
-                                  appText(
-                                    viewThisStory.tr,
-                                    fontSize: 13,
-                                    color: AppColorHelper().secondaryTextColor,
-                                    fontWeight: FontWeight.w500,
+                              height(10),
+                              appText(
+                                  capitalizeFirstOnly(task.description ?? "--"),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColorHelper().primaryTextColor),
+                              height(6),
+                              Container(
+                                height: 2,
+                                width: Get.width,
+                                color: AppColorHelper()
+                                    .borderColor
+                                    .withValues(alpha: 0.3),
+                              ),
+                              height(16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      controller: controller
+                                          .getHorizontalScrollController(index),
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          _infoColums(
+                                            project.tr,
+                                            capitalizeFirstOnly(
+                                                task.projectName ?? "--"),
+                                          ),
+                                          width(40),
+                                          _infoColums(
+                                            module.tr,
+                                            capitalizeFirstOnly(
+                                                task.module ?? "--"),
+                                          ),
+                                          width(40),
+                                          _infoColums(
+                                            assignee.tr,
+                                            capitalizeFirstOnly(
+                                                task.assignee ?? "--"),
+                                          ),
+                                          width(40),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Obx(() {
+                                    ScrollController thiController = controller
+                                        .getHorizontalScrollController(index);
+                                    return controller.hasOverflow(index).value
+                                        ? InkWell(
+                                            onTap: () {
+                                              thiController.animateTo(
+                                                thiController
+                                                    .position.maxScrollExtent,
+                                                duration: const Duration(
+                                                    milliseconds: 300),
+                                                curve: Curves.easeOut,
+                                              );
+                                            },
+                                            child: Image.asset(
+                                              Assets.icons.overflowRight.path,
+                                              scale: 4,
+                                            ),
+                                          )
+                                        : const SizedBox();
+                                  }),
+                                ],
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15.0),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color: AppColorHelper()
+                                          .primaryColor
+                                          .withValues(alpha: 0.05),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          appText("${loggedTime.tr} : ",
+                                              color: AppColorHelper()
+                                                  .primaryTextColor
+                                                  .withValues(alpha: 0.6),
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13),
+                                          appText(task.loggedTime.toString(),
+                                              color: AppColorHelper()
+                                                  .primaryTextColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          appText("${estimatedTime.tr} : ",
+                                              color: AppColorHelper()
+                                                  .primaryTextColor
+                                                  .withValues(alpha: 0.6),
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13),
+                                          appText(task.estimateTime.toString(),
+                                              color: AppColorHelper()
+                                                  .primaryTextColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: buttonContainer(
+                                      height: 42,
+                                      color: AppColorHelper()
+                                          .primaryColorLight
+                                          .withValues(alpha: 0.9),
+                                      borderColor: AppColorHelper()
+                                          .primaryColor
+                                          .withValues(alpha: 0.8),
+                                      width: 0.1,
+                                      onPressed: () async {
+                                        Map<String, dynamic> arg = {
+                                          selectedViewStoryKey: task.toJson(),
+                                        };
+
+                                        navigateTo(storyDetailsPageRoute,
+                                            arguments: arg);
+                                      },
+                                      appText(
+                                        viewThisStory.tr,
+                                        fontSize: 13,
+                                        color:
+                                            AppColorHelper().secondaryTextColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    );
-                  });
+                        );
+                      });
             })
           ],
         ),

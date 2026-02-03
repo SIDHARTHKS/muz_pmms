@@ -39,6 +39,11 @@ class SettingsController extends AppBaseController
       if (myApp.preferenceHelper!.getBool(rememberMeKey)) {
         myApp.preferenceHelper!.setBool(rememberMeKey, false);
       }
+      myApp.preferenceHelper!.remove(typeFilterDataKey);
+      myApp.preferenceHelper!.remove(priorityFilterDataKey);
+      myApp.preferenceHelper!.remove(projectFilterDataKey);
+      myApp.preferenceHelper!.remove(requestFilterDataKey);
+      myApp.preferenceHelper!.remove(storyFilterDataKey);
     }
   }
 

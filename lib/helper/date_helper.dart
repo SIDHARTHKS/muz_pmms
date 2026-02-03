@@ -21,13 +21,15 @@ class DateHelper {
     }
   }
 
-  static String formatToShortMonthDateYear(DateTime dateTime) {
+  static String formatToShortMonthDateYear(DateTime? dateTime) {
     try {
-      final DateFormat formatter =
-          DateFormat('dd MMM yyyy'); // e.g. Sep 01, 2025
-      return formatter.format(dateTime);
-    } catch (e) {
-      throw Exception('Date formatting failed: $e');
+      if (dateTime == null || dateTime.year <= 0) {
+        return "-- --- ----";
+      }
+
+      return DateFormat('dd MMM yyyy').format(dateTime);
+    } catch (_) {
+      return "-- --- ----";
     }
   }
 
@@ -138,12 +140,18 @@ class DateHelper {
 
   String formatForUi(String date) {
     try {
-      final parsedDate = DateTime.parse(date); // expects yyyy-MM-dd
-      return "${parsedDate.day.toString().padLeft(2, '0')}/"
+      // Handle invalid zero date explicitly
+      if (date == "0000-00-00" || date.trim().isEmpty) {
+        return "----/--/--";
+      }
+
+      final parsedDate = DateTime.parse(date);
+
+      return "${parsedDate.year.toString().padLeft(4, '0')}/"
           "${parsedDate.month.toString().padLeft(2, '0')}/"
-          "${parsedDate.year}";
+          "${parsedDate.day.toString().padLeft(2, '0')}";
     } catch (_) {
-      return "--/--/----"; // fallback for invalid input
+      return "----/--/--";
     }
   }
 

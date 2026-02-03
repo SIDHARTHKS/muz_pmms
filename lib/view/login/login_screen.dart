@@ -109,44 +109,36 @@ class LoginScreen extends AppBaseView<LoginController> {
                   height(15),
                   _showPasswordContainer(),
                   height(Platform.isIOS ? 75 : 70),
-                  buttonContainer(
-                    height: 50,
-                    color: AppColorHelper().primaryColor,
-                    controller.rxIsLoading.value
-                        ? buttonLoader()
-                        : appText(
-                            login.tr,
-                            fontSize: 16,
-                            color: AppColorHelper().textColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                    //           onPressed: () {
-                    //   showErrorSnackbar(
-                    //       title: "Invalid Credentials",
-                    //       message:
-                    //           "Login failed. Please check your username and password.");
-                    // }
-                    onPressed: () async {
-                      if (controller.rxIsLoading.value) return;
+                  AnimatedPadding(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOut,
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(Get.context!).viewInsets.bottom > 0
+                          ? MediaQuery.of(Get.context!).viewInsets.bottom * 0.4
+                          : 0,
+                    ),
+                    child: buttonContainer(
+                      height: 50,
+                      color: AppColorHelper().primaryColor,
+                      controller.rxIsLoading.value
+                          ? buttonLoader()
+                          : appText(
+                              login.tr,
+                              fontSize: 16,
+                              color: AppColorHelper().textColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      onPressed: () async {
+                        if (controller.rxIsLoading.value) return;
 
-                      await controller.signIn().then((success) {
+                        final success = await controller.signIn();
                         if (success) {
-                          // Map<String, dynamic> arguments = {
-                          //   tasksDataKey: controller.rxTasksResponse
-                          // };
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            navigateToAndRemoveAll(
-                              homePageRoute,
-                              // arguments: arguments
-                            );
+                            navigateToAndRemoveAll(homePageRoute);
                           });
                         }
-
-                        // WidgetsBinding.instance.addPostFrameCallback((_) {
-                        //   navigateToAndRemoveAll(homePageRoute);
-                        // });
-                      });
-                    },
+                      },
+                    ),
                   ),
                   height(30),
                   GestureDetector(
@@ -159,7 +151,6 @@ class LoginScreen extends AppBaseView<LoginController> {
                             backgroundColor: Colors.transparent,
                             builder: (context) {
                               return Padding(
-                                // This padding pushes the sheet up when the keyboard appears
                                 padding: EdgeInsets.only(
                                   bottom:
                                       MediaQuery.of(context).viewInsets.bottom,

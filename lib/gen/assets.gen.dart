@@ -151,6 +151,10 @@ class $AssetsImagesGen {
   AssetGenImage get muziriswhite =>
       const AssetGenImage('assets/images/muziriswhite.png');
 
+  /// File path: assets/images/noResults.png
+  AssetGenImage get noResults =>
+      const AssetGenImage('assets/images/noResults.png');
+
   /// File path: assets/images/splashBg1.png
   AssetGenImage get splashBg1 =>
       const AssetGenImage('assets/images/splashBg1.png');
@@ -167,6 +171,7 @@ class $AssetsImagesGen {
         loginBg2,
         muziris,
         muziriswhite,
+        noResults,
         splashBg1,
         splashBg2
       ];

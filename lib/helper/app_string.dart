@@ -28,6 +28,7 @@ const String currentStoryKey = 'currentStoryKey';
 
 const String typeFilterDataKey = 'typeFilterDataKey';
 const String projectFilterDataKey = 'projectFilterDataKey';
+const String storyFilterDataKey = 'storyFilterDataKey';
 const String priorityFilterDataKey = 'priorityFilterDataKey';
 const String requestFilterDataKey = 'requestFilterDataKey';
 const String selectedTaskKey = 'selectedTaskKey';
@@ -293,9 +294,12 @@ const String hasBeenUpdatedSuccessfully = "hasbeenupdatedsuccessfully";
 
 const String dateRange = 'DateRange';
 const String filterTokens = 'FilterTokens';
+const String filterSrory = 'FilterStory';
 const String clearAllFilters = 'ClearAllFilters';
 const String applyAllFilters = 'ApplyFilters';
 const String filtersApplied = 'FiltersApplied';
+const String noResults = 'Noresultsfound';
+const String noResultsDialogue = 'Wecouldn’tfindanyresultsmatchingyoursearch.';
 
 const String searchTokensProjects = 'Searchtokens,projects,modules';
 

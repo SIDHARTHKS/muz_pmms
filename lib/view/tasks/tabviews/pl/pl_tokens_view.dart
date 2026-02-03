@@ -13,7 +13,6 @@ import 'package:pmms/model/task_model.dart';
 import 'package:pmms/view/dialogues/success_dialogue.dart';
 import 'package:pmms/view/widget/common_widget.dart';
 import 'package:pmms/view/widget/text/app_text.dart';
-
 import '../../../../gen/assets.gen.dart';
 
 class PlTokensView extends AppBaseView<TasksController> {
@@ -47,7 +46,41 @@ class PlTokensView extends AppBaseView<TasksController> {
           children: [
             height(10),
             Obx(() {
-              return _tokenList();
+              return controller.rxTokens.isEmpty
+                  ? SizedBox(
+                      height: Get.height * 0.6, // ✅ gives space
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              Assets.images.noResults.path,
+                              scale: 4,
+                            ),
+                            height(10),
+                            appText(
+                              noResults.tr,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColorHelper().primaryTextColor,
+                            ),
+                            height(10),
+                            SizedBox(
+                              width: 250,
+                              child: appText(
+                                noResultsDialogue.tr,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                textAlign: TextAlign.center,
+                                color: AppColorHelper().primaryTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : _tokenList();
             })
           ],
         ),

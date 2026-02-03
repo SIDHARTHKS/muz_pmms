@@ -11,14 +11,14 @@ import '../../../helper/navigation.dart';
 import '../../../helper/sizer.dart';
 import '../../widget/common_widget.dart';
 
-class FilterBottomsheet extends StatefulWidget {
-  const FilterBottomsheet({super.key});
+class FilterStoryBottomsheet extends StatefulWidget {
+  const FilterStoryBottomsheet({super.key});
 
   @override
-  State<FilterBottomsheet> createState() => _FilterBottomsheetState();
+  State<FilterStoryBottomsheet> createState() => _FilterBottomsheetState();
 }
 
-class _FilterBottomsheetState extends State<FilterBottomsheet> {
+class _FilterBottomsheetState extends State<FilterStoryBottomsheet> {
   final TasksController controller = Get.find<TasksController>();
   final appColor = AppColorHelper();
 
@@ -30,8 +30,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
     super.initState();
 
     selectedItems = {
-      "Token Type":
-          RxList<FiltersResponse>.from(controller.rxSelectedTokenTypes),
+      "Story Type":
+          RxList<FiltersResponse>.from(controller.rxSelectedStoryTypes),
       "Project": RxList<FiltersResponse>.from(controller.rxSelectedProjects),
       "Priority": RxList<FiltersResponse>.from(controller.rxSelectedPriority),
       "Request Type":
@@ -118,7 +118,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
   @override
   Widget build(BuildContext context) {
     final filters = {
-      "Token Type": controller.rxTypeFilters,
+      "Story Type": controller.rxStoryTypeFilters,
       "Project": controller.rxProjectFilters,
       "Priority": controller.rxPriorityFilters,
       "Request Type": controller.rxRequestFilters,
@@ -145,7 +145,7 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                appText(filterTokens.tr,
+                appText(filterSrory.tr,
                     color: appColor.primaryTextColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 17),
@@ -288,8 +288,8 @@ class _FilterBottomsheetState extends State<FilterBottomsheet> {
                             color: AppColorHelper().textColor,
                           ),
                           onPressed: () {
-                            controller.rxSelectedTokenTypes
-                                .assignAll(selectedItems["Token Type"]!);
+                            controller.rxSelectedStoryTypes
+                                .assignAll(selectedItems["Story Type"]!);
                             controller.rxSelectedProjects
                                 .assignAll(selectedItems["Project"]!);
                             controller.rxSelectedPriority

@@ -140,7 +140,6 @@ Map<String, String> enUS = {
   sentVerificationDialogue:
       'We’ve sent a verification code to your email! \nCheck your inbox and enter it to verify your account.',
   otp: 'One Time Password',
-  didnotrecieve: 'Did not receive ?',
   resend: 'Resend',
   verifyOtp: 'Verify OTP',
   createNewPassword: 'Create New Password',
@@ -171,9 +170,12 @@ Map<String, String> enUS = {
   hasBeenUpdatedSuccessfully: "has been updated successfully",
   dateRange: 'Date Range',
   filterTokens: 'Filter Tokens',
+  filterSrory: 'Filter Story',
   clearAllFilters: 'Clear All Filters',
   applyAllFilters: 'Apply Filters',
   filtersApplied: 'Filters Applied',
+  noResults: 'No results found',
+  noResultsDialogue: 'We couldn’t find any results matching your search.',
 
   searchTokensProjects: 'Searchtokens, projects, modules',
 

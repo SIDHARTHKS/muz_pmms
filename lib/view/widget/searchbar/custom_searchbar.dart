@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/export.dart';
-import 'package:pmms/view/tasks/bottomsheet/filter_bottomsheet.dart';
+import 'package:pmms/view/tasks/bottomsheet/filter_token_bottomsheet.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../helper/color_helper.dart';
 import '../../../helper/core/environment/env.dart';
 import '../../../helper/enum.dart';
+import '../../tasks/bottomsheet/filter_story_bottomsheet.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final TextEditingController controller;
@@ -13,11 +14,13 @@ class CustomSearchBar extends StatefulWidget {
   final String hintText;
   final String? Function(String?)? validator;
   final Function(String)? action;
+  final bool isToken;
 
   const CustomSearchBar({
     super.key,
     required this.controller,
     required this.hintText,
+    required this.isToken,
     this.onChanged,
     this.onSubmit,
     this.validator,
@@ -102,7 +105,9 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                     padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
-                    child: const FilterBottomsheet(),
+                    child: widget.isToken
+                        ? const FilterTokenBottomsheet()
+                        : const FilterStoryBottomsheet(),
                   );
                 },
               );

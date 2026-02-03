@@ -222,6 +222,7 @@ class TasksScreen extends AppBaseView<TasksController> {
         },
         controller: controller.searchController,
         hintText: searchTokensProjects.tr,
+        isToken: controller.rxTabIndex.value == 0,
       ),
     );
   }

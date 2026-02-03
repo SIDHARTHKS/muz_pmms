@@ -4,13 +4,11 @@ import 'package:get/get.dart';
 import 'package:pmms/helper/app_string.dart';
 import 'package:pmms/helper/date_helper.dart';
 import 'package:pmms/helper/enum.dart';
-
 import 'package:pmms/model/app_model.dart';
 import 'package:pmms/model/dropdown_model.dart';
 import 'package:pmms/service/task_services.dart';
 import 'package:pmms/view/tasks/tabviews/story/story_view.dart';
 import 'package:pmms/view/tasks/tabviews/pl/pl_tokens_view.dart';
-import 'package:pmms/view/tasks/tabviews/tl/tl_token_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../helper/app_message.dart';
 import '../helper/core/base/app_base_controller.dart';
@@ -42,18 +40,21 @@ class TasksController extends AppBaseController
 
   // filter
 
-  RxList<FiltersResponse> rxStoryFilterTypeList = <FiltersResponse>[].obs;
-  RxList<FiltersResponse> rxTypeFilters = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxStoryStatusFilter = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxTokenTypeFilters = <FiltersResponse>[].obs;
+  RxList<FiltersResponse> rxStoryTypeFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxProjectFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxPriorityFilters = <FiltersResponse>[].obs;
   RxList<FiltersResponse> rxRequestFilters = <FiltersResponse>[].obs;
 
   var rxSelectedTokenTypes = <FiltersResponse>[].obs;
+  var rxSelectedStoryTypes = <FiltersResponse>[].obs;
   var rxSelectedProjects = <FiltersResponse>[].obs;
   var rxSelectedPriority = <FiltersResponse>[].obs;
   var rxSelectedRequestTypes = <FiltersResponse>[].obs;
 
   RxInt tokenTypeFilterCount = 0.obs;
+  RxInt storyTypeFilterCount = 0.obs;
   RxInt projectTypeFilterCount = 0.obs;
   RxInt priorityTypeFilterCount = 0.obs;
   RxInt requestTypeFilterCount = 0.obs;
@@ -392,40 +393,40 @@ class TasksController extends AppBaseController
     rxRejectedStories.clear();
     rxHoldStories.clear();
 
-    if (rxStoryFilterTypeList.isEmpty) return;
+    if (rxStoryStatusFilter.isEmpty) return;
 
     rxTodoStories.value = all
         .where((e) => _matchId(
               e.currentStatusId,
-              rxStoryFilterTypeList[0].mccId,
+              rxStoryStatusFilter[0].mccId,
             ))
         .toList();
 
     rxInProgressStories.value = all
         .where((e) => _matchId(
               e.currentStatusId,
-              rxStoryFilterTypeList[1].mccId,
+              rxStoryStatusFilter[1].mccId,
             ))
         .toList();
 
     rxCompletedStories.value = all
         .where((e) => _matchId(
               e.currentStatusId,
-              rxStoryFilterTypeList[2].mccId,
+              rxStoryStatusFilter[2].mccId,
             ))
         .toList();
 
     rxRejectedStories.value = all
         .where((e) => _matchId(
               e.currentStatusId,
-              rxStoryFilterTypeList[3].mccId,
+              rxStoryStatusFilter[3].mccId,
             ))
         .toList();
 
     rxHoldStories.value = all
         .where((e) => _matchId(
               e.currentStatusId,
-              rxStoryFilterTypeList[4].mccId,
+              rxStoryStatusFilter[4].mccId,
             ))
         .toList();
   }
@@ -478,7 +479,7 @@ class TasksController extends AppBaseController
     await handleFilter(
       prefKey: typeFilterDataKey,
       apiFlag: "TOKEN_STATUS",
-      targetList: rxTypeFilters,
+      targetList: rxTokenTypeFilters,
     );
 
     await handleFilter(
@@ -497,6 +498,12 @@ class TasksController extends AppBaseController
       prefKey: requestFilterDataKey,
       apiFlag: "REQUEST_TYPE",
       targetList: rxRequestFilters,
+    );
+
+    await handleFilter(
+      prefKey: storyFilterDataKey,
+      apiFlag: "STORY_TYPE",
+      targetList: rxStoryTypeFilters,
     );
   }
 
@@ -570,6 +577,7 @@ class TasksController extends AppBaseController
 
   void resetsetFilters() {
     rxSelectedTokenTypes.clear();
+    rxSelectedStoryTypes.clear();
     rxSelectedProjects.clear();
     rxSelectedPriority.clear();
     rxSelectedRequestTypes.clear();
@@ -582,11 +590,13 @@ class TasksController extends AppBaseController
 
   void checkFilters() {
     tokenTypeFilterCount.value = rxSelectedTokenTypes.length;
+    storyTypeFilterCount.value = rxSelectedStoryTypes.length;
     projectTypeFilterCount.value = rxSelectedProjects.length;
     priorityTypeFilterCount.value = rxSelectedPriority.length;
     requestTypeFilterCount.value = rxSelectedRequestTypes.length;
 
     totalFilterCount.value = tokenTypeFilterCount.value +
+        storyTypeFilterCount.value +
         projectTypeFilterCount.value +
         priorityTypeFilterCount.value +
         requestTypeFilterCount.value;
@@ -604,24 +614,33 @@ class TasksController extends AppBaseController
 
   //
   List<TaskResponse> applyFiltersOnly() {
-    final typeFilters = rxSelectedTokenTypes;
+    final tokenTypeFilters = rxSelectedTokenTypes;
+    final storyTypeFilters = rxSelectedStoryTypes;
     final projectFilters = rxSelectedProjects;
     final priorityFilters = rxSelectedPriority;
     final requestTypeFilters = rxSelectedRequestTypes;
 
-    final dateRange = selectedDateRange;
+    // final dateRange = selectedDateRange;
 
     return rxTasksResponse.where((item) {
       bool match = true;
 
       // TOKEN / STORY STATUS
-      if (typeFilters.isNotEmpty) {
+      if (tokenTypeFilters.isNotEmpty) {
         match = match &&
-            typeFilters.any((f) =>
+            tokenTypeFilters.any((f) =>
                 item.currentStatus?.toLowerCase() ==
                     (f.mccName ?? "").toLowerCase() ||
                 item.iadStatus?.toLowerCase() ==
                     (f.mccName ?? "").toLowerCase());
+      }
+
+      // STORY TYPE
+      if (storyTypeFilters.isNotEmpty) {
+        match = match &&
+            storyTypeFilters.any((f) =>
+                item.storyType?.toLowerCase() ==
+                (f.mccName ?? "").toLowerCase());
       }
 
       // PROJECT
@@ -710,7 +729,7 @@ class TasksController extends AppBaseController
   // List rxPlTabScreens = [
   //   const PlTokensView(),
   //   const StoryView(),
-  //   const TlTokenView()
+  // const TlTokenView()
   // ];
 
   List rxTabScreens = [
@@ -743,7 +762,7 @@ class TasksController extends AppBaseController
   }
 
   Future<bool> fetchTokenDetailsInitData() async {
-    await fetchFilterData("STORY_STATUS", rxStoryFilterTypeList, false);
+    await fetchFilterData("STORY_STATUS", rxStoryStatusFilter, false);
     await fetchStories(false);
 
     return true;
