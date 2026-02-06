@@ -396,7 +396,7 @@ GestureDetector buttonContainer(
         height: height,
         alignment: Alignment.center,
         padding:
-            EdgeInsets.symmetric(horizontal: 12, vertical: paddingVertical),
+            EdgeInsets.symmetric(horizontal: 10, vertical: paddingVertical),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(

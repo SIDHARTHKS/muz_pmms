@@ -61,45 +61,44 @@ class CustomRadioButton<T> extends StatelessWidget {
         height(2),
         SizedBox(
           height: widgetHeight ?? 42,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
+          child: Row(
+            children: List.generate(items.length, (index) {
               final item = items[index];
 
-              // Compare IDs if provided, else compare objects directly
-              final bool isSelected = itemIdBuilder != null
+              final bool isSelected = itemIdBuilder != null &&
+                      selectedValue != null
                   ? itemIdBuilder!(item) == itemIdBuilder!(selectedValue as T)
                   : item == selectedValue;
-              final Color activeColor = bgColor ?? appColor.primaryColor;
-              final Color inactiveColor = appColor.cardColor;
 
-              bool isMiddle = index == 1;
-
-              return Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: buttonContainer(
-                  paddingVertical: 2,
-                  onPressed: () => onChanged(item),
-                  width: widgetWidth ?? (isMiddle ? 130 : 115),
-                  borderColor: isSelected
-                      ? (borderColor ?? appColor.primaryColor)
-                      : appColor.borderColor.withValues(alpha: 0.5),
-                  color: isSelected ? activeColor : inactiveColor,
-                  Center(
-                    child: appText(
-                      itemLabelBuilder(item),
-                      color: isSelected
-                          ? (textColor ?? appColor.primaryColor)
-                          : appColor.primaryTextColor,
-                      fontWeight: FontWeight.w500,
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: index == items.length - 1 ? 0 : 10,
+                  ),
+                  child: buttonContainer(
+                    paddingVertical: 2,
+                    onPressed: () => onChanged(item),
+                    borderColor: isSelected
+                        ? (borderColor ?? appColor.primaryColor)
+                        : appColor.borderColor.withValues(alpha: 0.5),
+                    color: isSelected
+                        ? (bgColor ?? appColor.primaryColor)
+                        : appColor.cardColor,
+                    Center(
+                      child: appText(
+                        itemLabelBuilder(item),
+                        color: isSelected
+                            ? (textColor ?? appColor.primaryColor)
+                            : appColor.primaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
               );
-            },
+            }),
           ),
-        ),
+        )
       ],
     );
   }

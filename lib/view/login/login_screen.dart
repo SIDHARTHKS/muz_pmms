@@ -56,7 +56,7 @@ class LoginScreen extends AppBaseView<LoginController> {
                       right: 12,
                       top: 20,
                       bottom: MediaQuery.of(context).viewInsets.bottom *
-                          0.5, // ✅ only half scroll
+                          0.4, // ✅ only half scroll
                     ),
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
@@ -108,7 +108,16 @@ class LoginScreen extends AppBaseView<LoginController> {
                   _buildPasswordField(),
                   height(15),
                   _showPasswordContainer(),
-                  height(Platform.isIOS ? 75 : 70),
+                  AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      height: MediaQuery.of(Get.context!).viewInsets.bottom > 0
+                          ? Platform.isIOS
+                              ? 18
+                              : 18
+                          : Platform.isIOS
+                              ? 75
+                              : 70),
+                  // height(Platform.isIOS ? 75 : 70),
                   AnimatedPadding(
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeOut,

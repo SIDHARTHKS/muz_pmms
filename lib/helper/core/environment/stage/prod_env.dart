@@ -3,7 +3,8 @@ import '../env_config.dart';
 class ProdEnvironment extends EnvironmentConfig {
   ProdEnvironment()
       : super(
-          baseApiurl: 'http://202.164.153.62:7899/mzmobileapp', //live
+          // baseApiurl: 'http://202.164.153.62:7899/mzmobileapp', //live
+          baseApiurl: 'http://202.164.153.62:8398/mzmobileapp', //uat
           title: 'PMMS',
           enableLogs: false,
           enableNetworkImages: true,

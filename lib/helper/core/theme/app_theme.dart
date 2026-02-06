@@ -139,11 +139,11 @@ class AppTheme {
 final Map<AppClient, Map<ThemeModeType, AppTheme>> appThemes = {
   AppClient.demo: {
     ThemeModeType.light: _demoLightTheme(),
-    ThemeModeType.dark: _demoDarkTheme(),
+    ThemeModeType.dark: _demoLightTheme(),
   },
   AppClient.muziris: {
     ThemeModeType.light: _demoLightTheme(),
-    ThemeModeType.dark: _demoDarkTheme(),
+    ThemeModeType.dark: _demoLightTheme(),
   },
 };
 
